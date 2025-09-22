@@ -1,0 +1,60 @@
+联机同步机制：
+游戏主循环的LogicUpdate阶段, 所有同步都是自动的, 每个物品根据自身状态变化给同步标志写上值, 然后同步标志不为0的物品会自动发送数据包
+FragmentHandler.Send方法中调用了WriteStateImmediate对所有模块进行数据包生成,然后通过Steam网络或者游戏内置火箭网络发送数据包出去
+Thing.SerializeDeltaState方法中可以看到判断NetworkUpdateFlags以决定是否跳过该物品的数据包生成
+
+游戏主循环的HandleInputEvent阶段, 因为是玩家介入对世界的改变
+比如增加了物品、删除了物品......
+以上种种情况中,因为不同电脑中的物体表对不上,要么找不到物体,要么是漏掉物体的同步
+因此需要在交互事件中手动发送数据包,让所有电脑中的物体表保持一致
+
+数据包结构 => 继承自MessageBase<T>,通过重写序列化与反序列化方法打包与解包,可以用dnSpy.exe的<分析=>被使用>找到所有实例消息类型
+数据包接收 => NetworkManager.ManagerUpdate方法中,接收到所有数据包,并解包后写入NetworkManager._buffer
+数据包发送API => NetworkClient.SendToServer/NetworkServer.SendToClients/NetworkServer.SendToClient
+OnServer => 此类封装了数据包发送API,根据NetworkRole决定调用哪个API
+
+完整的交互流程,需要多个步骤
+一.生成交互消息(玩家双手信息/目标信息/doAction), 消息中的doAction永远是false, 防止方法中的交互事件语句被执行
+
+二.解析交互消息, 即第一次在本地调用InteractWith方法或者AttackWith方法, 返回解析结果(DelayedActionInstance)
+   <结果.IsDisabled> = true, 不满足交互前置条件
+   <结果.IsDisabled> = false, 满足交互前置条件
+   结果中的其它参数是在 <交互条件提示面板> 显示的提示信息
+
+三.满足交互前置条件时, 创建一个交互动作协程(有些交互需要鼠标左键保持长按,有些交互只需要左键单击,因此不能直接执行交互事件语句)
+   <结果.Duration> = 0, 则创建的交互动作协程会循环判断鼠标左键是否按下(焦点目标改变时直接结束协程)
+   <结果.Duration> > 0, 则创建的交互动作协程会循环判断鼠标左键是否按下(焦点目标改变时直接结束协程,倒计时结束前鼠标左键弹起直接结束协程)
+   结果中的其它参数是在 <交互动作提示面板> 显示的提示信息
+
+四.交互动作协程中,若鼠标按键状态满足条件则调用OnServer.InteractWith方法或者NetworkClient.InteractWith方法
+   或者OnServer.AttackWith方法或者NetworkClient.AttackWith方法, 网络类型(NetworkRole)决定调用OnServer还是NetworkClient
+   按钮/开关/拉杆...这些控件调用InteractWith方法,主物体本身调用AttackWith方法
+
+五.OnServer.InteractWith方法或者OnServer.AttackWith是对InteractWith方法或者AttackWith方法的封装,等于第二次在本地调用
+   区别是生成的交互消息消息中的doAction = true, 方法中判断若doAction == true,则执行交互事件语句
+   因为交互事件语句已经执行(交互事件结束),此时在方法内部返回的解析结果(DelayedActionInstance)相当于开启新一轮的交互流程
+
+六.NetworkClient.InteractWith方法或者NetworkClient.AttackWith方法是对InteractWith方法或者AttackWith方法的封装,等于第二次在本地调用
+   在本地调用完后,额外向服务器端发送交互事件数据包,见以下示范
+     NetworkClient.SendToServer<InteractionMessage>(new InteractionMessage
+     {
+         DestinationId = interaction.DestinationThing.ReferenceId,
+         InteractionId = interactable.InteractableId,        // 通过ID获取控件.控件类型,不同类型调用不同的回调函数
+         SourceId = interaction.SourceThing.ReferenceId,
+         SourceSlotId = interaction.SourceSlot.SlotIndex,
+         State = interactable.State,                         // 通过ID获取控件.状态,对于刻度盘和开关,这个值都不同
+         AltKey = interaction.AltKey,
+         InteractWith = true
+     }, NetworkChannel.GeneralTraffic);
+
+以下是DelayedActionInstance的说明
+Duration: 交互动作协程的生命时间
+OverrideTitle: 提示面板标题
+ActionMessage: 提示面板交互动作, 例:开启/关闭/拆除/安装/放置
+IsDisabled:    是否满足交互前置条件
+SwitchTitleForTooltip: 	是否允许右边操作=> 提示面板.Title = interactable.ContextualName;
+ExtendedMessage: 扩展消息;
+Slider: 根据生命时间倒计时增加的进度条
+SelectionInstance: 当前焦点
+ActionSoundHash: 交互动作执行时的音效哈希值;
+ActionCompleteSoundHash: 交互动作完成时的音效哈希值;

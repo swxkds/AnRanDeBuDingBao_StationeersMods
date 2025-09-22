@@ -1,0 +1,7 @@
+本模组引用了游戏目录中的dll
+一.\Stationeers\BepInEx\core
+二.\Stationeers\rocketstation_Data\Managed
+
+将以上目录中的所有文件拷贝到项目中的<引用>目录中, 编译配置是通配符,会自动查找引用
+用 <dotnet build> 编译 项目中的 .csproj, 就能编译出dll
+先编译出前置模块.dll,然后将前置模块.dll扔进<引用>目录

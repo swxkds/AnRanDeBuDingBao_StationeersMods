@@ -1,0 +1,49 @@
+git config --global core.editor "code --wait"       # 将<修改范围配置文件>的编辑器改成VSCode
+# 默认的文本编辑器是命令行,很难用,见以下示范
+按 Esc → 输入 :wq → 回车, 表示 保存并提交       
+按 Esc → 输入 :q! → 回车, 表示 不保存并结束当前任务
+
+
+第一次提交 => 不能通过提交ID找到,而是通过--root找到
+git rebase -i --root        # 修改范围(所有提交)
+
+
+变基时存在冲突改动 => 首先编辑冲突文件,然后执行以下指令
+git add <file>
+git rebase --continue     
+注: 若想放弃变基用 git rebase --abort; 若中途不确定用 git status 看当前状态
+
+
+
+指令组合 => 将暂存区合并到最新提交
+git status                                          # 确保没有正在进行的任务
+git add .                                           # 把改动放到暂存区
+git commit --amend                                  # 暂存区合并到<当前选择提交>,当前选择提交默认=最新提交
+git branch --show-current                           # 获取当前操作的分支名字
+git diff origin/分支名字                             # 显示远程库所有文件与本地库所有文件之间的差异,判断文件改动是否正确
+git push --force-with-lease origin 分支名字          # 推送并强制更新远程库为本地历史,origin指远程库
+
+
+
+指令组合 => 变基(将多条提交记录合并为一条)
+git status                                          # 确保没有正在进行的任务
+git rebase -i HEAD~修改数量                          # 修改范围(从最新提交处开始,修改N个提交)
+<修改范围配置文件> => pick:保留此提交;  squash:合并到上一个pick提交,并编辑提交信息;  fixup:合并到上一个pick提交
+git branch --show-current                           # 获取当前操作的分支名字
+git diff origin/分支名字                             # 显示远程库所有文件与本地库所有文件之间的差异,判断文件是否被误改
+git push --force-with-lease origin 分支名字          # 推送并强制更新远程库为本地历史,origin指远程库
+
+
+
+指令组合 => 变基(将改动合并到指定提交)
+git status                                          # 确保没有正在进行的任务
+git stash     #可选!!!!!!!!!!!!!定位修改范围时要求没有改动或者暂存区没有改动,若之前有改动,先执行此指令,将改动剪切到临时文件中
+git rebase -i 目标提交的上一个提交ID^                 # 修改范围(从指定提交处开始,一直到最新提交). 注:若是从第一个提交修改,使用git rebase -i --root     
+<修改范围配置文件> => 将目标提交的pick改成edit(设置此提交为<当前选择提交>), 其它行保持pick
+git stash pop  #可选!!!!!!!!!!!!!若是之前执行了git stash,执行这条指令将改动从临时文件中还原
+git add .                                           # 把改动放到暂存区
+git commit --amend                                  # 暂存区合并到<当前选择提交>
+git rebase --continue                               # 经上续步骤,改动已合并到指定提交,将改动依次同步到后续所有提交.  注:遇到冲突改动,处理完冲突后也执行一次此指令
+git branch --show-current                           # 获取当前操作的分支名字
+git diff origin/分支名字                             # 显示远程库所有文件与本地库所有文件之间的差异,判断文件改动是否正确
+git push --force-with-lease origin 分支名字          # 推送并强制更新远程库为本地历史,origin指远程库
