@@ -1,0 +1,88 @@
+用dnSpy.exe打开程序集,查找到方法
+在方法名上 < 右键=>编辑IL指令 > 查看原方法的IL指令序列,在序列空白处按Ctrl + A全选,然后 < 右键=>复制为文本 >
+在方法名上 < 右键=>编辑方法 > 并修改代码,若提示缺乏引用无法编译, 把整个程序中的dll全部拖到dnSpy中, 会自动识别引用
+在方法名上<右键=>编辑IL指令>查看方法修改后的IL指令序列, 在序列空白处按Ctrl+A全选, 然后<右键=>复制为文本>
+比对原方法的IL指令序列与方法修改后的IL指令序列, 然后用HarmonyPatch=>IL指令序列补丁在对应序列处添加或者删除指令
+修改IL指令序列先在尾部添加或者删除指令, 避免前面的序列号发生变化
+
+IL指令序列示范(内存偏移不用管, 编译器自动生成的)
+序号 内存偏移    操作码          操作数
+0	 0000	       call	          void Assets.Scripts.ConsoleWindow::HandleInput()
+1	 0005	       ldc.i4.1       操作码为立即数时, 操作数不需要写
+2	 0006	       call	          valuetype [RG.ImGui] ImGuiNET.ImFontPtr UI.ImGuiUi.ImguiHelper::GetFont(int32)
+
+以下示范若操作码是call, 如何获取操作数并添加到指令序列(MethodInfo的获取用C#反射API与HarmonyPatch反射API都可以)
+public static readonly MethodInfo getFont = AccessTools.Method(typeof(ImguiHelper), "GetFont", [typeof(int)]);
+public static readonly MethodInfo pushFont = AccessTools.Method(typeof(ImGui), "PushFont", [typeof(ImFontPtr)]);
+public static readonly MethodInfo popFont = AccessTools.Method(typeof(ImGui), "PopFont", Type.EmptyTypes);
+public static readonly CodeInstruction[] 添加新字体指针并应用 = [new CodeInstruction(OpCodes.Ldc_I4_2),
+new CodeInstruction(OpCodes.Call, getFont),new CodeInstruction(OpCodes.Call, pushFont)];
+public static readonly CodeInstruction 退回旧字体指针并应用 = new CodeInstruction(OpCodes.Call, popFont);
+
+HarmonyPatch的原理 => 调用C#运行时API创建一个空白方法,并拷贝原方法IL指令序列插入到第0行
+将前置补丁方法的IL指令序列插入到新方法第0行, 因此优先执行, 其中最后一条指令是=>判断返回的bool值以决定是直接return还是继续执行拷贝的原方法IL指令序列
+后置补丁方法在拷贝的原方法IL指令序列中所有操作数为OpCodes.Ret的地方将跳转到后置方法序列号的指令插入
+// for (var i = 新方法.Count - 1; i >= 0; i--)
+// {
+//     if (拷贝的原方法IL指令序列[i].opcode == OpCodes.Ret)
+//     {
+//         拷贝的原方法IL指令序列.Insert(i, 跳转到后置方法序列号指令);
+//     }
+// }
+即补丁本质上是创建一个新方法
+HarmonyPatch是从[HarmonyPatch(typeof(类名), nameof(类名.方法名), new Type[] { })]
+解析出方法签名并通过C#运行时API找到原方法的
+HarmonyPatch在创建新方法的形参和返回值 => 原方法一样的形参与返回值(编译器根据形参与返回值类型的字节数加上内存对齐算法分配函数栈)
+
+前置补丁方法由于返回值被bool占用了, 因此使用 <ref 原方法返回值类型 __result> <ref 原方法实例类型 __instance> <其它形参> 来读写传参
+__result和__instance这两个固定的变量名会被HarmonyPatch解析成从函数栈中复制返回值和实例, 其它形参会被解析成从函数栈中复制同名参数
+__result一定要加上ref, 避免修改的是复制的值, 上级调用从函数栈相关偏移中读取的依然是原来的值, 其它不报错的话能加上就加上ref
+   
+后置补丁方法也使用 <ref 原方法返回值类型 __result> <ref 原方法实例类型 __instance> <其它形参> 来读写传参
+__result和__instance这两个固定的变量名会被HarmonyPatch解析成从函数栈中复制返回值和实例, 其它形参会被解析成从函数栈中复制同名参数
+__result一定要加上ref, 避免修改的是复制的值, 上级调用从函数栈相关偏移中读取的依然是原来的值
+
+前置补丁方法和后置补丁方法的形参声明除了__result, 其它都可以省略的, 因为只是解析成从函数栈中复制同名参数, 没有就不复制         
+
+dll方法寻址 => 由于方法的汇编指令是只读的, 所以dll在加载后, 其中的方法会统一保存为操作系统级别的全局唯一地址, 多次加载同个dll也不会重复构造         
+              而变量被视为引用它的程序自己声明的, 假如A和B都引用了该dll的一个变量, 则A和B各自在自己的程序空间的数据区构造该变量
+              在一个程序所有依赖的dll全部加载完成后, 操作系统从全局唯一地址表中取出方法地址并替换掉各自程序空间的重定向表
+              
+程序调用某个方法时, 先跳转到编译时分配的重定向表地址, 然后从中取出方法的全局唯一地址, 然后跳转到全局唯一地址后执行指令
+HarmonyPatch应用补丁就是将重定向表中的全局唯一地址修改为新方法的全局唯一地址, 然后将旧的全局唯一地址记录下来, 卸载补丁就是将旧的全局唯一地址替换回去
+
+因此若需要卸载补丁, 则执行 <补丁 = new Harmony("");> 将HarmonyPatch的实例保存起来, 里面记载了应用补丁时旧的全局唯一地址
+以下卸载补丁示范:
+补丁.Unpatch(typeof(类名).GetMethod("方法名", BindingFlags.Instance | BindingFlags.NonPublic), HarmonyPatchType.Transpiler, 补丁.Id);
+
+补丁.PatchAll() 会查找所有类的[HarmonyPatch]特性, 若类上没有[HarmonyPatch]特性不会应用补丁
+
+HarmonyPatch有固定的命名规范用来识别是补丁方法还是普通方法
+public static void Postfix()	    // 此方法名视为后置补丁方法
+
+[HarmonyPostfix]                    // 此特性视为后置补丁方法
+public static void 随便写的方法名()  // 此处方法名随便写
+
+public static void Prefix()         // 此方法名视为前置补丁方法,且始终调用原方法
+
+[HarmonyPrefix]                     // 此特性视为前置补丁方法
+public static void 随便写的方法名()  // 此处方法名随便写
+
+public static bool Prefix()	         // 此方法名,则视为前置补丁方法,根据返回值决定是否调用原方法
+
+[HarmonyPrefix]                     // 此特性视为前置补丁方法
+public static bool 随便写的方法名()  // 此处方法名随便写
+
+public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)    // 此方法名视为IL补丁方法
+
+............................其它省略,常用的补丁方法就这些
+
+public class 随便写的类名
+{
+    // 本代码没有作用,仅用于示范如何获取原方法地址,这样就可以在补丁应用后,依然可以调用原方法
+    // 若是成员方法,则第一个形参就是<实例类型 __instance>,函数体默认return null即可
+    [HarmonyReversePatch(0)]
+    [HarmonyPatch(typeof(原方法类名), nameof(原方法类名.原方法名))]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static 原方法返回值类型 随便写的方法名(原方法形参) => null;
+}

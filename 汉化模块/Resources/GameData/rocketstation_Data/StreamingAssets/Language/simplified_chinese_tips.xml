@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Simplified Chinese</Name>
+  <Code>CN</Code>
+  <Font>font_cjk</Font>
+  <GameTip>
+    <String>按下{KEY:HelmetSlot}、{KEY:SuitSlot}、{KEY:BackSlot}、{KEY:UniformSlot}或{KEY:ToolBeltSlot}可循环切换穿戴物品槽位的交互方式。按住该键可在该槽位与当前手持物品之间快速交换。</String>
+    <String>按下{KEY:ToggleHandPower}或{KEY:SecondaryAction}可切换手中物品的电源开关。</String>
+    <String>按下{KEY:ToggleLight}可开关{THING:ItemSpaceHelmet}的照明灯。</String>
+    <String>按下{KEY:EmoteWave}可让角色向其他太空员挥手。</String>
+    <String>按下{KEY:Jetpack}可开关{THING:ItemSpacepack}喷气背包。</String>
+    <String>按下{KEY:ToggleUI}可开关用户界面，便于截取纯净画面或录制视频。</String>
+	<String>当{THING:ItemSpacepack}启用时，按下{KEY:Ascend}向上飞行，按下{KEY:Descend}下降。</String>
+	<String>按下{KEY:InventorySelect}可在库存槽位与当前活动手之间交换物品。</String>
+	<String>按下{KEY:Drop}丢弃手中物品。按住{KEY:Drop}可投掷物品，长按时间越长投掷距离越远。</String>
+	<String>按下{KEY:SwapHands}切换活动手。按下{KEY:ActiveHandSlot}可循环切换当前手持物品的交互选项。</String>
+	<String>按下{KEY:Internals}可快速切换{THING:ItemSpaceHelmet}的开启或关闭状态。</String>
+	<String>按下{KEY:Chatting}开始与其他玩家聊天。</String>
+	<String>按下{KEY:RotateLeft}向左旋转建造标记，{KEY:RotateRight}向右旋转，{KEY:RotateUp}向上旋转，{KEY:RotateDown}向下旋转，{KEY:RotateRollLeft}向左滚动，或{KEY:RotateRollRight}向右滚动。</String>
+	<String>太空并不像听起来那样空旷。</String>
+	<String>将一叠{THING:ItemIronOre}放入已供电的{THING:StructureArcFurnace}中以熔炼{THING:ItemIronIngot}。</String>
+	<String>将{THING:MotherboardLogic}放入{THING:StructureComputer}即可通过IC芯片启用逻辑系统。您可添加条件和动作来控制同一数据网络上设备的状态。</String>
+	<String>通过世设备上的按钮调整物品数量时，按住{KEY:QuantityModifier}并点击可使用更小的增减幅度。</String>
+	<String>使用{THING:ItemKitLogicInputOutput}创建{THING:StructureLogicReader}或{THING:StructureLogicWriter}。读取器允许您从其他设备读取值，写入器允许您修改设备值。与数学单元结合时，可构建复杂的自动化系统。</String>
+	<String>使用{THING:ItemKitLogicInputOutput}创建{THING:StructureLogicBatchReader}或{THING:StructureLogicBatchWriter}。批量读取器允许您从整组设备读取特定逻辑值，批量写入器允许您修改整组设备的逻辑值。</String>
+	<String>使用{THING:StructureRecycler}将不需要的物品回收为材料。将输出的{THING:ItemReagentMix}输入到{THING:StructureCentrifuge}可将其还原为矿石，供{THING:StructureFurnace}使用。</String>
+	<String>使用{THING:StructureHydraulicPipeBender}制造气体设备，例如{THING:ItemKitAtmospherics}，可用于建造很多实用机器如{THING:StructureAirConditioner}或{THING:StructureFiltration}。</String>
+	<String>太空服损伤越严重，工作效率越低。胶带可以解决这个问题。</String>
+	<String>太空服损伤越严重，工作效率越低。</String>
+	<String>原版《Stationeers手册》坍缩为奇点后，被《Stationpedia》(空间站百科) 取代。按下{KEY:Help}可在游戏中打开并获取指南信息。</String>
+	<String>初始的{THING:ItemEvaSuit}和{THING:ItemSpaceHelmet}在高温环境中会起火。危险环境下请使用{THING:ItemHardSuit}。</String>
+	<String>太空员计划由地外开发计划署(ODA)设立，旨在支持太阳系及更远星域的探索。</String>
+	<String>注意太空服警告提示。它们有助于避免灾难。</String>
+	<String>{THING:ItemHardBackpack}能装载更多物品，但装不下你！</String>
+	<String>若空间站氛围压抑，可用{THING:StructureKlaxon}播放音乐提振心情，或用逻辑系统自制采样器。</String>
+	<String>{THING:StructureHarvie}可实现植物种植、生长和收获的全自动化。</String>
+	<String>扩展工具提示可在设置菜单中开启/关闭。</String>
+	<String>按下{KEY:HideAllWindows}可一键清除屏幕上所有打开的窗口。</String>
+	<String>{THING:ItemCrowbar}可用于手动开启未供电的门和区域电源控制器。</String>
+	<String>{THING:ItemMiningDrill}可切换为"平整"模式，帮助您在采矿时创建平坦地面。</String>
+	<String>{THING:ItemWearLamp}无需佩戴头盔即可提供照明。</String>
+	<String>按住{KEY:MouseControl}可启用鼠标光标，在物品栏内外或槽位间拖拽物品。</String>
+	<String>基础太空头盔能使Stationeer隔绝一切环境——从真空环境到诡异的烹饪气味。</String>
+	<String>物理是你的朋友。直到它不再是。</String>
+	<String>摩擦附着力调节器是一个具有柱状单握把的双向旋转模型。它不仅仅是一把螺丝刀。</String>
+	<String>它实际上不是"牛奶", 其实是Agrizero的专利配方——由{THING:ItemSoyOil}和{THING:ItemFern}在{THING:ApplianceChemistryStation}中精密合成的产物。</String>
+	<String>因成都事件在地球被禁的Norsec核电池，在太空找到了安全意识显然更低的新市场。</String>
+	<String>饿了？谷物棒体积紧凑、营养丰富，且辐射量低得令人愉悦。</String>
+	<String>厌倦更换普通过滤器？中型和重型过滤器的使用寿命分别是基础款的5倍和20倍，但造价更高。</String>
+  </GameTip>
+</Language>

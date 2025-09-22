@@ -1,0 +1,7 @@
+{
+    "editor.fontSize": 20,
+    "typescript.locale": "zh-CN",
+    "editor.fontFamily": "Consolas, '终端更纱黑体-简 Nerd', monospace",
+    "extensions.ignoreRecommendations": true,
+    "dotnet.preferCSharpExtension": true,
+}

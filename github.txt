@@ -1,0 +1,19 @@
+git add .           把改动放到暂存区。
+git commit --amend  不会生成新的提交记录，而是修改上一个提交，把暂存区的内容合并进去。
+
+按 Esc → 输入 :wq → 回车    表示 保存并退出，提交就会完成。
+按 Esc → 输入 :q! → 回车    表示 不保存退出，提交会被中止。
+
+
+
+
+
+
+
+
+
+# 确认当前分支名字
+git branch --show-current
+
+# 推送并强制更新远端为本地历史（安全一点）
+git push --force-with-lease origin 当前分支名字
