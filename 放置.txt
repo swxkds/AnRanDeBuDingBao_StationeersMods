@@ -1,0 +1,56 @@
+<InventoryManager._constructionCursors>
+- 全局建筑放置蓝图字典
+- 建筑名称(Structure.name和Structure.PrefabName是一模一样的)作为key
+- 在游戏加载时, 遍历所有Structure预制体并拷贝一份, 然后删除拷贝体的所有网格组件与渲染组件, 只保留Structure组件用于获取PrefabHash和PrefabName和name
+- 然后通过Structure.Blueprint获取放置蓝图预制体并拷贝一份, 将拷贝体设为上面Structure拷贝体的子级, 并将两者的相对位置设为0, 即重合
+- 放置蓝图模型与建筑模型的网格是一模一样的(放置蓝图可能会删除掉细节处的顶点,但总体是一样的), 因此放置蓝图的位置与旋转就是实际建筑放置时的位置与旋转
+- 激活显示时显示的是蓝图的渲染信息, 同时又可以通过Structure组件获取到PrefabHash, 以PrefabHash作为key在<全局建筑字典>找到建筑预制体, 然后通过拷贝建造该建筑
+
+<InventoryManager.UpdatePlacement>:这个方法有两个重载,用于更新放置蓝图的旋转与位置
+- 放置蓝图模型与建筑模型的网格是一模一样的(放置蓝图可能会删除掉细节处的顶点,但总体是一样的), 因此放置蓝图的位置与旋转就是实际建筑放置时的位置与旋转
+- 制作连续放置蓝图模组时, 只需在放置蓝图每移动到新的位置时拷贝出一份临时蓝图实例保持渲染并记录位置与旋转信息, 清空所有蓝图时, 销毁所有拷贝出来的临时蓝图实例即可
+- 制作连续放置蓝图模组时, 导入导出蓝图, 跟存档一样序列化与反序列化即可
+- 制作连续放置蓝图模组时, 销毁临时蓝图实例时, 不要把_constructionCursors里的放置蓝图拷贝母体销毁了
+
+重载1 => public static void UpdatePlacement(Constructor constructorItem)
+- constructorItem是一个背包槽位物品, constructorItem.BuildStructure是该物品的放置蓝图引用
+- 通过<_constructionCursors.TryGetValue(constructorItem.BuildStructure.name, out ConstructionCursor)>查找到对应的放置蓝图
+- 从“背包物品”进入放置模式时, 根据槽位物品的蓝图放置规则(网格、吸附方式、旋转轴), 计算初始位置与旋转并激活蓝图显示
+- 蓝图放置规则举例 => 网格类型(大网格(例:框架)/几何面网格(例:墙体)/设备网格(例:安装在墙体或者框架上的壁灯))
+
+重载2 => public static void UpdatePlacement(Structure structure)
+- structure是当前显示的放置蓝图的Structure组件
+- 在放置模式中根据蓝图放置规则(例:AllowedRotations)更新放置蓝图的位置与旋转
+- 当新旧蓝图放置规则一致时, 继承旧蓝图的位置与旋转
+
+
+<InventoryManager.Instance.ConstructionPanel.Parent.Constructables>
+- ConstructionPanel.IsVisible => =true时,处于可变放置模式, ConstructionPanel.Parent就是活动手上的槽位物品
+- 可变放置: 背包槽位物品可以建造多种建筑, 比如(套件)电线可以建造直线/T形/弯角..., (套件)逻辑读写器可以建造逻辑读取器和逻辑写入器....
+- 某个背包槽位物品支持可变放置, 则该物品的类都是<MultiConstructor>, 多个放置蓝图保存在<Constructables>这个表中
+
+- var 背包管理器 = InventoryManager.Instance;
+- var 玩家 = InventoryManager.Parent;
+- var 放置蓝图Id = 背包管理器.ConstructionPanel.Parent.Constructables.FindIndex((可建造) => 可建造.PrefabName == 放置蓝图.PrefabName);
+- if (背包管理器.ConstructionPanel.IsVisible) { OnServer.UseMultiConstructor(玩家, 背包管理器.ActiveHand.SlotId, 背包管理器.InactiveHand.SlotId, 放置蓝图.transform.position, 放置蓝图.transform.rotation, 放置蓝图Id, InventoryManager.IsAuthoringMode, InventoryManager.ParentBrain.ClientId, 放置蓝图); }
+- else { OnServer.UseItemPrimary(玩家, 背包管理器.ActiveHand.SlotId, 放置蓝图.transform.position, 放置蓝图.transform.rotation, InventoryManager.ParentBrain.ClientId, 放置蓝图); }
+- var 建造数据包 = new CreateStructureMessage
+- {
+      // 优先通过主手获取槽位物品
+-     ConstructorId = 背包管理器.ActiveHand.Slot.Get()?.ReferenceId ?? 0L,
+-     // 建造时可能需要的副手物品
+-     OffhandOccupantReferenceId = 背包管理器.InactiveHand.Slot.Get()?.ReferenceId ?? 0L,
+-     // 放置蓝图的位置 = 建筑的位置
+-     LocalPosition = 放置蓝图.transform.position.ToGridPosition(),
+-     // 放置蓝图的旋转 = 建筑的旋转
+-     Rotation = 放置蓝图.transform.rotation,
+      // 发送数据包的玩家Id
+-     CreatorSteamId = (ulong)InventoryManager.ParentBrain.ReferenceId,
+      // 主手物品.Constructables[放置蓝图Id]获取到放置蓝图引用
+-     OptionIndex = 放置蓝图Id,
+-     // 若引用Id没找到物品, 则通过PrefabHash找到物品, 此处一般用于游戏框架设计时加上的, 实际用不用另说
+-     PrefabHash = 背包管理器.ActiveHand.Slot.Get()?.PrefabHash ?? 0,
+-     AuthoringMode = InventoryManager.IsAuthoringMode,
+- };
+- 
+- NetworkClient.SendToServer(建造数据包, NetworkChannel.GeneralTraffic);	

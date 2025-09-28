@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Name>Simplified Chinese</Name>
+    <Code>CN</Code>
+    <Font>font_cjk</Font>
+    <Interface>
+        <Record>
+            <Key>EasySplit_ModName</Key>
+            <Value>精确拆分</Value>
+        </Record>
+    </Interface>
+    <Interactables>
+        <Record>
+            <Key>EasySplitConsumableSplitOne</Key>
+            <Value>拆分一个</Value>
+        </Record>
+        <Record>
+            <Key>EasySplitConsumableSplitHalf</Key>
+            <Value>拆分一半</Value>
+        </Record>
+    </Interactables>
+</Language>

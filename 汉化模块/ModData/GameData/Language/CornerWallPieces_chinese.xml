@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Name>Simplified Chinese</Name>
+    <Code>CN</Code>
+    <Font>font_cjk</Font>
+    <Things>
+		<!-- ═══════════════════════════════════════════════════════════════════ -->
+		<!-- KITS (Buildable Items)                                             -->
+		<!-- ═══════════════════════════════════════════════════════════════════ -->
+			
+<RecordThing>
+	<Key>StructureFarmPoster</Key>
+	<Value>农场海报一(1)(CDP)</Value>
+	<Description>
+农业是任何开拓基地的支柱产业。辛勤耕种、补充二氧化碳, 等待作物成熟并收获。一个标准的模范农场从最基本的土豆到强大的南瓜应有尽有。没有农场, 开拓队员是无法生存的，所以如果你还没开始建设农场，不妨挂上这张海报来激励自己！
+
+这张海报还有一个变体版本: {THING:StructureFarmPosterOffset}
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureFarmPosterOffset</Key>
+	<Value>农场海报一(2)(CDP)</Value>
+	<Description>
+农业是任何开拓基地的支柱产业。辛勤耕种、补充二氧化碳, 等待作物成熟并收获。一个标准的模范农场从最基本的土豆到强大的南瓜应有尽有。没有农场, 开拓队员是无法生存的，所以如果你还没开始建设农场，不妨挂上这张海报来激励自己！
+
+这张海报还有一个变体版本: {THING:StructureFarmPoster}
+	</Description>
+</RecordThing>
+
+
+<RecordThing>
+	<Key>StructureGaragePoster</Key>
+	<Value>车库海报一(1)(CDP)</Value>
+	<Description>
+有些人会认为漫游车在太空中几乎没什么用。它们效率低、成本高，而且一有点小状况就晃来晃去……不过呢, 也有部分人会认为, 有辆漫游车就意味着可以自由探索各个行星, 喷气背包早就过时了。不过说实话, 你建造漫游车的唯一理由可能只是为了弄一个看起来很酷的车库，对吧？
+
+这张海报还有一个变体版本: {THING:StructureGaragePosterOffset}
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureGaragePosterOffset</Key>
+	<Value>车库海报一(2)(CDP)</Value>
+	<Description>
+有些人会认为漫游车在太空中几乎没什么用。它们效率低、成本高，而且一有点小状况就晃来晃去……不过呢, 也有部分人会认为, 有辆漫游车就意味着可以自由探索各个行星, 喷气背包早就过时了。不过说实话, 你建造漫游车的唯一理由可能只是为了弄一个看起来很酷的车库，对吧？
+
+这张海报还有一个变体版本: {THING:StructureGaragePoster}
+	</Description>
+</RecordThing>
+
+
+<RecordThing>
+	<Key>StructurePADPoster1</Key>
+	<Value>Panic and Die 海报一(1)(CDP)</Value>
+	<Description>
+Panic and Die Gaming是一个YouTube游戏主播, 一个普通的《Stationeers》玩家。他不是专家, 但他很享受游戏，并试图帮助别人理解，你不需要成为火箭科学家也能玩游戏。他有时会和他的妻子一起联机，她对炉子有某种厌恶。#BlameSophie
+
+这张海报还有一个变体版本: {THING:StructurePADPoster1Offset}
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructurePADPoster1Offset</Key>
+	<Value>Panic and Die 海报一(2)(CDP)</Value>
+	<Description>
+Panic and Die Gaming是一个YouTube游戏主播, 一个普通的《Stationeers》玩家。他不是专家, 但他很享受游戏，并试图帮助别人理解，你不需要成为火箭科学家也能玩游戏。他有时会和他的妻子一起联机，她对炉子有某种厌恶。#BlameSophie
+
+这张海报还有一个变体版本: {THING:StructurePADPoster1}
+	</Description>
+</RecordThing>
+
+
+<RecordThing>
+	<Key>StructureRocketPoster</Key>
+	<Value>火箭海报一(1)(CDP)</Value>
+	<Description>
+火箭是一种中后期的多模块结构, 能够飞向星空并获取包括气体在内的宝贵资源。只要记住, 升上去的东西终究会落下来。至少应该是这样……
+
+这张海报还有一个变体版本: {THING:StructureRocketPosterOffset}
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureRocketPosterOffset</Key>
+	<Value>火箭海报一(2)(CDP)</Value>
+	<Description>
+火箭是一种中后期的多模块结构, 能够飞向星空并获取包括气体在内的宝贵资源。只要记住, 升上去的东西终究会落下来。至少应该是这样……
+
+这张海报还有一个变体版本: {THING:StructureRocketPoster}
+	</Description>
+</RecordThing>
+
+
+<RecordThing>
+	<Key>StructureStationeersPoster1</Key>
+	<Value>开拓队海报一(1)(CDP)</Value>
+	<Description>
+开拓队中有些人很有见识, 有些人则不然, 不过他们都有一个共同的目标。那就是制造出有史以来最大、最棒的爆炸。这个海报展示了所有开拓队员中最著名的一位。他凭一己之力炸毁了整个基地, 只是为了证明框架是可以被摧毁的。据说他最后一次被看到是在火星表面徘徊, 他证明了自己是对的, 其他人都是错的, 但愿他安息吧。
+
+这张海报还有一个变体版本: {THING:StructureStationeersPoster1Offset}
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureStationeersPoster1Offset</Key>
+	<Value>开拓队海报一(2)(CDP)</Value>
+	<Description>
+开拓队中有些人很有见识, 有些人则不然, 不过他们都有一个共同的目标。那就是制造出有史以来最大、最棒的爆炸。这个海报展示了所有开拓队员中最著名的一位。他凭一己之力炸毁了整个基地, 只是为了证明框架是可以被摧毁的。据说他最后一次被看到是在火星表面徘徊, 他证明了自己是对的, 其他人都是错的, 但愿他安息吧。
+
+这张海报还有一个变体版本: {THING:StructureStationeersPoster1}
+	</Description>
+</RecordThing>
+
+
+
+<RecordThing>
+	<Key>StructureStationeersPoster2</Key>
+	<Value>开拓队海报二(1)(CDP)</Value>
+	<Description>
+这张海报展示了被称为alpha36的欧罗巴开拓基地。几年前, 与该基地的联系中断了, 搜寻队尽了最大努力, 仍然无法重新建立通信。考虑到他们拥有的那个巨型天线, 这真的很奇怪。好吧, 其实那只是一个中等大小的天线, 但它们的性能相当不错。
+
+这张海报还有一个变体版本: {THING:StructureStationeersPoster2Offset}
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureStationeersPoster2Offset</Key>
+	<Value>开拓队海报二(2)(CDP)</Value>
+	<Description>
+这张海报展示了被称为alpha36的欧罗巴开拓基地。几年前, 与该基地的联系中断了, 搜寻队尽了最大努力, 仍然无法重新建立通信。考虑到他们拥有的那个巨型天线, 这真的很奇怪。好吧, 其实那只是一个中等大小的天线, 但它们的性能相当不错。
+
+这张海报还有一个变体版本: {THING:StructureStationeersPoster2}
+	</Description>
+</RecordThing>
+
+
+
+<RecordThing>
+	<Key>StructureStationeersPoster3</Key>
+	<Value>开拓队海报三(1)(CDP)</Value>
+	<Description>
+关于这张图片所知不多。据说画中展示的开拓队员是最著名的。然而, 他绝不会穿黄色, 所以他的真实身份仍是个谜。
+
+这张海报还有一个变体版本: {THING:StructureStationeersPoster3Offset}
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureStationeersPoster3Offset</Key>
+	<Value>开拓队海报三(2)(CDP)</Value>
+	<Description>
+关于这张图片所知不多。据说画中展示的开拓队员是最著名的。然而, 他绝不会穿黄色, 所以他的真实身份仍是个谜。
+
+这张海报还有一个变体版本: {THING:StructureStationeersPoster3}
+	</Description>
+</RecordThing>
+
+
+
+
+
+<RecordThing>
+	<Key>ItemPosterKit</Key>
+	<Value>(套件)海报(CDP)</Value>
+	<Description>
+开拓队管理局并不重视装饰品, 他们认为任务更为重要。不过, 一些开拓队员会在自己的基地上待上好几年, 随着时间的推移, 有些人觉得有必要自己动手做些装饰, 让基地更有家的感觉。
+
+有些人已经想出如何修改自动车床的内部编码来生产一些未经授权的物品。这套海报套件包含多个装饰海报。每张海报都有一个(1)(2)版本, 分别用于放置在墙上或框架上。由于硅的“魔法”特性, 这些海报在黑暗中也会发光。
+
+这个套件可装配以下物品:
+{LIST}
+    {THING:StructureFarmPoster}
+    {THING:StructureFarmPosterOffset}
+    {THING:StructureGaragePoster}
+    {THING:StructureGaragePosterOffset}
+    {THING:StructurePADPoster1}
+    {THING:StructurePADPoster1Offset}
+    {THING:StructureRocketPoster}
+    {THING:StructureRocketPosterOffset}
+    {THING:StructureStationeersPoster1}
+    {THING:StructureStationeersPoster1Offset}
+    {THING:StructureStationeersPoster2}
+    {THING:StructureStationeersPoster2Offset}
+    {THING:StructureStationeersPoster3}
+    {THING:StructureStationeersPoster3Offset}
+{/LIST}
+	</Description>
+</RecordThing>
+
+<RecordThing>
+	<Key>StructureCurvedCornerPiece</Key>
+	<Value>圆形墙角(CDP)</Value>
+	<Description>
+这是圆形墙角。它是用 {THING:ItemCornerPieceKit} 制作的。与 {THING:StructureWallFlatCornerRound} 或 {THING:StructureRoundedEdge} 一起使用时，可以让你的角落非常平滑。
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureSquareCornerPiece</Key>
+	<Value>方形墙角(CDP)</Value>
+	<Description>
+这是方形墙角。它是使用 {THING:ItemCornerPieceKit} 制作的。与 {THING:StructureWallFlatCornerSquare} 或 {THING:StructureSquaredEdge} 一起使用时，可以让你的角落非常平滑。
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureTriangleCornerPiece</Key>
+	<Value>平三角形墙角(CDP)</Value>
+	<Description>
+这是平三角形墙角。它是用 {THING:ItemCornerPieceKit} 制作的。与 {THING:StructureWallFlatCornerTriangleFlat} 或 {THING:StructureTriangleEdge} 一起使用时，可以让你的角落非常平滑。
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>StructureTriangleBevel</Key>
+	<Value>三角形墙角(CDP)</Value>
+	<Description>
+这是三角形墙角。它是用 {THING:ItemCornerPieceKit} 制作的。就像它的其他对应件一样，它可以很好地完成 {THING:StructureWallFlatCornerTriangle} 或 {THING:StructureBevTriangleEdge} 的角落收边。
+	</Description>
+</RecordThing>
+
+<RecordThing>
+	<Key>StructureRoundedEdge</Key>
+	<Value>平面墙(圆角)(CDP)</Value>
+	<Description>
+这是一个可以替代 {THING:StructureWallFlatCornerRound} 使用的墙体部件。有两个区别, 它们打印起来稍微便宜一些, 而且也没有放置问题。
+	</Description>
+</RecordThing>
+
+<RecordThing>
+	<Key>StructureSquaredEdge</Key>
+	<Value>平面墙(方角)(CDP)</Value>
+	<Description>
+这是一个可以替代 {THING:StructureWallFlatCornerSquare} 使用的墙体部件。有两个区别, 它们打印起来稍微便宜一些, 而且也没有放置问题。
+	</Description>
+</RecordThing>
+
+<RecordThing>
+	<Key>StructureTriangleEdge</Key>
+	<Value>平面墙(平三角)(CDP)</Value>
+	<Description>
+这是一个可以替代 {THING:StructureWallFlatCornerTriangleFlat} 使用的墙体部件。有两个区别, 它们打印起来稍微便宜一些, 而且也没有放置问题。
+	</Description>
+</RecordThing>
+
+<RecordThing>
+	<Key>StructureBevTriangleEdge</Key>
+	<Value>平面墙(三角)(CDP)</Value>
+	<Description>
+这是一个可以替代 {THING:StructureWallFlatCornerTriangle} 使用的墙体部件。有两个区别, 它们打印起来稍微便宜一些, 而且也没有放置问题。
+	</Description>
+</RecordThing>
+		
+<RecordThing>
+	<Key>ItemCornerPieceKit</Key>
+	<Value>(套件)平面墙(社区版)(CDP)</Value>
+	<Description>
+这个套件提供了期待已久的 {THING:ItemKitWallFlat} 缺失墙角件。完全可上色、可拆卸并可打印，每个仅需 0.5 钢材的低成本！耶耶!
+
+该套件还包括平面墙边缘结构的替代品。它们看起来完全一样，但没有摆放问题。它们将在某个时候拥有自己的套件。
+
+这个套件可装配以下物品:
+{LIST}
+    {THING:StructureCurvedCornerPiece}
+    {THING:StructureSquareCornerPiece}
+    {THING:StructureTriangleBevel}
+    {THING:StructureTriangleCornerPiece}
+    {THING:StructureRoundedEdge}
+    {THING:StructureSquaredEdge}
+    {THING:StructureTriangleEdge}
+    {THING:StructureBevTriangleEdge}
+{/LIST}
+	</Description>
+</RecordThing>
+			
+</Things>
+</Language>

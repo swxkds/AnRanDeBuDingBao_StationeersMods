@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Name>Simplified Chinese</Name>
+    <Code>CN</Code>
+    <Font>font_cjk</Font>
+    <Things>
+        <RecordThing>
+            <Key>ItemKitModularConsole</Key>
+            <Value>(套件)模块化控制台</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>ItemKitModularConsoleDisplays</Key>
+            <Value>(套件)模块化控制台显示面板</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>ItemKitModularConsoleInputs</Key>
+            <Value>(套件)模块化控制台输入设备</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>ItemKitModularConsoleLabelPlates</Key>
+            <Value>(套件)模块化控制台标签面板</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase1</Key>
+            <Value>控制台底座 1</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase1Double</Key>
+            <Value>控制台底座 1 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase2</Key>
+            <Value>控制台底座 2</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase2Double</Key>
+            <Value>控制台底座 2 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase3</Key>
+            <Value>控制台底座 3</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase3Double</Key>
+            <Value>控制台底座 3 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase4</Key>
+            <Value>控制台底座 4</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase4Double</Key>
+            <Value>控制台底座 4 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase5</Key>
+            <Value>控制台底座 5</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase5Double</Key>
+            <Value>控制台底座 5 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase6</Key>
+            <Value>控制台底座 6</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBase6Double</Key>
+            <Value>控制台底座 6 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBaseCorner1</Key>
+            <Value>控制台底座转角 1</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBaseCorner2</Key>
+            <Value>控制台底座转角 2</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBaseCorner3</Key>
+            <Value>控制台底座转角 3</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBaseCorner4</Key>
+            <Value>控制台底座转角 4</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBaseCorner5</Key>
+            <Value>控制台底座转角 5</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleBaseCorner6</Key>
+            <Value>控制台底座转角 6</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleCornerInner1</Key>
+            <Value>控制台内转角 1</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleCornerInner1Center</Key>
+            <Value>控制台内转角 1 中心</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleCornerInner1Double</Key>
+            <Value>控制台内转角 1 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleCornerInner2</Key>
+            <Value>控制台内转角 2</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleCornerInner2Center</Key>
+            <Value>控制台内转角 2 中心</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleCornerInner2Double</Key>
+            <Value>控制台内转角 2 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat1</Key>
+            <Value>控制台平板 1</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat1Corner</Key>
+            <Value>控制台平板 1 转角</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat1Corner2</Key>
+            <Value>控制台平板 1 转角 2</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat1Corner3</Key>
+            <Value>控制台平板 1 转角 3</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat1Double</Key>
+            <Value>控制台平板 1 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat2</Key>
+            <Value>控制台平板 2</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat2Double</Key>
+            <Value>控制台平板 2 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat3</Key>
+            <Value>控制台平板 3</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat3x2</Key>
+            <Value>控制台平板 3x2</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat3x2Double</Key>
+            <Value>控制台平板 3x2 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlat3Double</Key>
+            <Value>控制台平板 3 双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlatCornerInner</Key>
+            <Value>控制台平版内转角</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlatCornerInnerDouble</Key>
+            <Value>控制台平版内转角双倍</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleFlatCornerInnerDoubleCenter</Key>
+            <Value>控制台平版内转角中心</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleTerminal</Key>
+            <Value>控制台终端</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleTerminal2</Key>
+            <Value>控制台终端 2</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleWallMount1</Key>
+            <Value>控制台壁挂支架 1</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>StructureConsoleWallMount2</Key>
+            <Value>控制台壁挂支架 2</Value>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceBigLever</Key>
+            <Value>大型操纵杆</Value>
+            <Description>用于重要操作的大型操纵杆。状态可通过{LOGICTYPE:Open}访问。文本可通过{THING:ItemLabeller}配置，在文本末尾添加“*”可隐藏文本。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceCardReader</Key>
+            <Value>门禁卡读卡器</Value>
+            <Description>根据配置的{LOGICTYPE:Mode}检查门禁卡颜色，匹配时{LOGICTYPE:Setting}设为1，否则为0。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceConsole</Key>
+            <Value>控制台</Value>
+            <Description>用于安装逻辑板的{THING:StructureConsole}的模块化等效设备。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceComputer</Key>
+            <Value>电脑</Value>
+            <Description>用于安装主板的{THING:StructureComputer}的模块化等效设备。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceDial</Key>
+            <Value>逻辑旋钮</Value>
+            <Description>允许在0到{LOGICTYPE:Mode}之间调整{LOGICTYPE:Setting}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceEmergencyButton3x3</Key>
+            <Value>紧急按钮</Value>
+            <Description>用于紧急情况的大红色按钮。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceUtilityButton2x2</Key>
+            <Value>通用按钮</Value>
+            <Description>用于重要任务的大按钮。可贴标签和上色，在文本末尾添加“*”可隐藏文本。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceFlipCoverSwitch</Key>
+            <Value>带盖拨动开关</Value>
+            <Description>可切换为{LOGICTYPE:On}的开关。带有保护盖，防止意外拨动。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceFlipSwitch</Key>
+            <Value>拨动开关</Value>
+            <Description>可切换为{LOGICTYPE:On}的开关。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceGauge2x2</Key>
+            <Value>2x2 仪表</Value>
+            <Description>显示0到1之间{LOGICTYPE:Setting}的仪表。具有可调的{LOGICTYPE:Color}。文本可通过{THING:ItemLabeller}更改，在文本末尾添加“*”可隐藏文本。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceGauge3x3</Key>
+            <Value>3x3 仪表</Value>
+            <Description>显示0到1之间{LOGICTYPE:Setting}的仪表。具有可调的{LOGICTYPE:Color}。文本可通过{THING:ItemLabeller}更改，在文本末尾添加“*”可隐藏文本。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceMeter3x3</Key>
+            <Value>3x3 计量表</Value>
+            <Description>在用户定义范围内显示{LOGICTYPE:Setting}的计量表。具有可调的{LOGICTYPE:Color}。文本可通过{THING:ItemLabeller}更改，在文本末尾添加“*”可隐藏文本。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate</Key>
+            <Value>标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate2</Key>
+            <Value>标签板 2</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate2x2</Key>
+            <Value>2x2 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate3</Key>
+            <Value>标签板 3</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate3x2</Key>
+            <Value>3x2 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate3x3</Key>
+            <Value>3x3 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate4</Key>
+            <Value>标签板 4</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate4x4</Key>
+            <Value>4x4 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate5x5</Key>
+            <Value>5x5 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate6x6</Key>
+            <Value>6x6 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate5</Key>
+            <Value>标签板 5</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate4x2</Key>
+            <Value>4x2 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate6x2</Key>
+            <Value>6x2 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate8x2</Key>
+            <Value>8x2 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelPlate12x2</Key>
+            <Value>12x2 标签板</Value>
+            <Description>默认名称下文本被隐藏，可通过{THING:ItemLabeller}更改。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLEDdisplay2</Key>
+            <Value>LED 显示屏 2</Value>
+            <Description>显示{LOGICTYPE:Setting}值。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLEDdisplay3</Key>
+            <Value>LED 显示屏 3</Value>
+            <Description>显示{LOGICTYPE:Setting}值。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLight</Key>
+            <Value>发光二极管</Value>
+            <Description>切换为{LOGICTYPE:On}时亮起。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceNumpad</Key>
+            <Value>逻辑数字键盘</Value>
+            <Description>数字输入设备。按下数字按钮时向{LOGICTYPE:Mode}发送脉冲。可通过点击屏幕将{LOGICTYPE:Setting}更改为其他数字（包括小数）。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceRoundButton</Key>
+            <Value>圆形逻辑按钮</Value>
+            <Description>按下时将{LOGICTYPE:Activate}设为1的圆形按钮。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceSlider</Key>
+            <Value>逻辑滑块</Value>
+            <Description>上下拖动滑块以在0到1之间调整{LOGICTYPE:Setting}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceSliderDiode1</Key>
+            <Value>滑动指示灯 1</Value>
+            <Description>在发光条上显示0到1之间的{LOGICTYPE:Setting}。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceSliderDiode2</Key>
+            <Value>滑动指示灯 2</Value>
+            <Description>在发光条上显示0到1之间的{LOGICTYPE:Setting}。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceSquareButton</Key>
+            <Value>方形逻辑按钮</Value>
+            <Description>按下时将{LOGICTYPE:Activate}设为1的方形按钮。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceSwitch</Key>
+            <Value>逻辑开关</Value>
+            <Description>可切换为{LOGICTYPE:On}的开关。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceThrottle3x2</Key>
+            <Value>逻辑节流阀</Value>
+            <Description>上下拖动节流阀以在0到1之间调整{LOGICTYPE:Setting}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLightSmall</Key>
+            <Value>小型发光二极管</Value>
+            <Description>切换为{LOGICTYPE:On}时亮起。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLightLarge</Key>
+            <Value>大型发光二极管</Value>
+            <Description>切换为{LOGICTYPE:On}时亮起。具有可调的{LOGICTYPE:Color}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelDiode3</Key>
+            <Value>标签指示灯 3</Value>
+            <Description>发光文本标签。具有可调的{LOGICTYPE:Color}和闪烁{LOGICTYPE:Mode}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceLabelDiode2</Key>
+            <Value>标签指示灯 2</Value>
+            <Description>发光文本标签。具有可调的{LOGICTYPE:Color}和闪烁{LOGICTYPE:Mode}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceDialSmall</Key>
+            <Value>小型逻辑旋钮</Value>
+            <Description>允许在0到{LOGICTYPE:Mode}之间调整{LOGICTYPE:Setting}。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDeviceAlarm</Key>
+            <Value>逻辑警报器</Value>
+            <Description>用于紧急情况的声光信标。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine</Key>
+            <Value>流程图线 - 左箭头</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine2</Key>
+            <Value>流程图线 - 直线</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine3</Key>
+            <Value>流程图线 - T型</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine4</Key>
+            <Value>流程图线 - 十字交叉</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine5</Key>
+            <Value>流程图线 - 转角</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine6</Key>
+            <Value>流程图线 - 直箭头</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine7</Key>
+            <Value>流程图线 - 转角跨线</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine8</Key>
+            <Value>流程图线 - 四向箭头十字</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine9</Key>
+            <Value>流程图线 - T型分流箭头</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine10</Key>
+            <Value>流程图线 - 侧向箭头十字</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine11</Key>
+            <Value>流程图线 - T型汇合箭头</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine12</Key>
+            <Value>流程图线 - 右箭头转角</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine13</Key>
+            <Value>流程图线 - 三向箭头十字</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine14</Key>
+            <Value>流程图线 - 双箭头转角跨线</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine15</Key>
+            <Value>流程图线 - 圆角转角</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine16</Key>
+            <Value>流程图线 - 左箭头转角跨线</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine17</Key>
+            <Value>流程图线 - 右箭头转角跨线</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine18</Key>
+            <Value>流程图线 - 虚线直线</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine19</Key>
+            <Value>流程图线 - 虚线圆角转角</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine20</Key>
+            <Value>流程图线 - 虚线十字交叉</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine22</Key>
+            <Value>流程图线 - 虚线转角</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ModularDiagramLine23</Key>
+            <Value>流程图线 - 双向箭头直线</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+        <RecordThing>
+            <Key>ItemKitModularDiagramLine</Key>
+            <Value>(套件)控制台流程图线</Value>
+            <Description>用于控制台的流程图部件。</Description>
+        </RecordThing>
+    </Things>
+</Language>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Simplified Chinese</Name>
+  <Code>CN</Code>
+  <Font>font_cjk</Font>
+  <Things>
+    <RecordThing>
+      <Key>CartridgeDebugAnalyzer</Key>
+      <Value>功能卡(IC10检查器)</Value>
+      <Description>平板电脑加载该功能卡时, 对着IC10芯片, 可以看到寄存器值和堆栈值</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>MotherboardDebugAnalyzer</Key>
+      <Value>主板(IC10调试器)</Value>
+      <Description></Description>
+    </RecordThing>
+  </Things>
+</Language>

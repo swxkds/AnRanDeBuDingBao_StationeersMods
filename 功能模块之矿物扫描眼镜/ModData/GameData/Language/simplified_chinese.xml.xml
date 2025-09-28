@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Name>Simplified Chinese</Name>
+    <Code>CN</Code>
+    <Font>font_cjk</Font>
+    <Things>
+        <RecordThing>
+            <Key>KuangWuSaoMiaoYanJing</Key>
+            <Value>矿物扫描眼镜</Value>
+            <Description>增加了在电子打印机中生产的"矿物扫描眼镜",显示"前向一定角度内"的地面和地底矿物的高亮全息投影</Description>
+        </RecordThing>
+    </Things>
+</Language>

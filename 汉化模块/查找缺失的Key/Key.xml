@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Resources>
+  <Record>
+    <Key>BurgerSlot</Key>
+    <Value/>
+  </Record>
+  <Record>
+    <Key>BuyDataBurgerPackage</Key>
+    <Value/>
+  </Record>
+  <Record>
+    <Key>DynamicBodyBag</Key>
+    <Value/>
+  </Record>
+  <Record>
+    <Key>FriesSlot</Key>
+    <Value/>
+  </Record>
+  <Record>
+    <Key>ItemBurgerBox</Key>
+    <Value/>
+  </Record>
+  <Record>
+    <Key>StructureSuperLargeDirectHeatExchangeGastoGas</Key>
+    <Value/>
+  </Record>
+  <Record>
+    <Key>StructureSuperLargeDirectHeatExchangeGastoLiquid</Key>
+    <Value/>
+  </Record>
+  <Record>
+    <Key>StructureSuperLargeDirectHeatExchangeLiquidToLiquid</Key>
+    <Value/>
+  </Record>
+</Resources>

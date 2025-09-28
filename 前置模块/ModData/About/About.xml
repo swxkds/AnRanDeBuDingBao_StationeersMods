@@ -2,10 +2,10 @@
 <ModMetadata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Name>安然的补丁包-前置</Name>
   <Author>淡漠安然</Author>
-  <Version>20250916</Version>
+  <Version>2026</Version>
   <Description>
 
-当前游戏版本:2025年09月16日(0.2.5906.26015)
+当前游戏版本:2026年03月27日(0.2.6228.27061) 
 
 使用步骤:
 1.该Mod需要依赖BepInEx,若未安装请先安装BepInEx: https://github.com/BepInEx/BepInEx/releases
@@ -27,13 +27,38 @@ mklink /D "...\Steam\steamapps\common\Stationeers\BepInEx\plugins\Link" "...\Ste
 
 
 功能见以下:
-在游戏启动时搜索所有MonoBehaviour/GameObject/TMP_FontAsset并保存
-Unity游戏一般都是将实体加载进内存,然后以拷贝构造函数的方式生产新实体
+提供了查找Unity资源的方法
+作用举例: Unity游戏一般都是将实体加载进内存变成预制体资源, 然后以拷贝构造函数的方式创建新实体, 比如本模组复制了一份配方选择菜单, 并修改变成了通用选择面板
 
+在原版游戏中添加新的联机数据包字节流编解码类型  
+作用举例: 在卫星天线交互扩展中选择了商人, 在本地定位计算完成后, 将天线的水平角和方位角打包成联机数据包并发送给服务器(主机)执行天线转动
+
+构造通用选择面板  
+作用举例: 为售货机交互扩展提供商品选择菜单, 快速弹出指定商品
+
+构造通用间接绘制  
+作用举例: 为房间闭合检测提供气体泄露处高亮渲染
+
+构造游戏主菜单按键键位配置 和 按键键位状态轮询组件
+作用举例: 
+见源码文件"功能模块之房间闭合检测.cs", 在Awake函数中创建了键位配置和键位状态轮询组件
+通过将"按键键位状态轮询组件.从游戏主菜单按键键位配置选项卡读取并变更按键键位状态轮询组件的监听键位"添加到"游戏主菜单按键键位配置变更事件"中,
+实现监听键位的动态变更和存读档
+
+提供预制体创建工具
+作用举例: 
+见源码文件"功能模块之矿物扫描眼镜.cs", 描述了如何在运行时将空预制体变成游戏中的物体
+要求以下Unity资源:
+一. 两个EmptyGameObject.prefab, 一个用于实体, 一个用于蓝图, 因为只有通过AssetBundle.LoadFrom...加载进内存的才放进Unity资源管理器中而不是放进场景中
+二. 一个fbx模型文件.fbx, 也需要打包成AssetBundle通过AssetBundle.LoadFrom...加载进内存
+三. 对应12种喷漆颜色的UV纹理.png图片, 用于生成给材质使用的UV纹理(Texture2DArray)和不同喷漆颜色时的物品栏缩略图
+              
+        
 源码链接: https://github.com/swxkds/AnRanDeBuDingBao_StationeersMods
 
 本模组为方便自己游戏使用而做,不喜勿用勿扰
 可自由修改、转发, 祝游戏愉快！
 
   </Description>
+  <WorkshopHandle>3571616762</WorkshopHandle>
 </ModMetadata>

@@ -1,7 +1,11 @@
 {
     "editor.fontSize": 20,
     "typescript.locale": "zh-CN",
-    "editor.fontFamily": "Consolas, '终端更纱黑体-简 Nerd', monospace",
+    "editor.fontFamily": "Consolas, '更纱终端书呆黑体-简 Regular', monospace",
     "extensions.ignoreRecommendations": true,
     "dotnet.preferCSharpExtension": true,
+    "Codegeex.RepoIndex": true,
+    "Codegeex.Chat.fontSize": 15,
+    "Codegeex.CompletionDelay": 3,
+    "Codegeex.GenerationPreference": "block",
 }

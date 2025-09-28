@@ -1,0 +1,158 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using Assets.Scripts.Objects;
+using Assets.Scripts.Objects.Motherboards;
+using meanran_xuexi_mods_xiaoyouhua.ui.presenter;
+
+using meanran_xuexi_mods_xiaoyouhua.utils;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace meanran_xuexi_mods_xiaoyouhua.ui.things
+{
+    class WeatherStationUI : 绘制单元基类<WeatherStationUI.气象站事件容器, WeatherStationUI.气象站数据库类.条目单元>, I文本, I简易UI
+    {
+        
+       
+        public class 气象站事件容器 : 自定义泛型事件容器类<气象站数据库类.条目单元> { public double 之前模式; }
+        public WeatherStationUI() : base( new 气象站数据库类()) { }
+        public Type ThingType() => typeof(WeatherStation);
+        public string ThingString(Thing thing)
+        {
+            var obj = thing as WeatherStation;
+            // 气象站供电了
+            if (obj.Powered)
+            {
+                var mode = obj.GetLogicValue(LogicType.Mode);
+                var 风暴倒计时 = obj.GetLogicValue(LogicType.NextWeatherEventTime);
+                string 天气预报 = null;
+                switch (mode)
+                {
+                    case 0: 天气预报 = "天气预报-><color=green>平静</color>"; break;
+                    case 1: 天气预报 = $"天气预报-><color=yellow>风暴倒计时 {换算工具.DoubleToString(风暴倒计时)}</color>s"; break;
+                    case 2: 天气预报 = $"天气预报-><color=red>风暴</color>"; break;
+                }
+                return $"{obj.DisplayName} {天气预报}";
+            }
+            else { return $"{obj.DisplayName} 未供电,连接气象卫星失败"; }
+        }
+        protected override 气象站事件容器 构造简易UI绘制单元(RectTransform parentRect, bool 世界坐标系么)
+        {
+            var layout = UI面板表格构造工具.构造VL(parentRect);
+            var layoutRect = layout.GetOrAddComponent<RectTransform>();
+            var 事件容器 = layout.gameObject.AddComponent<气象站事件容器>();
+
+            Utils.相对偏移调整区域宽高_注意锚点位置(layoutRect, 世界坐标系么 ? Vector2.zero : new Vector2(-8, 0));
+            layout.padding = 世界坐标系么 ? UI面板表格构造工具.root内缩_世界 : UI面板表格构造工具.root内缩_屏幕;
+            layout.spacing = 世界坐标系么 ? UI面板表格构造工具.UI间距_世界 : UI面板表格构造工具.UI间距_屏幕;
+
+            var 弹窗面板消息调度器 = new 弹窗面板特效管理器();
+
+            var name = UI面板表格构造工具.构造TMP(layoutRect, 词条库类.name, 世界坐标系么);
+            事件容器.添加事件((d) => name.text = d.name.Current);
+
+            List<(TextMeshProUGUI, RawImage)> list = UI面板表格构造工具.构造单单元格水平序列(layoutRect, new string[] { 词条库类.mode, 词条库类.setting }, 世界坐标系么, UI面板表格构造工具.默认valueBkgdColor);
+            (TextMeshProUGUI tmp, RawImage bkgd) 气象预报 = list[0];
+            (TextMeshProUGUI tmp, RawImage bkgd) 风暴倒计时 = list[1];
+
+            var 风暴倒计时休眠组件 = 风暴倒计时.tmp.transform.parent.GetOrAddComponent<可复用对象>();
+
+            事件容器.添加事件((自定义泛型事件容器类<气象站数据库类.条目单元>.函数对象容器)((d) =>
+            {
+                风暴倒计时.tmp.text = "";
+                风暴倒计时休眠组件.睡眠();
+                if (d.供电.Current)
+                {
+                    var mode = d.mode.Current;
+                    switch (mode)
+                    {
+                        case 0:
+                            气象预报.tmp.text = "天气预报-><color=green>平静</color>";
+                            气象预报.bkgd.color = new Color(0, 0.3f, 0, 0.4f);
+                            break;
+                        case 1:
+                            气象预报.tmp.text = $"天气预报-><color=yellow>风暴倒计时</color>";
+                            气象预报.bkgd.color = new Color(1f, 0, 0, 0.4f);
+
+                            风暴倒计时.tmp.text = $"{换算工具.DoubleToString(d.风暴倒计时.Current)}s";
+                            风暴倒计时休眠组件.工作();
+
+                            if (事件容器.之前模式 != mode) { 弹窗面板消息调度器.播放("警告->监测到风暴来袭"); }
+                            else { 弹窗面板消息调度器.复用初始化(); }
+                            break;
+                        case 2:
+                            气象预报.tmp.text = "天气预报-><color=red>风暴</color>";
+                            气象预报.bkgd.color = new Color(1f, 0, 0, 0.4f);
+                            break;
+                    }
+                    事件容器.之前模式 = mode;
+                }
+                else
+                {
+                    气象预报.tmp.text = "OFF";
+                    气象预报.bkgd.color = new Color(0.3f, 0.3f, 0.3f, 0.4f);
+                }
+            }));
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+            Utils.唤醒节点(layoutRect);
+            return 事件容器;
+        }
+        protected override 气象站事件容器 构造完整UI绘制单元(RectTransform parentRect, bool 世界坐标系么) => null;
+        public class 气象站数据库类 : 数据库基类
+        {
+            public class 条目单元 : 条目单元基类
+            {
+                public readonly 条目类<bool> 供电;
+                public readonly 条目类<double> mode;
+                public readonly 条目类<double> 风暴倒计时;
+                public 条目单元(节点类 节点, string typeName) : base(节点, typeName)
+                {
+                    供电 = 节点.Add("供电", new 条目类<bool>(new bool[2], 0.5f));
+                    mode = 节点.Add("mode", new 条目类<double>(new double[10], 1));
+                    风暴倒计时 = 节点.Add("风暴倒计时", new 条目类<double>(new double[10], 1));
+                }
+            }
+            protected override 条目单元 GetOrAdd(Thing thing)
+            {
+                var thingId = Utils.GetReferenceId(thing);
+                return 条目单元表.GetOrAdd(thingId, (_) =>
+                {
+                    var 节点 = 父节点.GetOrAdd(thingId, () => new 节点类());
+                    return new 条目单元(节点, thing.GetType().Name);
+                });
+            }
+            public override 条目单元 更新数据(Thing thing, string 自定义消息)
+            {
+                var obj = thing as WeatherStation;
+                if (obj == null) { return null; }
+                var 最新时间 = Time.time;
+                var 条目单元 = GetOrAdd(thing);
+                条目单元.name.输入数据(Utils.GetDisplayName(thing), 最新时间);
+                if (自定义消息 != null) { 条目单元.自定义消息.输入数据(自定义消息, 最新时间); }
+                条目单元.供电.输入数据(obj.Powered, 最新时间);
+                var 测试 = false;
+                if (测试)
+                {
+                    // 生成随机数,模拟风暴来临
+                    var rnd = new System.Random();
+                    if (rnd.NextDouble() > 0.7)
+                    {
+                        var 测试模式 = rnd.Next(0, 3);
+                        条目单元.mode.输入数据(测试模式, 最新时间);
+                    }
+                    var 测试模式倒计时 = Time.time;
+                    条目单元.风暴倒计时.输入数据(测试模式倒计时, 最新时间);
+                }
+                else
+                {
+                    条目单元.mode.输入数据(obj.GetLogicValue(LogicType.Mode), 最新时间);
+                    条目单元.风暴倒计时.输入数据(obj.GetLogicValue(LogicType.NextWeatherEventTime), 最新时间);
+                }
+                return 条目单元;
+            }
+        }
+    }
+}

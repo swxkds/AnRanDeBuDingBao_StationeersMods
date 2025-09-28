@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Simplified Chinese</Name>
+  <Code>CN</Code>
+  <Font>font_cjk</Font>
+  <GameStrings>
+    <Record>
+      <Key>BoardStructureRelocateAction</Key>
+      <Value>部件安装定位中</Value>
+    </Record>
+    <Record>
+      <Key>BoardStructureRelocateDifferentBoard</Key>
+      <Value>该面板基层不支持此部件</Value>
+    </Record>
+    <Record>
+      <Key>BoardStructureRelocateNoBoard</Key>
+      <Value>部件必须安装在面板基层上</Value>
+    </Record>
+    <Record>
+      <Key>BoardStructureBoundsOverflow</Key>
+      <Value>部件在安装时不可以虚挂</Value>
+    </Record>
+  </GameStrings>
+</Language>

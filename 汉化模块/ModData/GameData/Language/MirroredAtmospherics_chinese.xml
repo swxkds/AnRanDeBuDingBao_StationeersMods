@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Simplified Chinese</Name>
+  <Code>CN</Code>
+  <Font>font_cjk</Font>
+  <Things>
+    <RecordThing>
+      <Key>StructureFiltrationMirrored</Key>
+      <Value>过滤机(镜像)</Value>
+      <Description>过滤机基于 {LINK:ExMin;ExMin} 沿用已久的系统（其设计可追溯至来源不明的更早期方案）, 包含在 {THING:ItemKitAtmospherics} 套件中. 
+</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureAirConditionerMirrored</Key>
+      <Value>空调机(镜像)</Value>
+      <Description>使用 {THING:ItemKitAtmospherics} 建造的 {LINK:ExMin;ExMin设计} 空调机用于升高或降低输入气体温度. 
+</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureElectrolyzerMirrored</Key>
+      <Value>电解机(镜像)</Value>
+      <Description>{LINK:Norsec;Norsec} 电解机将 {GAS:Water} 分解为氢气和 {GAS:Oxygen} , 利用水的潜热驱动电解过程. 设备效能受供电量限制（电力用于维持温度输出）, 所以在高温气体环境下运行能得到最佳效率</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>H2CombustorMirrored</Key>
+      <Value>氢燃烧器(镜像)</Value>
+      <Description>基于 {LINK:Recurso;Recurso} 原始设计改进, 通过燃烧 {GAS:Methane} 与 {GAS:Oxygen} 生成水, 适用于炎热/干旱环境. 注意: 会产生大量废热, 且因燃烧室效率不足可能导致燃气自燃, 需处理残余废气</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureNitrolyzerMirrored</Key>
+      <Value>一氧化二氮制造机(镜像)</Value>
+      <Description>利用 {GAS:Oxygen} 、 {GAS:Nitrogen} 与大量能量合成 {GAS:NitrousOxide} . 氧气氮气1:1比例时效率最高, 输出为混合气体需二次处理. 第二进气口可以选择性连接, 已预先按比例混合气体无需连接</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureCondensationChamberMirrored</Key>
+      <Value>冷凝器(镜像)</Value>
+      <Description>一种安全将气体冷凝为液体的装置. 液体和气体均可安全存在于装置内部. 该容器通过内置压力调节器将内部压力维持在使用设置轮设定的目标值. 
+左侧的次级气体输入口是热交换接口, 允许次级输入管道与冷凝器内部气体进行热交换. 
+配合 {THING:StructureEvaporationChamber} 使用, 太空工程师可利用气体的相变特性建造自制空调系统</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureEvaporationChamberMirrored</Key>
+      <Value>蒸发器(镜像)</Value>
+      <Description>一种安全将液体蒸发为气体的装置. 液体和气体均可安全存在于装置内部. 使用设置轮降低内置背压调节器的压力目标值, 可改变内部液体的沸点温度. 
+左侧的次级气体输入口是热交换接口, 允许次级输入管道与蒸发器内部气体进行热交换. 
+配合 {THING:StructureCondensationChamber} 使用, Stationeers可利用气体的相变特性建造自制空调系统</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureLargeDirectHeatExchangeGastoLiquidMirrored</Key>
+      <Value>大型间壁式换热器(气体+液体)(镜像)</Value>
+      <Description>直接均衡两个输入管道网络的温度</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureSuperLargeDirectHeatExchangeGastoLiquidMirrored</Key>
+      <Value>超大型间壁式换热器(气体+液体)(镜像)</Value>
+      <Description>直接均衡两个输入管道网络的温度</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureSorterMirrored</Key>
+      <Value>分拣机(镜像)</Value>
+      <Description>自动化系统需分拣物品至不同路径.  {LINK:Xigo;Xigo} A2B分拣机可通过装有 {THING:MotherboardSorter} 的计算机进行编程, 将指定物品导向右侧滑槽网络, 未过滤物品则直行通过</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureLogicSorterMirrored</Key>
+      <Value>逻辑分拣机(镜像)</Value>
+      <Description>内置存储器用于物品分拣判定. 当物品进入 {SLOT:Import} 槽时, 系统将检测堆栈数据指令: 若结果为真则转移至 {SLOT:Export2} 槽, 否则转移至 {SLOT:Export} 槽. 默认检测模式为ALL（全匹配）, 即堆栈内所有数据指令均需返回真值</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureVolumePumpMirrored</Key>
+      <Value>管道容积泵(气体)(镜像)</Value>
+      <Description>容积泵可泵送气体. 它还能隔离两个不同的管道网络</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructurePressureRegulatorMirrored</Key>
+      <Value>压力调节器(气体)(镜像)</Value>
+      <Description>压力调节器通过转移气体控制两管网间流量, 直至出口侧达设定压力或气源耗尽. 对比之下, 背压调节器仅在入口压力超设定值时工作. 最大承压超20000kPa, 需供电运行</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureBackPressureRegulatorMirrored</Key>
+      <Value>背压调节器(气体)(镜像)</Value>
+      <Description>与 {THING:StructurePressureRegulator} 在输入超压时关闭不同, 背压调节器在输入压力达到设定值时开启</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructurePressurantValveMirrored</Key>
+      <Value>加压阀(镜像)</Value>
+      <Description>向液体管道泵入气体以提高压力</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructurePurgeValveMirrored</Key>
+      <Value>排气阀(镜像)</Value>
+      <Description>允许从液体管道中移除气体和液体蒸气. 功能类似 {THING:StructureBackPressureRegulator} ,  {THING:StructurePurgeValve} 将气体从输入液体管转移至输出气体管, 旨在维持输入压力在目标设定值</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureLiquidVolumePumpMirrored</Key>
+      <Value>管道容积泵(液体)(镜像)</Value>
+      <Description/>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureLiquidPressureRegulatorMirrored</Key>
+      <Value>压力调节器(液体)(镜像)</Value>
+      <Description>调节输出液体管道的容积比率（百分比, 100为全满, 0为空）</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureBackLiquidPressureRegulatorMirrored</Key>
+      <Value>背压调节器(液体)(镜像)</Value>
+      <Description>调节输入液体管道的容积比率（百分比, 100为全满, 0为空）</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureAdvancedFurnaceMirrored</Key>
+      <Value>高级熔炉(镜像)</Value>
+      <Description>高级熔炉自带内置的进气泵和排气泵, 能够灵活控制其内部压力, 可冶炼最高级的合金</Description>
+    </RecordThing>
+  </Things>
+</Language>

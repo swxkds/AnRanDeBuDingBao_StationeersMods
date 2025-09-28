@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetadata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>安然的补丁包-功能之厨电交互扩展</Name>
+  <Author>淡漠安然</Author>
+  <Version>2026</Version>
+  <Description>
+
+当前游戏版本:2026年03月27日(0.2.6228.27061) 
+
+使用步骤:
+1.该Mod需要依赖BepInEx,若未安装请先安装BepInEx: https://github.com/BepInEx/BepInEx/releases
+选择BepInEx_win_x64下载,然后解压到游戏目录下,启动一次游戏并关闭。若BepInEx文件夹内自动生成了plugins文件夹,则安装成功。
+
+2.任选一种方法执行，不可以多选
+方法1:打开windows系统的cmd命令行,最好用管理员权限打开
+
+输入以下指令并执行 注:这个指令是一行 注:指令中的三个点"..."请替换成实际的安装路径
+mklink /D "...\Steam\steamapps\common\Stationeers\BepInEx\plugins\Link" "...\Steam\steamapps\workshop\content\544550"
+
+命令执行后,plugins目录中会创建一个长的像快捷方式一样的图标,双击这个图标后打开的是544550目录(创意工坊下载的文件在这个目录),则命令执行成功,然后去订阅mod
+
+方法2:安装StationeersLaunchPad
+从 https://github.com/StationeersLaunchPad/StationeersLaunchPad/releases
+选择StationeersLaunchPad-v0.1.12.zip (-v0.1.12是版本号)下载, 解压到BepInEx\plugins\下
+
+3.订阅mod,开始游戏!
+
+
+功能见以下:
+增加了"微波炉/化学加工站/打包机/原料加工机"这四种厨电的交互逻辑,现在可以使用贴标机打开厨电材料投放口的选择配方面板
+选择配方后, 会扫描背包尝试获取配方中的材料, 并添加到机器中
+此功能用于平替手动投放材料到厨电中时, 必须精确到克数, 否则投放的材料就成了废料, 只能清除掉
+厨电一次只能投放一份材料, 投放了多份材料, 也会成废料, 只能清除掉
+
+
+
+源码链接: https://github.com/swxkds/AnRanDeBuDingBao_StationeersMods
+
+本模组为方便自己游戏使用而做,不喜勿用勿扰
+可自由修改、转发, 祝游戏愉快！
+
+  </Description>
+	<DependsOn WorkshopHandle="3571616762" />
+	<OrderAfter WorkshopHandle="3571616762" />         
+</ModMetadata>

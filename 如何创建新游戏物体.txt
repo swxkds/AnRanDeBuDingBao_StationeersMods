@@ -1,0 +1,56 @@
+使用AssetStudio工具扫描游戏目录, 并导出相应的模型文件和UV纹理, 或者使用建模软件将自己制作的模型文件和UV纹理导出
+将模型文件转换成fbx格式并拖到Unity编辑器中打开,  然后开启允许读写, 并取消嵌入材质和其它嵌入,  只保留多边形网格数据
+然后去Asset Bundle Browser的git发布网址下载工具源码, 并通过Unity编辑器的<包管理器.添加来自磁盘的包>命令安装Asset Bundle Browser工具(选择工具源码根目录的package.json即可自动完成安装)
+然后将瘦身后的模型文件使用Asset Bundle Browser打包成<AssetBundle序列化文件>, 可通过<AssetBundle.LoadFrom...>系列命令加载本地硬盘上的<AssetBundle序列化文件>到内存中
+
+由于模组文件的位置不是固定的, 因此建议把<AssetBundle序列化文件>变成模组dll里的内嵌资源而不是放在本地硬盘的某个目录中, 然后通过以下组合命令加载并获取引用
+using (Stream 读 = Assembly.GetExecutingAssembly().GetManifestResourceStream(""))
+ { var 新加载资源视图 = AssetBundle.LoadFromStream(读); 
+var mesh = 新加载资源视图.LoadAsset<Mesh>("");  }    
+
+一个游戏对象有哪些东西, 可以使用sinai-dev-UnityExplorer模组, 然后用射线获取到游戏对象, 看一下该对象各个变量的值是什, 如果对象的类中没有声明字段描述使用的材质, 可以通过访问本层
+级的<MeshRenderer>或者其它Unity引擎渲染组件, 这些渲染组件里可以找到该对象渲染时使用的材质，材质的各项参数数值是可以直接看到的, 材质里可以看到着色器的name(查找路径)
+可通过以下命令获取着色器有哪些参数, 然后通过 Material.Set...系列命令, 比如 Material.SetFloat(着色器参数XX, value) 告诉着色器我们这个网格如何渲染
+
+	var shader = Material.shader;
+	int propertyCount = shader.GetPropertyCount();
+	for (int i = 0; i < propertyCount; i++)
+ 	{
+	      var propName = shader.GetPropertyName(i);
+   	      var propType = shader.GetPropertyType(i);
+   	      Log.LogMessage($"着色器声明的参数名称: {propName}, 参数类型: {propType}");
+	}
+                     
+拿到材质和着色器参数后, 我们可以照抄, 这样我们自己创建的游戏对象的渲染就跟原版游戏一样了
+剩下的一般就是重写各个Update性质和HandleEvents性质的虚函数, 还有一些回调函数, 最重要的是看一下原版游戏对象的所有Awake性质的虚函数, 看看原版游戏对象的具体创建流程, 有
+些东西sinai-dev-UnityExplorer模组看到的是结果, 还要看一下初始 , 两者结合才能更清楚的了解该怎么创建自己的游戏对象
+
+千万不要在运行时new GameObject, new出来的GameObject会加入到场景中, 组件会添加到场景的组件系统中自动调用, 因此请在Unity编辑器中创
+建<空GameObject预制体>并打包成AssetBundle, <空GameObject预制体_AssetBundle>在通过相关API在运行时加载后会被放到资源库而不是场景, 此时
+可以愉快的添加组件啦
+
+注: 在Unity编辑器中, 可以将游戏dll复制到项目目录中, 然后新建引用定义文件并添加游戏dll引用, 直接创建功能完整的预制体并打包成AssetBundle也行, 加载到游戏中就能用
+    这是我的第一个<创建游戏物体模组>, 因此我只使用了<空GameObject预制体_AssetBundle>, 配合纯代码创建游戏物体, 避免AssetBundle打包后变成二进制文件看不到源码, 不方便我调试
+
+	
+小提示:
+使用dnSpy打开dll, 可以在"资源"中看到所有dll嵌入资源的路径
+Assembly.GetExecutingAssembly().GetManifestResourceNames() 也可以返回所有dll嵌入资源的路径
+
+把所有文件都放进"Unity编辑器项目根目录\Assets\", 然后使用AssetBundles-Browser-1.7.0打包后的Unity资源路径就是"Assets\可能有的自定义子目录A\可能有的自定义子目录B\包含后缀名的文件名"
+AssetBundle.GetAllAssetNames 也可以返回所有已加载Unity资源的路径
+
+var 模组程序集引用 = Assembly.GetExecutingAssembly();
+
+// 先加载dll嵌入资源, 然后再加载成Unity资源
+var assetBundle = AssetBundle.LoadFromStream(模组程序集引用.GetManifestResourceStream(Dll资源路径));  
+
+// 从已加载的Unity资源中获取指定的Unity资源路径的GameObject
+var gameObject = assetBundle.LoadAsset"GameObject"(Unity资源路径);    
+
+// 从已加载的Unity资源中遍历, 找到所有Mesh
+var AllMesh = assetBundle.LoadAllAssets"Mesh"();   
+
+小提示:
+在运行时创建预制体成功后, 可以将"Stationeers\rocketstation_Data\Managed"目录中的所有dll拷贝到"Unity编辑器项目根目录\Assets\引用"目录中, 然后在Unity编辑器中创建"程序集定义"文件并添加引用(选择列表里会列出所有拷贝过来的dll)
+直接在Unity编辑器中创建完整的预制体, 然后使用AssetBundles-Browser-1.7.0打包, 就不需要在运行时进行额外的读写(游戏内置的材质与着色器可能还是需要在运行时才能查找到并替换)

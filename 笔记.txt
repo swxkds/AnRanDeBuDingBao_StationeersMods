@@ -1,0 +1,45 @@
+获取(get)  变更(set)  更新(每帧)
+创建(添加)  删除(销毁)
+执行  更新  
+
+static_assert(std::is_same_v<T, char8_t>, "T必须是char8_t类型,必须使用u8字符串"); 
+static_assert(std::is_trivially_copyable_v<T>, "T必须是可平凡复制的");
+
+
+函数形参用<Arg_>作为前缀, 比如: Arg_DeltaTime_Second, 表示<前缀_参数名_计量单位>
+字段用<Field_>作为前缀, 比如: Field_DeltaTime_Second, 表示<前缀_参数名_计量单位>
+模板类名用TL_作为前缀, 模板参数用<TL_Arg_>作为前缀, 模板参数包用<TL_ArgList_>作为前缀
+模板函数的模板参数用<TLFunc_Arg_>和<TLFunc_ArgList_>作为前缀
+out 用 <Result_>作为前缀
+
+字段
+get set
+功能函数
+禁止移动/拷贝... 
+构造函数与析构函数
+Initialize和Dispose和Update
+静态字段
+
+
+
+class 某某类名
+{
+ private:
+    某某类名(const 某某类名&)            = delete;
+    某某类名& operator=(const 某某类名&) = delete;
+    某某类名(某某类名&&)                 = delete;
+    某某类名& operator=(某某类名&&)      = delete;
+
+ public:
+    某某类名()  = default;
+    ~某某类名() = default;
+
+ public:
+    void Initialize();    // 自定义的初始化函数(或者终结函数)比构造函数(或者析构函数)更灵活, 可以在任何时机调用, 可以自定义形参与返回值
+    void Dispose();       // 使用智能指针时, 可将此终结函数封装进<智能指针自定义删除器>
+
+ public:
+    void HandleEvent(const SDL_Event& Arg_SDL_Event);
+    void Update(const float Arg_DeltaTime_Second);
+    void Render();
+};

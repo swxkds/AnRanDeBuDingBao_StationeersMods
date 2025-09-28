@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Simplified Chinese</Name>
+  <Code>CN</Code>
+  <Font>font_cjk</Font>
+  <Things>
+    <RecordThing>
+      <Key>ItemFPGAChip</Key>
+      <Value>FPGA芯片</Value>
+      <Description>
+现场可编程逻辑门阵列使用64个可配置逻辑门电路实现计算自动化, 这些门电路通过 {THING:MotherboardFPGA} 配置，或在放入 {THING:StructureFPGALogicHousing} 时通过逻辑进行配置</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureFPGALogicHousing</Key>
+      <Value>FPGA芯片外壳(堆栈内存接口)</Value>
+      <Description>
+容纳一个 {THING:ItemFPGAChip}, 芯片是映射到堆栈内存的, 可以通过 {THING:ItemIntegratedCircuit10} 的get/getd/put/putd......指令对配置和计算进行读写操作
+
+写入 外壳堆栈地址0-63 可映射为设置输入值(堆栈地址0对应门电路gate00, 后续依次对应)
+读取 外壳堆栈地址0-63 可映射为读取门电路计算结果(堆栈地址0对应门电路gate00, 后续依次对应)
+读/写 外壳堆栈地址64-127 访问门电路 (堆栈地址64对应门电路gate00, 后续依次对应)。门电路格式信息请查看 {THING:MotherboardFPGA} 的帮助标签和配置示例。
+读/写 外壳堆栈地址128-191 访问查找表值(堆栈地址128对应查找表值lut00, 后续依次对应)
+
+门电路计算即时进行, 结果立刻更新到堆栈内存, 因此在一个逻辑刻内, 可以多次写入输入值并读取结果</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureFPGAReaderHousing</Key>
+      <Value>FPGA芯片外壳(逻辑螺丝接口)</Value>
+      <Description>
+将数据网络设备映射到外壳中插入的 {THING:ItemFPGAChip} 的门电路输入值, 最多可配置8个设备(8个FPGA输入螺丝in00-in07对应门电路gate00-gate07)
+固定映射数据网络设备的 {LOGICTYPE:Setting} 值为门电路输入值, 如果需要其它的逻辑值，使用 {THING:StructureLogicReader} 读取并将其链接到FPGA输入螺丝上
+
+8个门电路(gate00-gate07)的结果固定映射到外壳的电力载波8个通道中({LOGICTYPE:Channel0}-{LOGICTYPE:Channel7}), 使用 {THING:StructureLogicReader} 读取这些通道值, 然后转发到其他逻辑设备
+第一个门电路(gate00)的结果额外固定映射到外壳的 {LOGICTYPE:Setting} 值, 这使得外壳可直接用作 {THING:StructureLogicWriter} 的输入
+
+与其他逻辑设备一样, 此设备的处理每逻辑刻执行一次, 在一个逻辑刻内多次变更输入值(通过{THING:ItemIntegratedCircuit10}), 只有最后一个输入值生效, 并且输出值始终在下一个逻辑刻更新</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>MotherboardFPGA</Key>
+      <Value>FPGA编辑器主板</Value>
+      <Description>
+提供一个可视化的表单和文本编辑器用于配置 {THING:ItemFPGAChip} 的门电路和查找表值
+{THING:StructureFPGALogicHousing} 或 {THING:StructureFPGAReaderHousing} 连接到数据网络后, 外壳中插入的 {THING:ItemFPGAChip} 的配置可导入或导出</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>ItemKitFPGAHousing</Key>
+      <Value>(套件)FPGA芯片外壳</Value>
+      <Description></Description>
+    </RecordThing>
+  </Things>
+  <Slots>
+    <Record>
+      <Key>SlotFPGAChip</Key>
+      <Value>FPGA芯片</Value>
+    </Record>
+  </Slots>
+</Language>

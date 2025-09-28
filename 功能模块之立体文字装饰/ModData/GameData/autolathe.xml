@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <AutolatheRecipes>
+        <RecipeData>
+            <PrefabName>ItemKitLiTiWenZiZhuangShi</PrefabName>
+            <Recipe>
+                <Time>5</Time>
+                <Energy>10</Energy>
+                <Iron>2</Iron>
+            </Recipe>
+        </RecipeData>
+    </AutolatheRecipes>
+</GameData>

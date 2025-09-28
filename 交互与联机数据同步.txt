@@ -80,8 +80,65 @@ ActionCompleteSoundHash: 交互动作完成时的音效哈希值;
 // protected override void InitialiseSaveData(ref ThingSaveData saveData)
 // public override void DeserializeSave(ThingSaveData saveData)
 
-// public override void SerializeOnJoin(RocketBinaryWriter writer)               // 主机同步新建物品时的序列化与反序列化, 移除物品直接删除即可
+// public override void SerializeOnJoin(RocketBinaryWriter writer)               // 主机同步新玩家加入时的序列化与反序列化
 // public override void DeserializeOnJoin(RocketBinaryReader reader)
 
 // public override void BuildUpdate(RocketBinaryWriter writer, ushort networkUpdateType)     // 主机同步已有物品的序列化与反序列化
 // public override void ProcessUpdate(RocketBinaryReader reader, ushort networkUpdateType)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Dictionary<Collider, Interactable> _interactableColliderLookup
+// 一个游戏物体在初始化时, 会遍历Thing.Interactables, 若Interactable中保存了游戏物体的某个Unity碰撞体, 则知道这个Interactable是实体控件, 需要通过Unity射线判断是否与控件发生交互, 因此将该控件作为Value保存到相应字典中 
+// 游戏自己管理的鼠标射线管理器在每帧发射一次Unity射线, 尝试获取Unity碰撞体, 然后通过Thing._colliderLookup(获取到的Unity碰撞体)找到游戏物体Thing
+// Thing._interactableColliderLookup(获取到的Unity碰撞体)找到控件, 然后根据鼠标和按键状态决定是否调用InteractWith并传入控件
+
+// Dictionary<InteractableType, Interactable> _interactableLookup;
+// 一个游戏物体在初始化时, 会遍历Thing.Interactables, 将该控件的类型作为Key, 控件本身作为Value保存到相应字典中
+// 在游戏中, 某些算法会传入指定的控件类型并尝试获取控件, 来判断对应的Thing是否具有某功能
+
+// readonly Dictionary<Collider, Slot> _slotLookup = new Dictionary<Collider, Slot>();
+// 一个游戏物体在初始化时, 会遍历Thing.Interactables, 若Interactable中同时保存了游戏物体的某个Unity碰撞体和槽位, 则知道这个槽位是实体槽位, 需要通过Unity射线判断是否与控件发生交互, 因此将该槽位作为Value保存到相应字典中 
+// 游戏自己管理的鼠标射线管理器在每帧发射一次Unity射线, 尝试获取Unity碰撞体, 然后通过Thing._colliderLookup(获取到的Unity碰撞体)找到游戏物体Thing
+// Thing._slotLookup(获取到的Unity碰撞体)找到Slot    作用举例: 平板电脑的植物分析仪获取槽位中的植物并显示相应信息
+
+// static Dictionary<Collider, Thing> _colliderLookup = new Dictionary<Collider, Thing>();
+// 一个游戏物体在初始化时, 会通过gameObject.GetComponentsInChildren<<Collider>>(includeInactive:true)获取在所有的主碰撞体和控件碰撞体, 并将所有查找到的碰撞体作为Key, Thing本身作为Value保存到相应字典中 
+// 游戏自己管理的鼠标射线管理器在每帧发射一次Unity射线, 尝试获取Unity碰撞体, 因为该游戏物体的所有碰撞体都创建了key, 所以通过Thing._colliderLookup(获取到的Unity碰撞体)都找到游戏物体Thing
+
+
+
+
+// 在Unity引擎的UI组件系统中, 鼠标消息通过《UI消息总线》分发给所有订阅者GraphicRaycaster, 若订阅者的UI空间模式为世界空间UI, 鼠标位置会转换成射线, 因为世界屏幕UI相当于具有X/Y/Z坐标和长/宽/高尺寸的实体, 只是宽度为0(厚度为0)
+// 一个游戏物体在初始化时, 会遍历Thing.Interactables, 若Interactable中的Unity碰撞体变量=null, 则知道这个Interactable是UI控件, 根据控件类型创建不同的UI控件实例, 并将相关回调(调用InteractWith并传入控件)写入UI控件的事件
+// 光有订阅者GraphicRaycaster还不行, 订阅者接收到UI消息后, 使用广度搜索找到所有继承了MonoBehaviour类的UI组件, 然后根据消息类型(鼠标单击/鼠标拖拽......, 鼠标进入区域/离开区域......), 将找到的组件依次转换成对应的接口并调用接口的虚方法
+// 转换失败的组件说明没有实现该接口, 直接跳过, 接口有很多, 举例:  IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+
+// 背包系统拖拽可以使用以下接口组合
+// IBeginDragHandler(鼠标长按并有位移, 进入拖拽状态, 并调用), IDragHandler(拖拽状态时, 鼠标有位移调用), IEndDragHandler(拖拽状态时, 鼠标弹起时调用, 并重置为无状态)
+// IPointerEnterHandler(获取目标), IPointerExitHandler(清除目标),
+
+// 创建一个GameObject并添加<UI管理组件>, 然后这个UI管理组件实现以上接口, 并持有槽位引用, 然后在GameObject的子级GameObject中添加Unity引擎UI组件用于自动排版并渲染背包槽位/槽位纹理/槽位文本
+
+// 游戏自己管理的鼠标射线管理器在每帧发射一次Unity射线, 尝试获取Unity碰撞体, 然后通过Thing._colliderLookup(获取到的Unity碰撞体)找到游戏物体Thing
+// Thing._slotLookup(获取到的Unity碰撞体)找到Slot, 将this写入世界背包.当前发现
+
+// 每个实例的每种UI消息类型的UI状态都是独立的, 分别被Unity引擎写入缓冲区, 在进入拖拽状态后, 鼠标位移到<UI管理组件>上, 依然会调用 鼠标进入区域/离开区域, 鼠标进入时将this写入UI背包.当前发现, 鼠标离开时, 将null写入UI背包.当前发现
+
+// 进入拖拽状态: 若this(UI管理组件)保存了槽位且槽位中有物品, 则将槽位纹理透明度调低, 显示拖拽效果, 并将槽位中的物品图标设置为<拖拽中效果单例.图标>
+// 拖拽中: <拖拽中效果单例.图标>更新渲染位置
+// 退出拖拽状态: 世界背包.当前发现若不为空, 则与之交互, 否则UI背包.当前发现不是自身, 则与之交互
+
+
+

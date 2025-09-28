@@ -42,7 +42,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                                       //  TerrainSystem.VeinCluster
                                       // CircuitHousing
 
-            // if (前置_资源加载器.单例.逻辑组件字典.TryGetValue(typeof(InputPrefabs), out var 选择配方面板))
+            // if (前置_资源加载器.单例.TryGetAllComponent(typeof(InputPrefabs), out var 选择配方面板))
             // {
 
             // }

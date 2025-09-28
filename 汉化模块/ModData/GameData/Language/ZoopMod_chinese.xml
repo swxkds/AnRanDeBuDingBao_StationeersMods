@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Name>Simplified Chinese</Name>
+    <Code>CN</Code>
+    <Font>font_cjk</Font>
+    <Interface>
+        <Record>
+            <Key>SettingsMenuZoop</Key>
+            <Value>Zoop的批量拆装</Value>
+        </Record>
+        <Record>
+            <Key>zoopNoDoubleWaypoints</Key>
+            <Value>不能重复添加相同位置的路径点</Value>
+        </Record>
+        <Record>
+            <Key>zoopLongPiecesTitle</Key>
+            <Value>不同长度的变体</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkStatusTitle</Key>
+            <Value>批量拆卸</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkStatusActive</Key>
+            <Value>已启用</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkStructureTitleFormat</Key>
+            <Value>{0}网络</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkLabelNetworkSize</Key>
+            <Value>网络中结构计数:</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkLabelStatus</Key>
+            <Value>状态:</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkLabelReason</Key>
+            <Value>原因:</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkValueOk</Key>
+            <Value>批量拆卸模式</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkValueInvalid</Key>
+            <Value>原版拆卸模式</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkReasonNoTarget</Key>
+            <Value>无目标</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkReasonUnknownType</Key>
+            <Value>未知网络类型</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkReasonPowered</Key>
+            <Value>电缆网络存在供电</Value>
+        </Record>
+        <Record>
+            <Key>zoopBulkReasonUnderPressure</Key>
+            <Value>管道网络存在气体</Value>
+        </Record>
+        <Record>
+            <Key>Zoop</Key>
+            <Value>Zoop的批量拆装</Value>
+        </Record>
+        <Record>
+            <Key>Zoop Hold</Key>
+            <Value>观察模式/按住开启</Value>
+        </Record>
+        <Record>
+            <Key>Zoop Switch</Key>
+            <Value>批量放置/开关</Value>
+        </Record>
+        <Record>
+            <Key>Zoop Add Waypoint</Key>
+            <Value>添加路径点</Value>
+        </Record>
+        <Record>
+            <Key>Zoop Remove Last Waypoint</Key>
+            <Value>回退到上一个路径点</Value>
+        </Record>
+        <Record>
+            <Key>Zoop Allow More Long Pieces</Key>
+            <Value>切换并使用下一个长度的变体</Value>
+        </Record>
+        <Record>
+            <Key>Zoop Restrict Long Pieces</Key>
+            <Value>回退到上一个长度的变体</Value>
+        </Record>
+        <Record>
+            <Key>Zoop Bulk Deconstruct</Key>
+            <Value>批量拆卸/开关</Value>
+        </Record>
+    </Interface>
+</Language>
