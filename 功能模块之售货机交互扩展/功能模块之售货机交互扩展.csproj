@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- 导入默认的 MSBuild 属性文件 -->
+  <Import Project="$(MSBuildExtensionsPath)/$(MSBuildToolsVersion)/Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)/$(MSBuildToolsVersion)/Microsoft.Common.props')" />
+
+  <!-- 项目全局属性 -->
+  <PropertyGroup>
+    <!-- 构建程序类型：Library -->
+    <OutputType>Library</OutputType>
+    <!-- 目标框架版本 -->
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <!-- 目标语言版本 -->
+    <LangVersion>13.0</LangVersion> <!-- 或 latest, 11.0, 12.0 -->
+    <!-- 运行时标识符 -->
+    <RuntimeIdentifiers>win-x64;win7-x64</RuntimeIdentifiers>
+    <!-- 默认配置为 Release -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <!-- 默认平台为 AnyCPU -->
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <!-- 程序集元数据目录 -->
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <!-- 默认命名空间 -->
+    <RootNamespace>meanran_xuexi_mods</RootNamespace>
+    <!-- 输出的 DLL 文件名 -->
+    <AssemblyName>功能模块之售货机交互扩展</AssemblyName>
+    <!-- 文件对齐方式 -->
+    <FileAlignment>512</FileAlignment>
+    <!-- 确定性编译 -->
+    <Deterministic>true</Deterministic>
+    <!-- 允许使用 unsafe 代码块 -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- 构建过程中的临时文件目录 -->
+    <BaseIntermediateOutputPath>./bin/Temp</BaseIntermediateOutputPath>
+    <!-- 中间代码输出文件目录 -->
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <!-- Debug 配置属性 -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <!-- 目标平台为 x64 -->
+    <PlatformTarget>x64</PlatformTarget>
+    <!-- 开启调试符号 -->
+    <DebugSymbols>true</DebugSymbols>
+    <!-- 完整调试信息 -->
+    <DebugType>full</DebugType>
+    <!-- 不优化代码 -->
+    <Optimize>false</Optimize>
+    <!-- 输出目录 -->
+    <OutputPath>./ModData/</OutputPath>
+    <!-- 宏定义 -->
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <!-- 错误报告 -->
+    <ErrorReport>prompt</ErrorReport>
+    <!-- 警告级别 -->
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <!-- Release 配置属性 -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <!-- 目标平台为 x64 -->
+    <PlatformTarget>x64</PlatformTarget>
+    <!-- 关闭调试符号 -->
+    <DebugSymbols>false</DebugSymbols>
+    <!-- 仅包含 PDB 文件 -->
+    <DebugType>pdbonly</DebugType>
+    <!-- 优化代码 -->
+    <Optimize>true</Optimize>
+    <!-- 宏定义 -->
+    <DefineConstants>TRACE</DefineConstants>
+    <!-- 错误报告 -->
+    <ErrorReport>prompt</ErrorReport>
+    <!-- 警告级别 -->
+    <WarningLevel>4</WarningLevel>
+    <!-- 输出目录 -->
+    <OutputPath>./ModData/</OutputPath>
+  </PropertyGroup>
+
+  <!-- 引用本地程序集,Exclude:排除某个dll --> 
+<ItemGroup>
+  <MyDlls Include="../引用/*.dll" Exclude="../引用/0Harmony.dll;../引用/$(AssemblyName).dll"/>    <!-- 先用通配符获取所有 DLL -->
+</ItemGroup>
+<ItemGroup>
+  <Reference Include="@(MyDlls)">     <!-- 再把这些 DLL 转换为引用 -->
+    <Private>false</Private>          <!-- 不复制到输出目录 -->
+  </Reference>
+</ItemGroup>
+
+  <!-- 需要编译的.cs文件 -->
+   <ItemGroup>
+    <!-- 需要编译的.cs文件 --> 
+        <Compile Include="./**/*.cs" Exclude="./bin/**/*.cs"/>
+  </ItemGroup>
+
+  <!-- 编译器使用的语法分析器 -->
+  <Import Project="$(MSBuildToolsPath)/Microsoft.CSharp.targets" />
+</Project>
