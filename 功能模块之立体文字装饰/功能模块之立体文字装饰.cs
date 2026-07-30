@@ -161,10 +161,10 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 var 该施工阶段对应的子级根节点 = 施工阶段.LinkedGameObjects;
                 该施工阶段对应的子级根节点.Add(可装配.ThingTransform.gameObject);
 
-                var 如何装拆 = new 通用工具.施工材料和工时数据.装配与拆除所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), (撬棍的PrefabHash, 1, 0.5f), 施工阶段);
+                var 如何装拆 = new 通用工具.施工材料和工时数据.装配与拆除所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), (撬棍的PrefabHash, 1, 0.5f), (施工阶段, 可装配.PrefabHash, 所有施工阶段.FindIndex(d => d == 施工阶段), 通用工具.施工材料和工时数据.建筑结构状态.结构正常状态));
                 通用工具.施工材料和工时数据.添加到待添加队列_因为需要等待游戏资源加载完成才能查找到施工材料(如何装拆);
 
-                var 如何修复 = new 通用工具.施工材料和工时数据.修复所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), 可装配);
+                var 如何修复 = new 通用工具.施工材料和工时数据.修复所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), (可装配, 可装配.PrefabHash));
                 通用工具.施工材料和工时数据.添加到待添加队列_因为需要等待游戏资源加载完成才能查找到施工材料(如何修复);
 
                 施工阶段.RenderMode = BuildStateRenderMode.OnMineAndPreviousStates;
