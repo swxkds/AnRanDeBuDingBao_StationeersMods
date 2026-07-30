@@ -200,12 +200,21 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 switch (包.物联网已上线设备表或内部储物表或试剂引用)
                 {
                     case IEnumerable<Thing> thingList:
-                        foreach (var __ in thingList) { 已发现表.Add(__.ReferenceId, __); }
+                        foreach (var __ in thingList)
+                        {
+                            if (__ != null && !__.BeingDestroyed)
+                            {
+                                已发现表.Add(__.ReferenceId, __);
+                            }
+                        }
                         break;
                     case IEnumerable<ILogicable> logicableList:
                         foreach (var __ in logicableList)
                         {
-                            if (__ is Thing thing) { 已发现表.Add(__.ReferenceId, thing); }
+                            if (__ != null && __ is Thing thing && !thing.BeingDestroyed)
+                            {
+                                已发现表.Add(__.ReferenceId, thing);
+                            }
                         }
                         break;
                 }
