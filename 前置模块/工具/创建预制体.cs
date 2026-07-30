@@ -161,14 +161,14 @@ namespace meanran_xuexi_mods_xiaoyouhua
         public class 施工材料和工时数据
         {
             private static readonly Dictionary<int, Item> 已发现施工材料缓存 = new();
-            private static readonly Queue<装配与拆除所需的施工材料和工时数据> 所有待添加的的装配与拆除数据 = new();
-            private static readonly Queue<修复所需的施工材料和工时数据> 所有待添加的的修复数据 = new();
+            private static readonly List<装配与拆除所需的施工材料和工时数据> 所有待添加的的装配与拆除数据 = new();
+            private static readonly List<修复所需的施工材料和工时数据> 所有待添加的的修复数据 = new();
 
             public static void 添加到待添加队列_因为需要等待游戏资源加载完成才能查找到施工材料(装配与拆除所需的施工材料和工时数据 数据)
             {
                 lock (所有待添加的的装配与拆除数据)
                 {
-                    所有待添加的的装配与拆除数据.Enqueue(数据);
+                    所有待添加的的装配与拆除数据.Add(数据);
                 }
             }
 
@@ -176,21 +176,19 @@ namespace meanran_xuexi_mods_xiaoyouhua
             {
                 lock (所有待添加的的修复数据)
                 {
-                    所有待添加的的修复数据.Enqueue(数据);
+                    所有待添加的的修复数据.Add(数据);
                 }
             }
 
             public static void 从待添加队列中取出所有数据并执行添加()
             {
-                while (所有待添加的的装配与拆除数据.Count > 0)
+                foreach (var 当前 in 所有待添加的的装配与拆除数据)
                 {
-                    var 当前 = 所有待添加的的装配与拆除数据.Dequeue();
                     为目标物体的施工阶段组件添加施工材料和工时数据(当前);
                 }
 
-                while (所有待添加的的修复数据.Count > 0)
+                foreach (var 当前 in 所有待添加的的修复数据)
                 {
-                    var 当前 = 所有待添加的的修复数据.Dequeue();
                     为目标物体添加修复结构所需的施工材料和工时数据(当前);
                 }
             }
@@ -213,6 +211,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 };
 
                 数据.目标物体的施工阶段组件.Tool = 本施工阶段的施工材料和工时数据;
+
+                前置模块.Log.LogMessage($"为目标物体的施工阶段组件添加施工材料和工时数据 {数据.目标物体的施工阶段组件}");
             }
             private static void 为目标物体添加修复结构所需的施工材料和工时数据(修复所需的施工材料和工时数据 数据)
             {
@@ -226,21 +226,21 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 };
 
                 数据.目标物体.RepairTools = 修复结构所需的施工材料和工时数据;
+
+                前置模块.Log.LogMessage($"为目标物体添加修复结构所需的施工材料和工时数据 {数据.目标物体}");
             }
             private static Item 查找施工材料(int PrefabHash)
             {
                 if (已发现施工材料缓存.TryGetValue(PrefabHash, out var 匹配)) { return 匹配; }
 
-                if (前置_资源加载器.单例.TryGetAllComponent<Item>(out var result_查找结果))
+                if (Prefab.TryFind<Item>(PrefabHash, out var 当前))
                 {
-                    foreach (Item 当前 in result_查找结果)
+                    if (当前.PrefabHash == PrefabHash && 当前.ReferenceId == 0)
                     {
-                        if (当前.PrefabHash == PrefabHash && 当前.ReferenceId == 0)
-                        {
-                            已发现施工材料缓存.Add(PrefabHash, 当前);
-                            return 当前;
-                        }
+                        已发现施工材料缓存.Add(PrefabHash, 当前);
+                        return 当前;
                     }
+
                 }
 
                 return null;
