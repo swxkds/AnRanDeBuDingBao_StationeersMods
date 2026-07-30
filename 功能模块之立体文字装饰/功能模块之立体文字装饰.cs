@@ -83,7 +83,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             数据与电力接口子级.transform.SetParent(可装配.ThingTransform, false);
                             var 球形碰撞体 = 数据与电力接口子级.AddComponent<SphereCollider>();
                             球形碰撞体.radius = 0.1f;
-                            球形碰撞体.transform.localPosition = new(0, 0, -0.05f);
+                            球形碰撞体.transform.localPosition = new(0, 0, 0.5f);
 
                             var 可装配的所有接口 = 可装配.OpenEnds;
                             var 新接口 = new Connection(可装配)
@@ -103,7 +103,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             数据与电力接口子级.transform.SetParent(可装配.ThingTransform, false);
                             var 球形碰撞体 = 数据与电力接口子级.AddComponent<SphereCollider>();
                             球形碰撞体.radius = 0.1f;
-                            球形碰撞体.transform.localPosition = new(0.25f, 0, -0.05f);
+                            球形碰撞体.transform.localPosition = new(0, 0, 0.5f);
 
                             var 可装配的所有接口 = 可装配.OpenEnds;
                             var 新接口 = new Connection(可装配)

@@ -92,7 +92,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                 var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = 套件纹理.对应不同喷漆颜色的UV纹理 };
 
-                所有可装配多边形网格与材质.Add(通用工具.合并多边形网格(所有Mesh, [实体材质2, 实体材质1, 实体材质1,]));
+                所有可装配多边形网格与材质.Add(通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质1, 实体材质2,]));
 
                 通用工具.注销AssetBundle(资源视图fbx);
             }
