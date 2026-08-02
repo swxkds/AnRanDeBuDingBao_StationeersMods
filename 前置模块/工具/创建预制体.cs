@@ -95,6 +95,12 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 return (null, null);
             }
 
+            if (Arg_所有Mesh.Any(d => d.uv.Length <= 0))
+            {
+                前置模块.Log.LogError("传入的Mesh中有空的UV布局, 无法正确映射到材质中的UV纹理, 无法合并多边形网格");
+                return (null, null);
+            }
+
             前置模块.Log.LogMessage("压缩子网格前:");
             打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, 物体名称);
             for (var i = 0; i < Arg_所有Mesh.Length; i++)
