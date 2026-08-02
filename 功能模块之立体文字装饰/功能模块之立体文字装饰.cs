@@ -191,7 +191,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
     }
 
     [HarmonyPatch(typeof(Prefab), nameof(Prefab.LoadAll))]
-    public class 将矿物扫描眼镜添加到游戏中
+    public class 将立体文字装饰添加到游戏中
     {
         [HarmonyPrefix]
         public static void 执行()

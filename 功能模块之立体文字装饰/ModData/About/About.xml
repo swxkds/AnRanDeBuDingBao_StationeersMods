@@ -38,6 +38,7 @@ mklink /D "...\Steam\steamapps\common\Stationeers\BepInEx\plugins\Link" "...\Ste
 可自由修改、转发, 祝游戏愉快！
 
   </Description>
-	<DependsOn WorkshopHandle="3571616762" />
-	<OrderAfter WorkshopHandle="3571616762" />     
+  <WorkshopHandle>3774397757</WorkshopHandle>
+  <DependsOn WorkshopHandle="3571616762" />
+  <OrderAfter WorkshopHandle="3571616762" />
 </ModMetadata>
