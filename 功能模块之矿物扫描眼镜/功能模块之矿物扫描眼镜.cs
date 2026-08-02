@@ -21,8 +21,6 @@ namespace meanran_xuexi_mods_xiaoyouhua
             补丁 = new Harmony("功能模块之矿物扫描眼镜");
             补丁.PatchAll();
 
-            // 将矿物扫描眼镜添加到游戏中.NewPrefab = 创建矿物扫描眼镜();
-
             WorldManager.OnWorldStarted += HUD抬头显示器.构造函数;
             前置模块.添加通用间接绘制构造参数(new() { (多图层_多物体_批量绘制.图层类型.可开采资源, 0, null) }, static () => HUD抬头显示器.显示状态);
         }
