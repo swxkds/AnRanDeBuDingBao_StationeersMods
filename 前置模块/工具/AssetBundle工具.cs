@@ -29,7 +29,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             var 缩略图数组 = new Sprite[游戏内置喷漆色板.所有喷漆色板颜色.Count()];
             for (var i = 0; i < 缩略图数组.Length; i++)
             {
-                var 当前 = 资源视图所有缩略图.LoadAsset<Sprite>($"{物体名称}_缩略图_{游戏内置喷漆色板.所有喷漆色板颜色[i]}.asset");
+                var 当前 = 资源视图所有缩略图.LoadAsset<Sprite>($"Assets/{物体名称}的所有缩略图/{物体名称}_缩略图_{游戏内置喷漆色板.所有喷漆色板颜色[i]}.asset");
                 if (当前)
                 {
                     缩略图数组[i] = 当前;

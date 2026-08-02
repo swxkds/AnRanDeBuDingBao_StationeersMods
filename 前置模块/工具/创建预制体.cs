@@ -146,6 +146,35 @@ namespace meanran_xuexi_mods_xiaoyouhua
             return Result;
         }
 
+        public static Mesh 复制多边形网格(Mesh Arg_Mesh)
+        {
+            if (Arg_Mesh == null)
+            {
+                前置模块.Log.LogError("传入的Mesh为空, 无法复制多边形网格");
+                return null;
+            }
+
+            var 待合并 = new List<CombineInstance>(Arg_Mesh.subMeshCount);
+            for (var 子网格编号 = 0; 子网格编号 < Arg_Mesh.subMeshCount; ++子网格编号)
+            {
+                // subMeshIndex: 建模时, 可以人为的将三角形索引数组划分片段, 每个片段有着自己的数组地址偏移和数据长度。通过subMeshIndex可以获取该片段的数组地址偏移和数据长度, 同时通过sharedMaterials[subMeshIndex]找到该片段的材质
+                //               建模软件导出的片段划分信息, Unity引擎不一定能正确识别, 因此 Arg_所有Mesh 中的所有元素都只有一个subMesh(即数组地址偏移=0,数据长度=三角形索引数组长度), 通过在此函数中合并多边形网格, 将多个Mesh变成一个Mesh中的多个subMesh
+                // transform: 多边形网格对象使用世界坐标系1:1比例    例: 使用Blender建模, 有导出前执行命令 "物体/应用/位置" "物体/应用/旋转" "物体/应用/缩放" , 让变换矩阵中的位置和旋转变成(0,0,0)、缩放变成(1,1,1), 此时法向、顶点坐标.....就变成世界坐标系1:1比例下的数据
+                待合并.Add(new CombineInstance
+                {
+                    mesh = Arg_Mesh,
+                    subMeshIndex = 子网格编号,
+                    transform = Matrix4x4.identity
+                });
+            }
+
+            var Result = new Mesh() { name = Arg_Mesh.name + "已复制" };
+            Result.CombineMeshes(待合并.ToArray(), mergeSubMeshes: false, useMatrices: true);
+            Result.RecalculateNormals();
+            Result.RecalculateBounds();
+            return Result;
+        }
+
         [Tooltip("注: 目标物体.ReagentMixture: 对于自动车床/自动烤箱/微波炉/熔炉.......等等具有内部混合容器的设备, 此处保存了所有投入物体的成分组成之和")]
         public static void 为目标物体添加试剂成分表_每QuantityPerUse单位(Item 目标物体, Recipe _1单位成分数据)
         {
@@ -161,40 +190,10 @@ namespace meanran_xuexi_mods_xiaoyouhua
         public class 施工材料和工时数据
         {
             private static readonly Dictionary<int, Thing> 已发现施工材料缓存 = new();
-            private static readonly List<装配与拆除所需的施工材料和工时数据> 所有待添加的的装配与拆除数据 = new();
-            private static readonly List<修复所需的施工材料和工时数据> 所有待添加的的修复数据 = new();
-
-            public static void 添加到待添加队列_因为需要等待游戏资源加载完成才能查找到施工材料(装配与拆除所需的施工材料和工时数据 数据)
+            public static void 为目标物体的施工阶段组件添加施工材料和工时数据(装配与拆除所需的施工材料和工时数据 数据)
             {
-                lock (所有待添加的的装配与拆除数据)
-                {
-                    所有待添加的的装配与拆除数据.Add(数据);
-                }
-            }
+                if (数据.目标物体的施工阶段组件 == null) { return; }
 
-            public static void 添加到待添加队列_因为需要等待游戏资源加载完成才能查找到施工材料(修复所需的施工材料和工时数据 数据)
-            {
-                lock (所有待添加的的修复数据)
-                {
-                    所有待添加的的修复数据.Add(数据);
-                }
-            }
-
-            public static void 从待添加队列中取出所有数据并执行添加()
-            {
-                foreach (var 当前 in 所有待添加的的装配与拆除数据)
-                {
-                    为目标物体的施工阶段组件添加施工材料和工时数据(当前);
-                }
-
-                foreach (var 当前 in 所有待添加的的修复数据)
-                {
-                    为目标物体添加修复结构所需的施工材料和工时数据(当前);
-                }
-            }
-
-            private static void 为目标物体的施工阶段组件添加施工材料和工时数据(装配与拆除所需的施工材料和工时数据 数据)
-            {
                 var 本施工阶段的施工材料和工时数据 = new ToolUse()
                 {
                     ToolUseType = 数据.目标物体的项目建设性质,
@@ -210,39 +209,15 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     ExitTime = 数据.拆除.完成操作所需的进度条读条时长,
                 };
 
-                var 查找器数据 = 数据.目标物体的施工阶段组件;
-                查找器数据.源资源_目标物体的施工阶段组件.Tool = 本施工阶段的施工材料和工时数据;
+                数据.目标物体的施工阶段组件.Tool = 本施工阶段的施工材料和工时数据;
 
-                var 目标物体 = 查找施工材料<Structure>(查找器数据.目标物体PrefabHash);
-                if (目标物体)
-                {
-                    BuildState 当前施工阶段组件 = null;
-                    switch (查找器数据.施工阶段对应的建筑结构状态)
-                    {
-                        case 建筑结构状态.结构正常状态:
-                            if (查找器数据.施工阶段索引 >= 0 && 查找器数据.施工阶段索引 < 目标物体.BuildStates.Count)
-                            {
-                                当前施工阶段组件 = 目标物体.BuildStates[查找器数据.施工阶段索引];
-                            }
-                            break;
-                        case 建筑结构状态.结构损毁状态:
-                            if (查找器数据.施工阶段索引 >= 0 && 查找器数据.施工阶段索引 < 目标物体.BrokenBuildStates.Count)
-                            {
-                                当前施工阶段组件 = 目标物体.BrokenBuildStates[查找器数据.施工阶段索引].BuildState;      // BrokenBuildState.TotalReagentMixture: 在结构损毁状态时进行拆除, 获取的碎片道具的试剂成分组成
-                            }
-                            break;
-                    }
-
-                    if (当前施工阶段组件 == null) { return; }
-
-                    当前施工阶段组件.Tool = 本施工阶段的施工材料和工时数据;
-
-                    前置模块.Log.LogMessage($"{目标物体.DisplayName}的{查找器数据.施工阶段对应的建筑结构状态}, 第{查找器数据.施工阶段索引}个施工阶段, 成功添加施工材料和工时数据");
-                }
+                前置模块.Log.LogMessage($"{数据.目标物体的施工阶段组件}成功添加施工材料和工时数据\n{本施工阶段的施工材料和工时数据.GetToolsAsString()}");
             }
-            private static void 为目标物体添加修复结构所需的施工材料和工时数据(修复所需的施工材料和工时数据 数据)
+            public static void 为目标物体添加修复结构所需的施工材料和工时数据(修复所需的施工材料和工时数据 数据)
             {
-                var 修复结构所需的施工材料和工时数据 = new ToolBasic()
+                if (数据.目标物体 == null) { return; }
+
+                var 本施工阶段的施工材料和工时数据 = new ToolBasic()
                 {
                     ToolEntry = 数据.修复.主手持有的该物品的PrefabHash == 0 ? null : 查找施工材料<Item>(数据.修复.主手持有的该物品的PrefabHash),
                     EntryQuantity = 数据.修复.主手消耗数量,
@@ -251,17 +226,11 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     EntryTime = 数据.修复.完成操作所需的进度条读条时长,
                 };
 
-                var 查找器数据 = 数据.目标物体;
-                查找器数据.源资源_目标物体.RepairTools = 修复结构所需的施工材料和工时数据;
+                数据.目标物体.RepairTools = 本施工阶段的施工材料和工时数据;
 
-                var 目标物体 = 查找施工材料<Structure>(查找器数据.目标物体PrefabHash);
-                if (目标物体)
-                {
-                    目标物体.RepairTools = 修复结构所需的施工材料和工时数据;
-
-                    前置模块.Log.LogMessage($"{目标物体.DisplayName}的{建筑结构状态.结构正常状态}, 成功添加修复结构所需的施工材料和工时数据");
-                }
+                前置模块.Log.LogMessage($"{数据.目标物体.DisplayName}成功添加修复材料和工时数据\n{本施工阶段的施工材料和工时数据.GetRepairsAsString()}");
             }
+
             public static T 查找施工材料<T>(int PrefabHash) where T : Thing
             {
                 if (已发现施工材料缓存.TryGetValue(PrefabHash, out var 匹配)) { return (T)匹配; }
@@ -277,6 +246,13 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 }
 
                 return null;
+            }
+
+            public enum 施工阶段组件工具提示
+            {
+                结构正常状态, 结构正常状态_所有施工阶段数组, 结构正常状态_施工阶段索引,
+                结构损毁状态, 结构损毁状态_所有施工阶段数组, 结构损毁状态_施工阶段索引,
+                结构正常状态_建筑的生命值不是满值_修复建筑施工阶段
             }
 
             [Tooltip("装配举例一: 主手持有工具, 副手为空\n装配举例二: 主手持有工具, 副手为材料\n装配举例三: 主手持有材料, 副手为空\n消耗数量对于工具指的是电量或者焊枪燃气或者其它能源,对于材料指的是材料使用数量\n如果工具不需要能源(比如剪线钳), 消耗数量写1即可, 不会有实际消耗")]
@@ -329,78 +305,27 @@ namespace meanran_xuexi_mods_xiaoyouhua
             public readonly struct 修复所需的施工材料和工时数据
             {
                 public readonly 装配所需的施工材料和工时数据 修复;
-                public readonly 目标物体的修复施工组件查找器数据 目标物体;
-                public 修复所需的施工材料和工时数据(装配所需的施工材料和工时数据 Arg_修复, 目标物体的修复施工组件查找器数据 Arg_目标物体)
+                public readonly Structure 目标物体;
+                public 修复所需的施工材料和工时数据(装配所需的施工材料和工时数据 Arg_修复, Structure Arg_目标物体)
                 {
                     修复 = Arg_修复;
                     目标物体 = Arg_目标物体;
                 }
-                public 修复所需的施工材料和工时数据((int 主手持有的该物品的PrefabHash, int 主手消耗数量, int 副手持有的该物品的PrefabHash, int 副手消耗数量, float 完成操作所需的进度条读条时长) Arg_修复, (Structure 源资源_目标物体, int 目标物体PrefabHash) Arg_目标物体)
+                public 修复所需的施工材料和工时数据((int 主手持有的该物品的PrefabHash, int 主手消耗数量, int 副手持有的该物品的PrefabHash, int 副手消耗数量, float 完成操作所需的进度条读条时长) Arg_修复, Structure Arg_目标物体)
                 {
                     修复 = Arg_修复;
                     目标物体 = Arg_目标物体;
                 }
             }
 
-            public enum 建筑结构状态
-            {
-                结构正常状态,
-                结构损毁状态,
-            }
-
-            [Tooltip("游戏在加载Thing资源时, 会对源资源进行额外复制一份的操作, 然后进行一些改造, 然后在游戏中使用改造后的复制体, 因此直接修改源资源是没用的\n需要等待游戏资源加载完成才能查找到施工材料")]
-            public readonly struct 目标物体的施工阶段组件查找器数据
-            {
-                [Tooltip("虽然源资源不会在游戏中使用, 但是给源资源也添加上施工材料和工时数据, 万一游戏又使用了源资源呢")]
-                public readonly BuildState 源资源_目标物体的施工阶段组件;
-                public readonly int 目标物体PrefabHash;
-
-                [Tooltip("一个目标物体可以有多个施工阶段组件, 比如自动车床, 阶段一使用(套件)自动车床装配, 使用扳手拆除; 阶段二使用焊枪与铁板装配, 使用角磨机拆除; 阶段三使用电缆装配, 使用剪线钳拆除; 后续阶段省略......")]
-                public readonly int 施工阶段索引;
-                public readonly 建筑结构状态 施工阶段对应的建筑结构状态;
-
-                public 目标物体的施工阶段组件查找器数据((BuildState 源资源_目标物体的施工阶段组件, int 目标物体PrefabHash, int 施工阶段索引, 建筑结构状态 施工阶段对应的建筑结构状态) Arg_查找器)
-                {
-                    源资源_目标物体的施工阶段组件 = Arg_查找器.源资源_目标物体的施工阶段组件;
-                    目标物体PrefabHash = Arg_查找器.目标物体PrefabHash;
-                    施工阶段索引 = Arg_查找器.施工阶段索引;
-                    施工阶段对应的建筑结构状态 = Arg_查找器.施工阶段对应的建筑结构状态;
-                }
-
-                // 隐式转换
-                public static implicit operator 目标物体的施工阶段组件查找器数据((BuildState 源资源_目标物体的施工阶段组件, int 目标物体PrefabHash, int 施工阶段索引, 建筑结构状态 施工阶段对应的建筑结构状态) Arg_查找器)
-                {
-                    return new 目标物体的施工阶段组件查找器数据(Arg_查找器);
-                }
-            }
-
-            [Tooltip("游戏在加载Thing资源时, 会对源资源进行额外复制一份的操作, 然后进行一些改造, 然后在游戏中使用改造后的复制体, 因此直接修改源资源是没用的\n需要等待游戏资源加载完成才能查找到修复材料")]
-            public readonly struct 目标物体的修复施工组件查找器数据
-            {
-                [Tooltip("虽然源资源不会在游戏中使用, 但是给源资源也添加上施工材料和工时数据, 万一游戏又使用了源资源呢")]
-                public readonly Structure 源资源_目标物体;
-                public readonly int 目标物体PrefabHash;
-
-                public 目标物体的修复施工组件查找器数据((Structure 源资源_目标物体, int 目标物体PrefabHash) Arg_查找器)
-                {
-                    源资源_目标物体 = Arg_查找器.源资源_目标物体;
-                    目标物体PrefabHash = Arg_查找器.目标物体PrefabHash;
-                }
-
-                // 隐式转换
-                public static implicit operator 目标物体的修复施工组件查找器数据((Structure 源资源_目标物体, int 目标物体PrefabHash) Arg_查找器)
-                {
-                    return new 目标物体的修复施工组件查找器数据(Arg_查找器);
-                }
-            }
             public record 装配与拆除所需的施工材料和工时数据
             {
                 public readonly 装配所需的施工材料和工时数据 装配;
                 public readonly 拆除所需的施工材料和工时数据 拆除;
-                public readonly 目标物体的施工阶段组件查找器数据 目标物体的施工阶段组件;
+                public readonly BuildState 目标物体的施工阶段组件;
                 public readonly ToolUseType 目标物体的项目建设性质;
 
-                public 装配与拆除所需的施工材料和工时数据(装配所需的施工材料和工时数据 Arg_装配, 拆除所需的施工材料和工时数据 Arg_拆除, 目标物体的施工阶段组件查找器数据 Arg_目标物体的施工阶段组件, ToolUseType Arg_目标物体的项目建设性质 = ToolUseType.Construction)
+                public 装配与拆除所需的施工材料和工时数据(装配所需的施工材料和工时数据 Arg_装配, 拆除所需的施工材料和工时数据 Arg_拆除, BuildState Arg_目标物体的施工阶段组件, ToolUseType Arg_目标物体的项目建设性质 = ToolUseType.Construction)
                 {
                     装配 = Arg_装配;
                     拆除 = Arg_拆除;
@@ -408,7 +333,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     目标物体的项目建设性质 = Arg_目标物体的项目建设性质;
                 }
 
-                public 装配与拆除所需的施工材料和工时数据((int 主手持有的该物品的PrefabHash, int 主手消耗数量, int 副手持有的该物品的PrefabHash, int 副手消耗数量, float 完成操作所需的进度条读条时长) Arg_装配, (int 主手持有的该物品的PrefabHash, int 主手消耗数量, float 完成操作所需的进度条读条时长) Arg_拆除, (BuildState 源资源_目标物体的施工阶段组件, int 目标物体PrefabHash, int 施工阶段索引, 建筑结构状态 施工阶段对应的建筑结构状态) Arg_目标物体的施工阶段组件, ToolUseType Arg_目标物体的项目建设性质 = ToolUseType.Construction)
+                public 装配与拆除所需的施工材料和工时数据((int 主手持有的该物品的PrefabHash, int 主手消耗数量, int 副手持有的该物品的PrefabHash, int 副手消耗数量, float 完成操作所需的进度条读条时长) Arg_装配, (int 主手持有的该物品的PrefabHash, int 主手消耗数量, float 完成操作所需的进度条读条时长) Arg_拆除, BuildState Arg_目标物体的施工阶段组件, ToolUseType Arg_目标物体的项目建设性质 = ToolUseType.Construction)
                 {
                     装配 = Arg_装配;
                     拆除 = Arg_拆除;

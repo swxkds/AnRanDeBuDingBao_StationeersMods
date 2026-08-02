@@ -25,13 +25,12 @@ namespace meanran_xuexi_mods_xiaoyouhua
         public static MultiConstructor 创建_套件_立体文字装饰()
         {
             var 资源加载器 = 功能模块之立体文字装饰_资源加载器.单例;
-            var 网格与材质 = 资源加载器.套件多边形网格与材质;
 
             const string NameID = "ItemKitLiTiWenZiZhuangShi";
             const 通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色 默认颜色 = 通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色.橙色Orange;
 
             // MultiConstructor: 可以放进背包的装配包道具, 一个装配包可以放置多个建筑
-            var 装配包 = 通用工具.创建Thing预制体并进行通用初始化<MultiConstructor>(资源加载器.套件预制体.实体, 资源加载器.套件预制体.蓝图, NameID, 网格与材质.已合并Mesh, 网格与材质.所有subMesh材质, 资源加载器.套件纹理.对应不同喷漆颜色的缩略图, 默认颜色);
+            var 装配包 = 通用工具.创建Thing预制体并进行通用初始化<MultiConstructor>(资源加载器.套件预制体.实体, 资源加载器.套件预制体.蓝图, NameID, 资源加载器.套件多边形网格与材质.已合并Mesh, 资源加载器.套件多边形网格与材质.所有subMesh材质, 资源加载器.套件纹理.对应不同喷漆颜色的缩略图, 默认颜色);
             // 装配包.PaintableMaterial = null;  // 如果需要喷漆, 则不变, 不要喷漆, 则用null覆盖
 
             const Slot.Class 道具可放入的槽位_每个槽位有对应的道具类型 = Slot.Class.None;
@@ -70,15 +69,17 @@ namespace meanran_xuexi_mods_xiaoyouhua
             for (var i = 0; i < 资源加载器.所有可装配预制体.Count; i++)
             {
                 (GameObject 实体预制体, GameObject 蓝图预制体) = 资源加载器.所有可装配预制体[i];
-                (Mesh 已合并Mesh, Material[] 所有subMesh材质) = 资源加载器.所有可装配多边形网格与材质[i];
-
-                var 可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(实体预制体, 蓝图预制体, "SmallGridStructureLiTiWenZiZhuangShi" + i, 已合并Mesh, 所有subMesh材质, 资源加载器.套件纹理.对应不同喷漆颜色的缩略图, 默认颜色);
-                所有可装配的建筑.Add(可装配);
+                立体文字装饰 可装配 = null;
 
                 switch (i)
                 {
                     case 0:     // 立体文字装饰 平面0.5X0.5
                         {
+                            (Mesh 已合并Mesh, Material[] 所有subMesh材质) = 资源加载器.所有可装配多边形网格与材质[i - 1];
+                            (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理[i - 1];
+
+                            可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(实体预制体, 蓝图预制体, "SmallGridStructureLiTiWenZiZhuangShi" + i, 已合并Mesh, 所有subMesh材质, 对应不同喷漆颜色的缩略图, 默认颜色);
+
                             var 数据与电力接口子级 = new GameObject();
                             数据与电力接口子级.transform.SetParent(可装配.ThingTransform, false);
                             var 球形碰撞体 = 数据与电力接口子级.AddComponent<SphereCollider>();
@@ -99,6 +100,10 @@ namespace meanran_xuexi_mods_xiaoyouhua
                         }
                     case 1:     // 居住     平面0.5X1
                         {
+                            (Mesh 已合并Mesh, Material[] 所有subMesh材质) = 资源加载器.所有可装配多边形网格与材质[i];
+                            (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理[i];
+                            可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(实体预制体, 蓝图预制体, "SmallGridStructureLiTiWenZiZhuangShi" + i, 已合并Mesh, 所有subMesh材质, 对应不同喷漆颜色的缩略图, 默认颜色);
+
                             var 数据与电力接口子级 = new GameObject();
                             数据与电力接口子级.transform.SetParent(可装配.ThingTransform, false);
                             var 球形碰撞体 = 数据与电力接口子级.AddComponent<SphereCollider>();
@@ -118,6 +123,10 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             break;
                         }
                 }
+
+                if (可装配 == null) { continue; }
+
+                所有可装配的建筑.Add(可装配);
 
                 // 高亮选择框的显示尺寸是刚好一个小网格大小, 还是物体的包围盒大小, 仅仅是渲染效果, 实际对齐还是对齐到小网格的
                 可装配.SelectionDisplay = SelectionHighlightMethod.Bounds;
@@ -161,11 +170,11 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 var 该施工阶段对应的子级根节点 = 施工阶段.LinkedGameObjects;
                 该施工阶段对应的子级根节点.Add(可装配.ThingTransform.gameObject);
 
-                var 如何装拆 = new 通用工具.施工材料和工时数据.装配与拆除所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), (撬棍的PrefabHash, 1, 0.5f), (施工阶段, 可装配.PrefabHash, 所有施工阶段.FindIndex(d => d == 施工阶段), 通用工具.施工材料和工时数据.建筑结构状态.结构正常状态));
-                通用工具.施工材料和工时数据.添加到待添加队列_因为需要等待游戏资源加载完成才能查找到施工材料(如何装拆);
+                var 如何装拆 = new 通用工具.施工材料和工时数据.装配与拆除所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), (撬棍的PrefabHash, 1, 0.5f), 施工阶段);
+                通用工具.施工材料和工时数据.为目标物体的施工阶段组件添加施工材料和工时数据(如何装拆);
 
-                var 如何修复 = new 通用工具.施工材料和工时数据.修复所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), (可装配, 可装配.PrefabHash));
-                通用工具.施工材料和工时数据.添加到待添加队列_因为需要等待游戏资源加载完成才能查找到施工材料(如何修复);
+                var 如何修复 = new 通用工具.施工材料和工时数据.修复所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), 可装配);
+                通用工具.施工材料和工时数据.为目标物体添加修复结构所需的施工材料和工时数据(如何修复);
 
                 施工阶段.RenderMode = BuildStateRenderMode.OnMineAndPreviousStates;
 
