@@ -256,14 +256,12 @@ namespace meanran_xuexi_mods_xiaoyouhua
             {
                 if (已发现施工材料缓存.TryGetValue(PrefabHash, out var 匹配)) { return (T)匹配; }
 
-                if (Prefab.TryFind<T>(PrefabHash, out var 当前))
+                var 索引 = WorldManager.Instance.SourcePrefabs.FindIndex(d => d.PrefabHash == PrefabHash && d.ReferenceId == 0);
+                if (索引 >= 0)
                 {
-                    if (当前.PrefabHash == PrefabHash && 当前.ReferenceId == 0)
-                    {
-                        已发现施工材料缓存.Add(PrefabHash, 当前);
-                        return 当前;
-                    }
-
+                    匹配 = WorldManager.Instance.SourcePrefabs[索引];
+                    已发现施工材料缓存.Add(PrefabHash, 匹配);
+                    return (T)匹配;
                 }
 
                 return null;
