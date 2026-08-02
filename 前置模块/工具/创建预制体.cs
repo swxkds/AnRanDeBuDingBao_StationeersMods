@@ -87,13 +87,22 @@ namespace meanran_xuexi_mods_xiaoyouhua
             }
         }
 
-        public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质)
+        public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质, string 物体名称)
         {
             if (Arg_所有Mesh == null || Arg_所有Mesh.Length == 0 || Arg_所有subMesh材质 == null || Arg_所有subMesh材质.Length == 0)
             {
                 前置模块.Log.LogError("传入的Mesh或材质数组为空, 无法合并多边形网格");
                 return (null, null);
             }
+
+            前置模块.Log.LogMessage("压缩子网格前:");
+            打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, 物体名称);
+            for (var i = 0; i < Arg_所有Mesh.Length; i++)
+            {
+                Arg_所有Mesh[i] = 复制多边形网格(Arg_所有Mesh[i]);
+            }
+            前置模块.Log.LogMessage("压缩子网格后:");
+            打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, 物体名称);
 
             if (Arg_所有Mesh.Any(d => d.subMeshCount != 1))
             {
@@ -111,7 +120,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             return (Result, Arg_所有subMesh材质);
         }
 
-        public static Mesh 合并多边形网格(Mesh[] Arg_所有Mesh, bool Arg_保留子网格么 = false)
+        private static Mesh 合并多边形网格(Mesh[] Arg_所有Mesh, bool Arg_保留子网格么 = false)
         {
             if (Arg_所有Mesh == null || Arg_所有Mesh.Length == 0)
             {
@@ -146,7 +155,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             return Result;
         }
 
-        public static Mesh 复制多边形网格(Mesh Arg_Mesh)
+        public static Mesh 复制多边形网格(Mesh Arg_Mesh, bool Arg_保留子网格么 = false)
         {
             if (Arg_Mesh == null)
             {
@@ -169,10 +178,22 @@ namespace meanran_xuexi_mods_xiaoyouhua
             }
 
             var Result = new Mesh() { name = Arg_Mesh.name + "已复制" };
-            Result.CombineMeshes(待合并.ToArray(), mergeSubMeshes: false, useMatrices: true);
+            Result.CombineMeshes(待合并.ToArray(), mergeSubMeshes: !Arg_保留子网格么, useMatrices: true);
             Result.RecalculateNormals();
             Result.RecalculateBounds();
             return Result;
+        }
+
+        public static void 打印fbx模型文件中各个网格中的子网格计数(Mesh[] Arg_所有Mesh, string 物体名称)
+        {
+            if (Arg_所有Mesh == null)
+            {
+                前置模块.Log.LogError("传入的Mesh[]为空, 无法打印fbx模型文件中各个网格中的子网格计数");
+                return;
+            }
+
+            int 索引 = 0;
+            前置模块.Log.LogMessage($"{物体名称}fbx中有以下网格:\n{string.Join("\n", Arg_所有Mesh.Select(d => $"网格名称: {d.name}  网格索引: {索引++}  子网格计数: {d.subMeshCount}"))}");
         }
 
         [Tooltip("注: 目标物体.ReagentMixture: 对于自动车床/自动烤箱/微波炉/熔炉.......等等具有内部混合容器的设备, 此处保存了所有投入物体的成分组成之和")]

@@ -30,7 +30,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 var 实体材质 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = 纹理.对应不同喷漆颜色的UV纹理 };
                 var 镜片材质 = new Material(Shader.Find("Custom/Stationeers Transparent")) { color = Color.white.SetAlpha(0.04f) };
 
-                多边形网格与材质 = 通用工具.合并多边形网格(所有Mesh, [实体材质, 镜片材质]);
+                多边形网格与材质 = 通用工具.合并多边形网格(所有Mesh, [实体材质, 镜片材质], 物体名称);
 
                 通用工具.注销AssetBundle(资源视图fbx);
             }

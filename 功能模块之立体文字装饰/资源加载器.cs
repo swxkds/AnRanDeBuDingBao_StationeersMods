@@ -19,9 +19,9 @@ namespace meanran_xuexi_mods_xiaoyouhua
         public (GameObject 实体, GameObject 蓝图) 套件预制体 { get; private set; }
         public (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) 套件纹理 { get; private set; }     // 制作UV纹理时, 只从原始纹理中采样, 这样原始纹理可以让缩略图复用
 
-        public Dictionary<int, (Mesh 已合并Mesh, Material[] 所有subMesh材质)> 所有可装配多边形网格与材质 { get; private set; }
+        public Dictionary<string, (Mesh 已合并Mesh, Material[] 所有subMesh材质)> 所有可装配多边形网格与材质 { get; private set; }
         public List<(GameObject 实体, GameObject 蓝图)> 所有可装配预制体 { get; private set; }
-        public Dictionary<int, (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图)> 所有可装配纹理 { get; private set; }     // 制作UV纹理时, 只从原始纹理中采样, 这样原始纹理可以让缩略图复用
+        public Dictionary<string, (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图)> 所有可装配纹理 { get; private set; }     // 制作UV纹理时, 只从原始纹理中采样, 这样原始纹理可以让缩略图复用
 
         public 功能模块之立体文字装饰_资源加载器()
         {
@@ -44,7 +44,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                     var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = 套件纹理.对应不同喷漆颜色的UV纹理 };
 
-                    套件多边形网格与材质 = 通用工具.合并多边形网格(所有Mesh, [实体材质2, 实体材质1]);
+                    套件多边形网格与材质 = 通用工具.合并多边形网格(所有Mesh, [实体材质2, 实体材质1], 物体名称);
 
                     通用工具.注销AssetBundle(资源视图fbx);
                 }
@@ -52,11 +52,9 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             {
                 {
-                    所有可装配多边形网格与材质 = new Dictionary<int, (Mesh 已合并Mesh, Material[] 所有subMesh材质)>();
+                    所有可装配多边形网格与材质 = new Dictionary<string, (Mesh 已合并Mesh, Material[] 所有subMesh材质)>();
                     所有可装配预制体 = new List<(GameObject 实体, GameObject 蓝图)>();
-                    所有可装配纹理 = new Dictionary<int, (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图)>();
-
-                    int 计数 = 0;
+                    所有可装配纹理 = new Dictionary<string, (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图)>();
 
                     {
                         const string 物体名称 = "立体文字装饰";
@@ -74,20 +72,17 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                         var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = 套件纹理.对应不同喷漆颜色的UV纹理 };
 
-                        所有可装配多边形网格与材质.Add(计数, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质1, 实体材质2,]));
+                        所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质1, 实体材质2,], 物体名称));
 
                         通用工具.注销AssetBundle(资源视图fbx);
                     }
 
-                    计数++;
-
                     {
                         const string 物体名称 = "居住";
                         (AssetBundle 资源视图fbx, Texture2DArray UV纹理数组, Sprite[] 缩略图数组) = 通用工具.加载本地的AssetBundle文件_fbx和uv纹理数组和所有缩略图(dllDirectory, 物体名称);
-                        所有可装配纹理.Add(计数, (UV纹理数组, 缩略图数组));
+                        所有可装配纹理.Add(物体名称, (UV纹理数组, 缩略图数组));
 
-                        var 当前 = 资源视图fbx.LoadAsset<GameObject>("Assets/" + 物体名称 + "fbx.fbx");
-                        var 当前Mesh = 当前.GetComponent<Mesh>();
+                        var 所有Mesh = 资源视图fbx.LoadAllAssets<Mesh>();
 
                         const int 默认颜色 = (int)通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色.橙色Orange;
                         var 实体材质1 = new Material(Shader.Find("StandardInstanced"))
@@ -99,12 +94,10 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                         var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = UV纹理数组 };
 
-                        所有可装配多边形网格与材质.Add(计数, (通用工具.复制多边形网格(当前Mesh), [实体材质2, 实体材质1]));
+                        所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质2,], 物体名称));
 
                         通用工具.注销AssetBundle(资源视图fbx);
                     }
-
-                    计数++;
                 }
             }
 

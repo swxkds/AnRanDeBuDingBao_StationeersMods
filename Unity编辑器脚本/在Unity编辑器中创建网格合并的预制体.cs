@@ -13,6 +13,7 @@ public class 在Unity编辑器中创建网格合并的预制体 : MonoBehaviour
     public static Material 测试用蓝图材质 { get; private set; }
     public Mesh 多边形网格与材质_已合并Mesh;
     public Material[] 多边形网格与材质_所有subMesh材质;
+    public static Texture2DArray UV纹理数组;
     public static GameObject 实体预制体 { get; private set; }
     public static GameObject 蓝图预制体 { get; private set; }
     public string 物体名称 = "矿物扫描眼镜";
@@ -38,13 +39,16 @@ public class 在Unity编辑器中创建网格合并的预制体 : MonoBehaviour
 
         if (测试用实体材质 == null)
         {
-            var shader = Shader.Find("Standard");
+            var shader = Shader.Find("Legacy Shaders/Diffuse Fast");
             if (shader == null)
             {
                 Debug.Log("提供的路径处找不到实体shader");
                 return;
             }
-            测试用实体材质 = new Material(shader);
+            测试用实体材质 = new Material(shader)
+            {
+                mainTexture = UV纹理数组
+            };
         }
 
         if (测试用蓝图材质 == null)
@@ -80,6 +84,37 @@ public class 在Unity编辑器中创建网格合并的预制体 : MonoBehaviour
             多边形网格与材质_已合并Mesh = 已合并Mesh;
 
             注销AssetBundle(资源视图);
+        }
+
+        {
+            if (UV纹理数组 == null)
+            {
+                var Unity项目Assets目录 = Application.dataPath;
+
+                var AssetBundle字节序列文件完整路径 = Path.Combine(Unity项目Assets目录, $"{物体名称}_uv纹理数组_AssetBundle");
+
+                var 当前路径 = FileUtil.GetProjectRelativePath(AssetBundle字节序列文件完整路径);
+                Debug.Log(当前路径);
+
+                var 资源视图 = AssetBundle.LoadFromFile(当前路径);
+
+                if (资源视图 == null)
+                {
+                    Debug.Log("提供的路径处找不到AssetBundle字节序列文件");
+                    return;
+                }
+
+                var 所有UV纹理数组 = 资源视图.LoadAllAssets<Texture2DArray>();
+
+                UV纹理数组 = 所有UV纹理数组[0];
+
+                注销AssetBundle(资源视图, AssetBundle注销方式.仅注销资源视图_资源依旧保留在Unity资源管理器中);
+
+                if (测试用蓝图材质 != null)
+                {
+                    测试用蓝图材质.mainTexture = UV纹理数组;
+                }
+            }
         }
 
         {
@@ -124,8 +159,13 @@ public class 在Unity编辑器中创建网格合并的预制体 : MonoBehaviour
         }
     }
 
-    public static Mesh 合并多边形网格(Mesh[] Arg_所有Mesh, bool Arg_保留子网格么 = false)
+    public static Mesh 合并多边形网格(Mesh[] Arg_所有Mesh, bool Arg_保留子网格么 = true)
     {
+        for (var i = 0; i < Arg_所有Mesh.Length; i++)
+        {
+            Arg_所有Mesh[i] = 复制多边形网格(Arg_所有Mesh[i]);
+        }
+
         var 待合并 = new List<CombineInstance>(Arg_所有Mesh.Length);
         for (var i = 0; i < Arg_所有Mesh.Length; ++i)
         {
@@ -146,6 +186,35 @@ public class 在Unity编辑器中创建网格合并的预制体 : MonoBehaviour
         Result.RecalculateBounds();
         return Result;
     }
+
+
+    public static Mesh 复制多边形网格(Mesh Arg_Mesh, bool Arg_保留子网格么 = false)
+    {
+        if (Arg_Mesh == null)
+        {
+            Debug.Log("传入的Mesh为空, 无法复制多边形网格");
+            return null;
+        }
+
+        List<CombineInstance> list = new List<CombineInstance>(Arg_Mesh.subMeshCount);
+        for (int i = 0; i < Arg_Mesh.subMeshCount; i++)
+        {
+            list.Add(new CombineInstance
+            {
+                mesh = Arg_Mesh,
+                subMeshIndex = i,
+                transform = Matrix4x4.identity
+            });
+        }
+
+        Mesh mesh = new Mesh();
+        mesh.name = Arg_Mesh.name + "已复制";
+        mesh.CombineMeshes(list.ToArray(), !Arg_保留子网格么, useMatrices: true);
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        return mesh;
+    }
+
     public static void 为实体添加基本组件(GameObject Arg_由AssetBundle加载的空预制体资源_实体, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质)
     {
         var 实体 = Arg_由AssetBundle加载的空预制体资源_实体;
