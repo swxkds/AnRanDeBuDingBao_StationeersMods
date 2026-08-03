@@ -58,7 +58,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                     {
                         const string 物体名称 = "立体文字装饰";
-                        var 资源视图fbx = AssetBundle.LoadFromFile(Path.Combine(dllDirectory, "模型与纹理/" + 物体名称 + "/" + 物体名称 + "fbx_AssetBundle"));
+                        var 资源视图fbx = AssetBundle.LoadFromFile(Path.Combine(dllDirectory, "模型与纹理/" + 物体名称 + "/" + 物体名称 + "fbx"));
                         通用工具.打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图fbx);
 
                         var 所有Mesh = 资源视图fbx.LoadAllAssets<Mesh>();
@@ -84,7 +84,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                         var 所有Mesh = 资源视图fbx.LoadAllAssets<Mesh>();
 
-                        const int 默认颜色 = (int)通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色.橙色Orange;
+                        const int 默认颜色 = (int)通用工具.游戏内置喷漆颜色.色板.橙色;
                         var 实体材质1 = new Material(Shader.Find("StandardInstanced"))
                         {
                             mainTexture = 缩略图数组[默认颜色].texture,

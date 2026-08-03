@@ -31,7 +31,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             var 网格与材质 = 资源加载器.多边形网格与材质;
 
             const string NameID = "KuangWuSaoMiaoYanJing";
-            const 通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色 默认颜色 = 通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色.蓝色Blue;
+            const 通用工具.游戏内置喷漆颜色.色板 默认颜色 = 通用工具.游戏内置喷漆颜色.色板.蓝色;
 
             var 控制组件 = 通用工具.创建Thing预制体并进行通用初始化<矿物扫描眼镜>(资源加载器.预制体.实体, 资源加载器.预制体.蓝图, NameID, 网格与材质.已合并Mesh, 网格与材质.所有subMesh材质, 资源加载器.纹理.对应不同喷漆颜色的缩略图, 默认颜色);
 

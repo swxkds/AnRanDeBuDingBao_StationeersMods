@@ -32,7 +32,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             var 资源加载器 = 功能模块之立体文字装饰_资源加载器.单例;
 
             const string NameID = "ItemKitLiTiWenZiZhuangShi";
-            const 通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色 默认颜色 = 通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色.橙色Orange;
+            const 通用工具.游戏内置喷漆颜色.色板 默认颜色 = 通用工具.游戏内置喷漆颜色.色板.橙色;
 
             // MultiConstructor: 可以放进背包的装配包道具, 一个装配包可以放置多个建筑
             var 装配包 = 通用工具.创建Thing预制体并进行通用初始化<MultiConstructor>(资源加载器.套件预制体.实体, 资源加载器.套件预制体.蓝图, NameID, 资源加载器.套件多边形网格与材质.已合并Mesh, 资源加载器.套件多边形网格与材质.所有subMesh材质, 资源加载器.套件纹理.对应不同喷漆颜色的缩略图, 默认颜色);
