@@ -87,12 +87,11 @@ namespace meanran_xuexi_mods_xiaoyouhua
                         const int 默认颜色 = (int)通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色.橙色Orange;
                         var 实体材质1 = new Material(Shader.Find("StandardInstanced"))
                         {
-                            color = Color.clear,
                             mainTexture = 缩略图数组[默认颜色].texture,
                             shaderKeywords = ["_EMISSION", "_GLOSSYREFLECTIONS_OFF",],
                         };
 
-                        var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = UV纹理数组 };
+                        var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = null };
 
                         所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质2,], 物体名称));
 
@@ -131,7 +130,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                         }
                     }
                 }
-            }
+            }       
         }
     }
 }

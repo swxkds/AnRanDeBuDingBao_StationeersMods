@@ -4,6 +4,9 @@ using BepInEx;
 using UnityEngine;
 using Objects.Items;
 using Reagents;
+using Assets.Scripts.Util;
+using Assets.Scripts;
+using System.Linq;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
@@ -19,6 +22,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
             Log.LogMessage("功能模块之立体文字装饰加载完成!");
             补丁 = new Harmony("功能模块之立体文字装饰");
             补丁.PatchAll();
+
+            前置模块.添加初始化事件(static () => Log.LogMessage(string.Join("\n", Singleton<GameManager>.Instance.CustomColors.Select(d => d.DisplayName + d.Color.ToString()))));
         }
 
         [Tooltip("注: 创建新接口的操作是, 先画一个0.5*0.5*0.5的小网格立方体阵列, 接口位置就是每个小网格的四条边中心点(例: 十字电缆放置后刚好匹配四条边中心点), 总之就是建模可以随便画, 接口一定要定位在小网格的四条边中心点上")]

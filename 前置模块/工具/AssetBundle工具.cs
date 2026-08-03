@@ -26,17 +26,17 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             var 资源视图所有缩略图 = AssetBundle.LoadFromFile(Path.Combine(dll模组文件所在目录, $"模型与纹理/{物体名称}/{物体名称}的所有缩略图_AssetBundle"));
             打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图所有缩略图);
-            var 缩略图数组 = new Sprite[游戏内置喷漆色板.所有喷漆色板颜色.Count()];
+            var 缩略图数组 = new Sprite[游戏内置喷漆颜色.所有喷漆颜色.Count()];
             for (var i = 0; i < 缩略图数组.Length; i++)
             {
-                var 当前 = 资源视图所有缩略图.LoadAsset<Sprite>($"Assets/{物体名称}的所有缩略图/{物体名称}_缩略图_{游戏内置喷漆色板.所有喷漆色板颜色[i]}.asset");
+                var 当前 = 资源视图所有缩略图.LoadAsset<Sprite>($"Assets/{物体名称}的所有缩略图/{物体名称}_缩略图_{游戏内置喷漆颜色.所有喷漆颜色[i]}.asset");
                 if (当前)
                 {
                     缩略图数组[i] = 当前;
                 }
                 else
                 {
-                    前置模块.Log.LogError($"加载本地的AssetBundle文件_fbx和uv纹理数组和所有缩略图: {物体名称} 缺少 {游戏内置喷漆色板.所有喷漆色板颜色[i]}");
+                    前置模块.Log.LogError($"加载本地的AssetBundle文件_fbx和uv纹理数组和所有缩略图: {物体名称} 缺少 {游戏内置喷漆颜色.所有喷漆颜色[i]}");
                 }
             }
             注销AssetBundle(资源视图所有缩略图, AssetBundle注销方式.仅注销资源视图_资源依旧保留在Unity资源管理器中);

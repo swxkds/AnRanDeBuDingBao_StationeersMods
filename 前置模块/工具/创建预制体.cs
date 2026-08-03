@@ -13,33 +13,51 @@ namespace meanran_xuexi_mods_xiaoyouhua
 {
     public static partial class 通用工具
     {
-
-        public class 游戏内置喷漆色板
+        public class 游戏内置喷漆颜色
         {
-            public enum 游戏内置喷漆色板12种颜色
+            public enum 色板
             {
-                蓝色Blue = 0,
-                灰色Gray, 绿色Green, 橙色Orange, 红色Red, 黄色Yellow, 白色White, 黑色Black, 棕色Brown, 土黄色Khaki, 粉色Pink, 紫色Purple,
+                蓝色 = 0, 灰色, 绿色, 橙色, 红色, 黄色, 白色, 黑色, 棕色, 土黄色, 粉色, 紫色, 黑曜石色, 银色, 青铜色, 金色,
             }
-            public static readonly 游戏内置喷漆色板12种颜色[] 所有喷漆色板颜色 = Enum.GetValues(typeof(游戏内置喷漆色板12种颜色)).Cast<游戏内置喷漆色板12种颜色>().ToArray();
+
+            public static readonly Dictionary<色板, Color> 所有喷漆颜色RGBA值 = new()
+            {
+                [色板.蓝色] = new Color(0.129f, 0.165f, 0.647f, 1.000f),
+                [色板.灰色] = new Color(0.482f, 0.482f, 0.482f, 1.000f),
+                [色板.绿色] = new Color(0.247f, 0.608f, 0.224f, 1.000f),
+                [色板.橙色] = new Color(1.000f, 0.400f, 0.169f, 1.000f),
+                [色板.红色] = new Color(0.906f, 0.008f, 0.000f, 1.000f),
+                [色板.黄色] = new Color(1.000f, 0.737f, 0.106f, 1.000f),
+                [色板.白色] = new Color(0.906f, 0.906f, 0.906f, 1.000f),
+                [色板.黑色] = new Color(0.031f, 0.035f, 0.031f, 1.000f),
+                [色板.棕色] = new Color(0.388f, 0.235f, 0.169f, 1.000f),
+                [色板.土黄色] = new Color(0.388f, 0.388f, 0.247f, 1.000f),
+                [色板.粉色] = new Color(0.894f, 0.110f, 0.600f, 1.000f),
+                [色板.紫色] = new Color(0.451f, 0.173f, 0.655f, 1.000f),
+                [色板.黑曜石色] = new Color(0.400f, 0.420f, 0.460f, 1.000f),
+                [色板.银色] = new Color(0.860f, 0.870f, 0.900f, 1.000f),
+                [色板.青铜色] = new Color(0.720f, 0.450f, 0.250f, 1.000f),
+                [色板.金色] = new Color(0.830f, 0.690f, 0.320f, 1.000f)
+            };
+            public static readonly 色板[] 所有喷漆颜色 = Enum.GetValues(typeof(色板)).Cast<色板>().ToArray();
         }
 
         [Tooltip("建议在Unity编辑器中提前创建好对应不同喷漆颜色的UV纹理和缩略图, 然后打包成AssetBundle, 因为Unity引擎在专业服务器版本中, 加载AssetBundle功能是开启的(因为只是反序列化, 没有图形计算), 但是创建Texture2DArray和Sprite是禁用的")]
-        public static (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) 创建UV纹理和缩略图(Dictionary<游戏内置喷漆色板.游戏内置喷漆色板12种颜色, Texture2D> 对应不同喷漆颜色的纹理)
+        public static (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) 创建UV纹理和缩略图(Dictionary<游戏内置喷漆颜色.色板, Texture2D> 对应不同喷漆颜色的纹理)
         {
             (var 颜色, var 纹理) = 对应不同喷漆颜色的纹理.First();
-            if (游戏内置喷漆色板.所有喷漆色板颜色.Any(d => d == 颜色) && 纹理 != null)
+            if (游戏内置喷漆颜色.所有喷漆颜色.Any(d => d == 颜色) && 纹理 != null)
             {
                 var 多分辨率预存计数 = 纹理.mipmapCount;
                 var 是否存在多分辨率预存 = 多分辨率预存计数 > 1;
 
-                var UV纹理 = new Texture2DArray(纹理.width, 纹理.height, 游戏内置喷漆色板.所有喷漆色板颜色.Count(), 纹理.format, 是否存在多分辨率预存);
-                var 缩略图 = new Sprite[游戏内置喷漆色板.所有喷漆色板颜色.Count()];
+                var UV纹理 = new Texture2DArray(纹理.width, 纹理.height, 游戏内置喷漆颜色.所有喷漆颜色.Count(), 纹理.format, 是否存在多分辨率预存);
+                var 缩略图 = new Sprite[游戏内置喷漆颜色.所有喷漆颜色.Count()];
 
                 var 纹理区域信息 = new Rect(0, 0, 纹理.width, 纹理.height);
                 var 纹理的轴心点 = new Vector2(0.5f, 0.5f);       // 归一化值, 纹理的中心点 == 纹理的轴心点
 
-                foreach (var 当前 in 游戏内置喷漆色板.所有喷漆色板颜色)
+                foreach (var 当前 in 游戏内置喷漆颜色.所有喷漆颜色)
                 {
                     var 当前depth = (int)当前;
                     if (对应不同喷漆颜色的纹理.TryGetValue(当前, out var 当前纹理))
@@ -56,7 +74,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             Graphics.CopyTexture(src: 当前纹理, srcElement: 0, dst: UV纹理, dstElement: 当前depth);
                         }
 
-                        缩略图[当前depth] = Sprite.Create(当前纹理, 纹理区域信息, 纹理的轴心点, pixelsPerUnit: 50);
+                        缩略图[当前depth] = Sprite.Create(当前纹理, 纹理区域信息, 纹理的轴心点, pixelsPerUnit: 100);
                     }
                     else
                     {
@@ -506,7 +524,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             线框绘制器.BlueprintRenderer = 渲染配置;               // Wireframe是独立渲染的, 每次渲染前需要从蓝图渲染配置的材质中读取颜色来配置线框绘制颜色
         }
 
-        private static T 为实体添加基本组件<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, string Arg_NameID, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质, Sprite[] Arg_缩略图, 游戏内置喷漆色板.游戏内置喷漆色板12种颜色 Arg_默认颜色) where T : Thing
+        private static T 为实体添加基本组件<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, string Arg_NameID, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质, Sprite[] Arg_缩略图, 游戏内置喷漆颜色.色板 Arg_默认颜色) where T : Thing
         {
             var 实体 = Arg_由AssetBundle加载的空预制体资源_实体;
 
@@ -549,7 +567,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             物理运动配置.ResetInertiaTensor();
             道具.RigidBody = 物理运动配置;
         }
-        public static T 创建Thing预制体并进行通用初始化<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, GameObject Arg_由AssetBundle加载的空预制体资源_蓝图, string Arg_NameID, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质, Sprite[] Arg_缩略图, 游戏内置喷漆色板.游戏内置喷漆色板12种颜色 Arg_默认颜色) where T : Thing
+        public static T 创建Thing预制体并进行通用初始化<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, GameObject Arg_由AssetBundle加载的空预制体资源_蓝图, string Arg_NameID, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质, Sprite[] Arg_缩略图, 游戏内置喷漆颜色.色板 Arg_默认颜色) where T : Thing
         {
             var 实体 = Arg_由AssetBundle加载的空预制体资源_实体;
             var 控制组件 = 为实体添加基本组件<T>(实体, Arg_NameID, Arg_ThingMesh, Arg_所有subMesh材质, Arg_缩略图, Arg_默认颜色);
