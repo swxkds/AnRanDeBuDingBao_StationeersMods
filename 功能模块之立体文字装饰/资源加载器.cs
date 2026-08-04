@@ -32,7 +32,9 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 {
                     const string 物体名称 = "(套件)立体文字装饰";
                     (AssetBundle 资源视图fbx, Texture2DArray UV纹理数组, Sprite[] 缩略图数组) = 通用工具.加载本地的AssetBundle文件_fbx和uv纹理数组和所有缩略图(dllDirectory, 物体名称);
+
                     套件纹理 = (UV纹理数组, 缩略图数组);
+
                     var 所有Mesh = 资源视图fbx.LoadAllAssets<Mesh>();
 
                     var 实体材质1 = new Material(Shader.Find("StandardInstanced"))
@@ -58,28 +60,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                     {
                         const string 物体名称 = "立体文字装饰";
-                        var 资源视图fbx = AssetBundle.LoadFromFile(Path.Combine(dllDirectory, "模型与纹理/" + 物体名称 + "/" + 物体名称 + "fbx"));
-                        通用工具.打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图fbx);
-
-                        var 所有Mesh = 资源视图fbx.LoadAllAssets<Mesh>();
-
-                        var 实体材质1 = new Material(Shader.Find("StandardInstanced"))
-                        {
-                            color = Color.gray,
-                            mainTexture = null,
-                            shaderKeywords = ["_EMISSION", "_GLOSSYREFLECTIONS_OFF",],
-                        };
-
-                        var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = 套件纹理.对应不同喷漆颜色的UV纹理 };
-
-                        所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质1, 实体材质2,], 物体名称));
-
-                        通用工具.注销AssetBundle(资源视图fbx);
-                    }
-
-                    {
-                        const string 物体名称 = "居住";
                         (AssetBundle 资源视图fbx, Texture2DArray UV纹理数组, Sprite[] 缩略图数组) = 通用工具.加载本地的AssetBundle文件_fbx和uv纹理数组和所有缩略图(dllDirectory, 物体名称);
+
                         所有可装配纹理.Add(物体名称, (UV纹理数组, 缩略图数组));
 
                         var 所有Mesh = 资源视图fbx.LoadAllAssets<Mesh>();
@@ -91,7 +73,29 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             shaderKeywords = ["_EMISSION", "_GLOSSYREFLECTIONS_OFF",],
                         };
 
-                        var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = null };
+                        var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = UV纹理数组 };
+
+                        所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质2,], 物体名称));
+
+                        通用工具.注销AssetBundle(资源视图fbx);
+                    }
+
+                    {
+                        const string 物体名称 = "居住";
+                        (AssetBundle 资源视图fbx, Texture2DArray UV纹理数组, Sprite[] 缩略图数组) = 通用工具.加载本地的AssetBundle文件_fbx和uv纹理数组和所有缩略图(dllDirectory, 物体名称);
+
+                        所有可装配纹理.Add(物体名称, (UV纹理数组, 缩略图数组));
+
+                        var 所有Mesh = 资源视图fbx.LoadAllAssets<Mesh>();
+
+                        const int 默认颜色 = (int)通用工具.游戏内置喷漆颜色.色板.橙色;
+                        var 实体材质1 = new Material(Shader.Find("StandardInstanced"))
+                        {
+                            mainTexture = 缩略图数组[默认颜色].texture,
+                            shaderKeywords = ["_EMISSION", "_GLOSSYREFLECTIONS_OFF",],
+                        };
+
+                        var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = UV纹理数组 };
 
                         所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质2,], 物体名称));
 
@@ -130,7 +134,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                         }
                     }
                 }
-            }       
+            }
         }
     }
 }

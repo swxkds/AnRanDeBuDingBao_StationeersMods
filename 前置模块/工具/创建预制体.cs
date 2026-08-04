@@ -40,6 +40,9 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 [色板.金色] = new Color(0.830f, 0.690f, 0.320f, 1.000f)
             };
             public static readonly 色板[] 所有喷漆颜色 = Enum.GetValues(typeof(色板)).Cast<色板>().ToArray();
+
+            public static void 打印游戏内置喷漆颜色() { 前置模块.Log.LogMessage(string.Join("\n", Singleton<GameManager>.Instance.CustomColors.Select(d => d.DisplayName + d.Color.ToString()))); }
+
         }
 
         [Tooltip("建议在Unity编辑器中提前创建好对应不同喷漆颜色的UV纹理和缩略图, 然后打包成AssetBundle, 因为Unity引擎在专业服务器版本中, 加载AssetBundle功能是开启的(因为只是反序列化, 没有图形计算), 但是创建Texture2DArray和Sprite是禁用的")]

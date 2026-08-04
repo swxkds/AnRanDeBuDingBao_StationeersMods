@@ -22,8 +22,6 @@ namespace meanran_xuexi_mods_xiaoyouhua
             Log.LogMessage("功能模块之立体文字装饰加载完成!");
             补丁 = new Harmony("功能模块之立体文字装饰");
             补丁.PatchAll();
-
-            前置模块.添加初始化事件(static () => Log.LogMessage(string.Join("\n", Singleton<GameManager>.Instance.CustomColors.Select(d => d.DisplayName + d.Color.ToString()))));
         }
 
         [Tooltip("注: 创建新接口的操作是, 先画一个0.5*0.5*0.5的小网格立方体阵列, 接口位置就是每个小网格的四条边中心点(例: 十字电缆放置后刚好匹配四条边中心点), 总之就是建模可以随便画, 接口一定要定位在小网格的四条边中心点上")]
@@ -81,7 +79,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     case 0:     // 立体文字装饰 平面0.5X0.5
                         {
                             (Mesh 已合并Mesh, Material[] 所有subMesh材质) = 资源加载器.所有可装配多边形网格与材质["立体文字装饰"];
-                            (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理["居住"];
+                            (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理["立体文字装饰"];
 
                             可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(实体预制体, 蓝图预制体, "SmallGridStructureLiTiWenZiZhuangShi" + i, 已合并Mesh, 所有subMesh材质, 对应不同喷漆颜色的缩略图, 默认颜色);
 
