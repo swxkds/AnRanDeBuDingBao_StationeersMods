@@ -17,7 +17,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         {
             public enum 色板
             {
-                蓝色 = 0, 灰色, 绿色, 橙色, 红色, 黄色, 白色, 黑色, 棕色, 土黄色, 粉色, 紫色, 黑曜石色, 银色, 青铜色, 金色,
+                蓝色 = 0, 灰色, 绿色, 橙色, 红色, 黄色, 白色, 黑色, 棕色, 卡其色, 粉色, 紫色, 黑曜石色, 银色, 青铜色, 金色,
             }
 
             public static readonly Dictionary<色板, Color> 所有喷漆颜色RGBA值 = new()
@@ -31,7 +31,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 [色板.白色] = new Color(0.906f, 0.906f, 0.906f, 1.000f),
                 [色板.黑色] = new Color(0.031f, 0.035f, 0.031f, 1.000f),
                 [色板.棕色] = new Color(0.388f, 0.235f, 0.169f, 1.000f),
-                [色板.土黄色] = new Color(0.388f, 0.388f, 0.247f, 1.000f),
+                [色板.卡其色] = new Color(0.388f, 0.388f, 0.247f, 1.000f),
                 [色板.粉色] = new Color(0.894f, 0.110f, 0.600f, 1.000f),
                 [色板.紫色] = new Color(0.451f, 0.173f, 0.655f, 1.000f),
                 [色板.黑曜石色] = new Color(0.400f, 0.420f, 0.460f, 1.000f),

@@ -56,7 +56,7 @@ public class 在Unity编辑器中创建网格合并的预制体 : EditorWindow
 
         Mesh 已合并Mesh = null;
         {
-            var 路径 = Path.Combine(Unity项目Assets目录, $"{物体名称}fbx_AssetBundle");
+            var 路径 = Path.Combine(Unity项目Assets目录, $"{物体名称}fbx");
 
             var 资源视图 = AssetBundle.LoadFromFile(FileUtil.GetProjectRelativePath(路径));
 
@@ -80,7 +80,7 @@ public class 在Unity编辑器中创建网格合并的预制体 : EditorWindow
 
         Texture2DArray UV纹理数组 = null;
         {
-            var 路径 = Path.Combine(Unity项目Assets目录, $"{物体名称}_uv纹理数组_AssetBundle");
+            var 路径 = Path.Combine(Unity项目Assets目录, $"{物体名称}的UV纹理数组");
 
             var 资源视图 = AssetBundle.LoadFromFile(FileUtil.GetProjectRelativePath(路径));
 
@@ -132,7 +132,7 @@ public class 在Unity编辑器中创建网格合并的预制体 : EditorWindow
 
         if (UV纹理数组 != null)
         {
-            string 保存UV纹理数组路径 = $"{保存目录}/{物体名称}_UV纹理数组.asset";
+            string 保存UV纹理数组路径 = $"{保存目录}/{物体名称}的UV纹理数组.asset";
 
             if (!File.Exists(Path.Combine(Unity项目Assets目录, 保存UV纹理数组路径)))    // 检查是否已存在，避免重复创建
             { AssetDatabase.CreateAsset(UV纹理数组, 保存UV纹理数组路径); }
