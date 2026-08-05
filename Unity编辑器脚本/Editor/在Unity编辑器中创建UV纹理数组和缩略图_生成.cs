@@ -110,12 +110,15 @@ public class 在Unity编辑器中创建UV纹理数组和缩略图_生成 : Edito
         var 多分辨率预存计数 = 母版.mipmapCount;
         var 是否存在多分辨率预存 = 多分辨率预存计数 > 1;
 
+        // bool 禁用 = false;
+        // 是否存在多分辨率预存 = 禁用;
+
         var 纹理区域信息 = new Rect(0, 0, 母版.width, 母版.height);
         var 纹理的轴心点 = new Vector2(0.5f, 0.5f);       // 归一化值, 纹理的中心点 == 纹理的轴心点
 
         var UV纹理数组 = new Texture2DArray(母版.width, 母版.height, 游戏内置喷漆颜色_生成.所有喷漆颜色.Count(), 母版.format, 是否存在多分辨率预存);
         var 缩略图数组 = new Sprite[游戏内置喷漆颜色_生成.所有喷漆颜色.Count()];
-        var 所有喷漆颜色纹理 = 游戏内置喷漆颜色_生成.创建所有喷漆纹理图片(母版, 查找该颜色并替换成喷漆颜色);
+        var 所有喷漆颜色纹理 = 游戏内置喷漆颜色_生成.创建所有喷漆纹理图片(母版, 是否存在多分辨率预存, 查找该颜色并替换成喷漆颜色);
 
         foreach (var 当前颜色 in 游戏内置喷漆颜色_生成.所有喷漆颜色)
         {
@@ -198,11 +201,8 @@ public class 在Unity编辑器中创建UV纹理数组和缩略图_生成 : Edito
         };
         public static readonly 色板[] 所有喷漆颜色 = Enum.GetValues(typeof(色板)).Cast<色板>().ToArray();
 
-        public static Texture2D[] 创建所有喷漆纹理图片(Texture2D 源, UnityEngine.Color 母版喷漆颜色)
+        public static Texture2D[] 创建所有喷漆纹理图片(Texture2D 源, bool 是否存在多分辨率预存, UnityEngine.Color 母版喷漆颜色)
         {
-            var 多分辨率预存计数 = 源.mipmapCount;
-            var 是否存在多分辨率预存 = 多分辨率预存计数 > 1;
-
             var 所有喷漆颜色纹理 = new Texture2D[所有喷漆颜色.Count()];
 
             for (var i = 0; i < 所有喷漆颜色.Count(); i++)

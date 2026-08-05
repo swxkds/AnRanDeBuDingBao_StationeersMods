@@ -75,7 +75,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                         var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = UV纹理数组 };
 
-                        所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质2,], 物体名称));
+                        所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质2, 实体材质1,], 物体名称));
 
                         通用工具.注销AssetBundle(资源视图fbx);
                     }
@@ -97,7 +97,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                         var 实体材质2 = new Material(Singleton<GameManager>.Instance.TextureArrayColorMaterial) { mainTexture = UV纹理数组 };
 
-                        所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质1, 实体材质2,], 物体名称));
+                        所有可装配多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [实体材质2, 实体材质1,], 物体名称));
 
                         通用工具.注销AssetBundle(资源视图fbx);
                     }
