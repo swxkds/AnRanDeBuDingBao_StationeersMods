@@ -24,7 +24,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             public static void 打印游戏内置喷漆颜色() { 前置模块.Log.LogMessage(string.Join("\n", Singleton<GameManager>.Instance.CustomColors.Select(d => d.DisplayName + d.Color.ToString()))); }
         }
 
-        public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质, string 物体名称)
+        public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质, string 物体名称, bool Arg_保留子网格么 = true)
         {
             if (Arg_所有Mesh == null || Arg_所有Mesh.Length == 0 || Arg_所有subMesh材质 == null || Arg_所有subMesh材质.Length == 0)
             {
@@ -59,11 +59,11 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 return (null, null);
             }
 
-            var Result = 合并多边形网格(Arg_所有Mesh, Arg_保留子网格么: true);
+            var Result = 合并多边形网格(Arg_所有Mesh, Arg_保留子网格么);
             return (Result, Arg_所有subMesh材质);
         }
 
-        private static Mesh 合并多边形网格(Mesh[] Arg_所有Mesh, bool Arg_保留子网格么 = false)
+        public static Mesh 合并多边形网格(Mesh[] Arg_所有Mesh, bool Arg_保留子网格么 = false)
         {
             if (Arg_所有Mesh == null || Arg_所有Mesh.Length == 0)
             {
