@@ -13,99 +13,15 @@ namespace meanran_xuexi_mods_xiaoyouhua
 {
     public static partial class 通用工具
     {
+        [Tooltip("使用<AssetRipper.GUI.Free.exe>打开游戏根目录的文件<rocketstation.exe>, AssetRipper工具会解包整个游戏程序, 然后选择导出目录并导出资源. 导出结果中可以看到<Assets/Texture2DArray/ColorPaletteArray.png>这张图片, 这就是游戏内置的喷漆系统材质(Singleton<GameManager>.Instance.TextureArrayColorMaterial)使用的UV纹理, 我们在建模时, 需要支持喷漆的子网格都从这个图片上采样\n一个Mesh有多少个子网格, Renderer.sharedMaterials这个材质数组就需要多少个材质, 两者按照索引一一对应(例: 子网格0就使用材质数组中第1个材质; 子网格1就使用材质数组中第2个材质")]
         public class 游戏内置喷漆颜色
         {
             public enum 色板
             {
                 蓝色 = 0, 灰色, 绿色, 橙色, 红色, 黄色, 白色, 黑色, 棕色, 卡其色, 粉色, 紫色, 黑曜石色, 银色, 青铜色, 金色,
             }
-
-            public static readonly Dictionary<色板, Color> 所有喷漆颜色RGBA值 = new()
-            {
-                [色板.蓝色] = new Color(0.129f, 0.165f, 0.647f, 1.000f),
-                [色板.灰色] = new Color(0.482f, 0.482f, 0.482f, 1.000f),
-                [色板.绿色] = new Color(0.247f, 0.608f, 0.224f, 1.000f),
-                [色板.橙色] = new Color(1.000f, 0.400f, 0.169f, 1.000f),
-                [色板.红色] = new Color(0.906f, 0.008f, 0.000f, 1.000f),
-                [色板.黄色] = new Color(1.000f, 0.737f, 0.106f, 1.000f),
-                [色板.白色] = new Color(0.906f, 0.906f, 0.906f, 1.000f),
-                [色板.黑色] = new Color(0.031f, 0.035f, 0.031f, 1.000f),
-                [色板.棕色] = new Color(0.388f, 0.235f, 0.169f, 1.000f),
-                [色板.卡其色] = new Color(0.388f, 0.388f, 0.247f, 1.000f),
-                [色板.粉色] = new Color(0.894f, 0.110f, 0.600f, 1.000f),
-                [色板.紫色] = new Color(0.451f, 0.173f, 0.655f, 1.000f),
-                [色板.黑曜石色] = new Color(0.400f, 0.420f, 0.460f, 1.000f),
-                [色板.银色] = new Color(0.860f, 0.870f, 0.900f, 1.000f),
-                [色板.青铜色] = new Color(0.720f, 0.450f, 0.250f, 1.000f),
-                [色板.金色] = new Color(0.830f, 0.690f, 0.320f, 1.000f)
-            };
             public static readonly 色板[] 所有喷漆颜色 = Enum.GetValues(typeof(色板)).Cast<色板>().ToArray();
-
             public static void 打印游戏内置喷漆颜色() { 前置模块.Log.LogMessage(string.Join("\n", Singleton<GameManager>.Instance.CustomColors.Select(d => d.DisplayName + d.Color.ToString()))); }
-
-        }
-
-        [Tooltip("建议在Unity编辑器中提前创建好对应不同喷漆颜色的UV纹理和缩略图, 然后打包成AssetBundle, 因为Unity引擎在专业服务器版本中, 加载AssetBundle功能是开启的(因为只是反序列化, 没有图形计算), 但是创建Texture2DArray和Sprite是禁用的")]
-        public static (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) 创建UV纹理和缩略图(Dictionary<游戏内置喷漆颜色.色板, Texture2D> 对应不同喷漆颜色的纹理)
-        {
-            (var 颜色, var 纹理) = 对应不同喷漆颜色的纹理.First();
-            if (游戏内置喷漆颜色.所有喷漆颜色.Any(d => d == 颜色) && 纹理 != null)
-            {
-                var 多分辨率预存计数 = 纹理.mipmapCount;
-                var 是否存在多分辨率预存 = 多分辨率预存计数 > 1;
-
-                var UV纹理 = new Texture2DArray(纹理.width, 纹理.height, 游戏内置喷漆颜色.所有喷漆颜色.Count(), 纹理.format, 是否存在多分辨率预存);
-                var 缩略图 = new Sprite[游戏内置喷漆颜色.所有喷漆颜色.Count()];
-
-                var 纹理区域信息 = new Rect(0, 0, 纹理.width, 纹理.height);
-                var 纹理的轴心点 = new Vector2(0.5f, 0.5f);       // 归一化值, 纹理的中心点 == 纹理的轴心点
-
-                foreach (var 当前 in 游戏内置喷漆颜色.所有喷漆颜色)
-                {
-                    var 当前depth = (int)当前;
-                    if (对应不同喷漆颜色的纹理.TryGetValue(当前, out var 当前纹理))
-                    {
-                        if (是否存在多分辨率预存)
-                        {
-                            for (var i = 0; i < 多分辨率预存计数; ++i)
-                            {
-                                Graphics.CopyTexture(src: 当前纹理, srcElement: 0, srcMip: i, dst: UV纹理, dstElement: 当前depth, dstMip: i);
-                            }
-                        }
-                        else
-                        {
-                            Graphics.CopyTexture(src: 当前纹理, srcElement: 0, dst: UV纹理, dstElement: 当前depth);
-                        }
-
-                        缩略图[当前depth] = Sprite.Create(当前纹理, 纹理区域信息, 纹理的轴心点, pixelsPerUnit: 100);
-                    }
-                    else
-                    {
-                        前置模块.Log.LogDebug($"创建对应不同喷漆颜色的UV纹理和缩略图时, 缺少{当前}");
-
-                        if (是否存在多分辨率预存)
-                        {
-                            for (var i = 0; i < 多分辨率预存计数; ++i)
-                            {
-                                Graphics.CopyTexture(src: UV纹理, srcElement: 0, srcMip: i, dst: UV纹理, dstElement: 当前depth, dstMip: i);
-                            }
-                        }
-                        else
-                        {
-                            Graphics.CopyTexture(src: UV纹理, srcElement: 0, dst: UV纹理, dstElement: 当前depth);
-                        }
-
-                        缩略图[当前depth] = 缩略图[0];
-                    }
-                }
-
-                return (UV纹理, 缩略图);
-            }
-            else
-            {
-                前置模块.Log.LogDebug($"创建对应不同喷漆颜色的UV纹理和缩略图时, 创建失败, 传入的原始纹理字典存在错误");
-                return (null, null);
-            }
         }
 
         public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质, string 物体名称)

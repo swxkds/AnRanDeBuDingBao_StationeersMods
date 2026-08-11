@@ -79,7 +79,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     case 0:     // 立体文字装饰 平面0.5X0.5
                         {
                             (Mesh 已合并Mesh, Material[] 所有subMesh材质) = 资源加载器.所有可装配多边形网格与材质["立体文字装饰"];
-                            (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理["立体文字装饰"];
+                            (Texture2D 所有不支持喷漆的网格_UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理["立体文字装饰"];
 
                             可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(实体预制体, 蓝图预制体, "SmallGridStructureLiTiWenZiZhuangShi" + i, 已合并Mesh, 所有subMesh材质, 对应不同喷漆颜色的缩略图, 默认颜色);
 
@@ -104,7 +104,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     case 1:     // 居住     平面0.5X1
                         {
                             (Mesh 已合并Mesh, Material[] 所有subMesh材质) = 资源加载器.所有可装配多边形网格与材质["居住"];
-                            (Texture2DArray 对应不同喷漆颜色的UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理["居住"];
+                            (Texture2D 所有不支持喷漆的网格_UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理["居住"];
                             可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(实体预制体, 蓝图预制体, "SmallGridStructureLiTiWenZiZhuangShi" + i, 已合并Mesh, 所有subMesh材质, 对应不同喷漆颜色的缩略图, 默认颜色);
 
                             var 数据与电力接口子级 = new GameObject();

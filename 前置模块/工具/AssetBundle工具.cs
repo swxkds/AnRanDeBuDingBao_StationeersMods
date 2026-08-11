@@ -14,35 +14,58 @@ namespace meanran_xuexi_mods_xiaoyouhua
             我已经通过复制手段对需要的资源进行了单独创建_请将此资源视图连同资源一起注销掉
         }
 
-        public static (AssetBundle 资源视图fbx, Texture2DArray UV纹理数组, Sprite[] 缩略图数组) 加载本地的AssetBundle文件_fbx和uv纹理数组和所有缩略图(string dll模组文件所在目录, string 物体名称)
+        [Tooltip("使用<AssetRipper.GUI.Free.exe>打开游戏根目录的文件<rocketstation.exe>, AssetRipper工具会解包整个游戏程序, 然后选择导出目录并导出资源. 导出结果中可以看到<Assets/Texture2DArray/ColorPaletteArray.png>这张图片, 这就是游戏内置的喷漆系统材质(Singleton<GameManager>.Instance.TextureArrayColorMaterial)使用的UV纹理, 我们在建模时, 需要支持喷漆的子网格都从这个图片上采样\n一个Mesh有多少个子网格, Renderer.sharedMaterials这个材质数组就需要多少个材质, 两者按照索引一一对应(例: 子网格0就使用材质数组中第1个材质; 子网格1就使用材质数组中第2个材质")]
+        public static (AssetBundle 资源视图fbx, Texture2D 所有不支持喷漆的网格_UV纹理, Sprite[] 缩略图数组) 加载本地的AssetBundle文件_fbx和UV纹理和所有缩略图(string dll模组文件所在目录, string 物体名称)
         {
-            var 资源视图fbx = AssetBundle.LoadFromFile(Path.Combine(dll模组文件所在目录, $"模型与纹理/{物体名称}/{物体名称}fbx"));
-            打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图fbx);
+            AssetBundle 资源视图fbx = null;
+            Texture2D 所有不支持喷漆的网格_UV纹理 = null;
+            Sprite[] 缩略图数组 = null;
 
-            var 资源视图uv纹理数组 = AssetBundle.LoadFromFile(Path.Combine(dll模组文件所在目录, $"模型与纹理/{物体名称}/{物体名称}的UV纹理数组"));
-            打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图uv纹理数组);
-            var UV纹理数组 = 资源视图uv纹理数组.LoadAsset<Texture2DArray>($"Assets/{物体名称}/UV纹理数组.asset");
-            注销AssetBundle(资源视图uv纹理数组, AssetBundle注销方式.仅注销资源视图_资源依旧保留在Unity资源管理器中);
-
-            var 资源视图所有缩略图 = AssetBundle.LoadFromFile(Path.Combine(dll模组文件所在目录, $"模型与纹理/{物体名称}/{物体名称}的所有喷漆颜色缩略图"));
-            打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图所有缩略图);
-            var 缩略图数组 = new Sprite[游戏内置喷漆颜色.所有喷漆颜色.Count()];
-            for (var i = 0; i < 缩略图数组.Length; i++)
             {
-                var 当前 = 资源视图所有缩略图.LoadAsset<Sprite>($"Assets/{物体名称}/所有喷漆颜色缩略图/{游戏内置喷漆颜色.所有喷漆颜色[i]}缩略图.asset");
-                if (当前)
+                var 路径 = Path.Combine(dll模组文件所在目录, $"模型与纹理/{物体名称}/{物体名称}fbx");
+                if (File.Exists(路径))
                 {
-                    缩略图数组[i] = 当前;
-                }
-                else
-                {
-                    缩略图数组[i] = 缩略图数组[0];
-                    前置模块.Log.LogError($"加载本地的AssetBundle文件_fbx和uv纹理数组和所有缩略图: {物体名称} 缺少 {游戏内置喷漆颜色.所有喷漆颜色[i]}");
+                    资源视图fbx = AssetBundle.LoadFromFile(路径);
+                    打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图fbx);
                 }
             }
-            注销AssetBundle(资源视图所有缩略图, AssetBundle注销方式.仅注销资源视图_资源依旧保留在Unity资源管理器中);
 
-            return (资源视图fbx, UV纹理数组, 缩略图数组);
+            {
+                var 路径 = Path.Combine(dll模组文件所在目录, $"模型与纹理/{物体名称}/{物体名称}的所有不支持喷漆的网格_UV纹理");
+                if (File.Exists(路径))
+                {
+                    var 资源视图UV纹理 = AssetBundle.LoadFromFile(路径);
+                    打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图UV纹理);
+                    所有不支持喷漆的网格_UV纹理 = 资源视图UV纹理.LoadAsset<Texture2D>($"Assets/{物体名称}/所有不支持喷漆的网格_UV纹理.png");
+                    注销AssetBundle(资源视图UV纹理, AssetBundle注销方式.仅注销资源视图_资源依旧保留在Unity资源管理器中);
+                }
+            }
+
+            {
+                var 路径 = Path.Combine(dll模组文件所在目录, $"模型与纹理/{物体名称}/{物体名称}的所有喷漆颜色缩略图");
+                if (File.Exists(路径))
+                {
+                    var 资源视图所有缩略图 = AssetBundle.LoadFromFile(路径);
+                    打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图所有缩略图);
+                    缩略图数组 = new Sprite[游戏内置喷漆颜色.所有喷漆颜色.Count()];
+                    for (var i = 0; i < 缩略图数组.Length; i++)
+                    {
+                        var 当前 = 资源视图所有缩略图.LoadAsset<Sprite>($"Assets/{物体名称}/所有喷漆颜色缩略图/{游戏内置喷漆颜色.所有喷漆颜色[i]}缩略图.asset");
+                        if (当前)
+                        {
+                            缩略图数组[i] = 当前;
+                        }
+                        else
+                        {
+                            缩略图数组[i] = 缩略图数组[0];
+                            前置模块.Log.LogError($"加载本地AssetBundle文件时_: {物体名称}的缩略图缺少 {游戏内置喷漆颜色.所有喷漆颜色[i]}");
+                        }
+                    }
+                    注销AssetBundle(资源视图所有缩略图, AssetBundle注销方式.仅注销资源视图_资源依旧保留在Unity资源管理器中);
+                }
+            }
+
+            return (资源视图fbx, 所有不支持喷漆的网格_UV纹理, 缩略图数组);
         }
 
         public static void 注销AssetBundle(AssetBundle Arg_资源视图, AssetBundle注销方式 注销方式 = AssetBundle注销方式.我已经通过复制手段对需要的资源进行了单独创建_请将此资源视图连同资源一起注销掉)
