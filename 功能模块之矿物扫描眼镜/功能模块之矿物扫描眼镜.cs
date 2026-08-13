@@ -64,7 +64,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             控制组件.autoignitionTemperature = 自燃温度;
 
             控制组件.添加槽位(Slot.Class.Battery, InteractableType.Slot1, 实体槽位的碰撞体: null);
-            控制组件.添加槽位(Slot.Class.Ore, InteractableType.Slot3, 实体槽位的碰撞体: null);
+            控制组件.添加槽位(Slot.Class.Ore, InteractableType.Slot3, 实体槽位的碰撞体: null, 槽位对应的所有结构哈希: [矿物扫描眼镜.能源矿物ID]);
             控制组件.添加控件(InteractableType.Powered, 是否创建UI按钮: false, 实体控件的碰撞体: null, 控件快捷键: string.Empty);        // 是否供电
             控制组件.添加控件(InteractableType.OnOff, 是否创建UI按钮: true, 实体控件的碰撞体: null, 控件快捷键: 快捷键配置.按键名称兼索引key_控件快捷键实时读取配置选项卡获取实时的键位);             // 是否开机
 

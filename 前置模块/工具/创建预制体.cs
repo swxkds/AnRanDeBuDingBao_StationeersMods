@@ -311,7 +311,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         }
 
         [Tooltip("一个建筑可以有多个子层级, 每个子层级可以有不同的渲染模型和接口, 在建筑的不同阶段激活对应的子层级(例: 框架阶段子层级只有模型, 其它接口/实体按键都是隐藏的; 在完工阶段, 接口和实体按键则激活, 参与交互)")]
-        public static void 添加接口(this SmallGrid 接口所属的建筑, Transform 接口所属的子层级, Vector3 接口相对于父级轴心点的位置, NetworkType 接口类型, ConnectionRole 接口通道)
+        public static Connection 添加接口(this SmallGrid 接口所属的建筑, Transform 接口所属的子层级, Vector3 接口相对于父级轴心点的位置, NetworkType 接口类型, ConnectionRole 接口通道)
         {
             var 接口层级 = new GameObject("一个子层级可以创建多个接口, 但是每个接口都需要独立的变换组件描述位置");
             接口层级.transform.SetParent(接口所属的子层级, worldPositionStays: false);
@@ -331,9 +331,11 @@ namespace meanran_xuexi_mods_xiaoyouhua
             };
 
             所有接口.Add(新接口);
+
+            return 新接口;
         }
 
-        public static void 添加槽位(this Thing thing, Slot.Class 槽位对应的道具类型, InteractableType 槽位对应的控件类型, BoxCollider 实体槽位的碰撞体 = null, string 指定NameID = null)
+        public static Slot 添加槽位(this Thing thing, Slot.Class 槽位对应的道具类型, InteractableType 槽位对应的控件类型, BoxCollider 实体槽位的碰撞体 = null, string 指定NameID = null, int[] 槽位对应的所有结构哈希 = null)
         {
             if (thing.Slots == null) { thing.Slots = new(); }
             var 槽位 = new Slot();
@@ -350,8 +352,12 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             槽位.Type = 槽位对应的道具类型;
             槽位.SlotTypeIcon = Slot.GetSlotTypeSprite(槽位对应的道具类型);
-            var 只能放入特定Thing_PrefabHash的道具 = 槽位.SpecificTypePrefabHashes;
-            槽位.SpecificTypePrefabHashes = 只能放入特定Thing_PrefabHash的道具;
+
+            bool 该槽位是否只能存放特定Thing_PrefabHash的道具 = 槽位对应的所有结构哈希 != null && 槽位对应的所有结构哈希.Length > 0;
+            if (该槽位是否只能存放特定Thing_PrefabHash的道具)
+            {
+                槽位.SpecificTypePrefabHashes = 槽位对应的所有结构哈希;
+            }
 
             if (实体槽位的碰撞体)
             {
@@ -381,12 +387,17 @@ namespace meanran_xuexi_mods_xiaoyouhua
             槽位.EntityControlMode = MovementController.Mode.Seated;    // 乘客放入槽位后的姿态
             槽位.IsHiddenInSeat = false;        // 乘客放入槽位后的姿态是坐下时, 乘客可见吗? 
             槽位.OccupantAlwaysVisible = false;     // 乘客始终可见
+
+            return 槽位;
         }
 
-        public static void 添加控件(this Thing thing, InteractableType 控件类型, bool 是否创建UI按钮, BoxCollider 实体控件的碰撞体 = null, string 指定NameID = null, string 控件快捷键 = null)
+        public static Interactable 添加控件(this Thing thing, InteractableType 控件类型, bool 是否创建UI按钮, BoxCollider 实体控件的碰撞体 = null, string 指定NameID = null, string 控件快捷键 = null)
         {
             if (thing.Interactables == null) { thing.Interactables = new(); }
-            if (thing.Interactables.Any(t => t.Action == 控件类型)) { return; }
+
+            var 已存在 = thing.Interactables.Find(t => t.Action == 控件类型);
+            if (已存在 != null) { return 已存在; }
+
             var 控件 = new Interactable();
             thing.Interactables.Add(控件);
 
@@ -433,10 +444,18 @@ namespace meanran_xuexi_mods_xiaoyouhua
             控件.JoinInProgressSync = true;
             控件.Layer = 0;
 
-            if (实体控件的碰撞体) { return; }
+            if (实体控件的碰撞体)
+            {
+                控件.CanKeyInteract = false;       // 有些控件的状态由<进入和离开槽位>事件来变更,有些则是提供可点击按钮
+                控件.KeyMap = string.Empty;
+            }
+            else
+            {
+                控件.CanKeyInteract = 是否创建UI按钮;       // 有些控件的状态由<进入和离开槽位>事件来变更,有些则是提供可点击按钮
+                控件.KeyMap = 控件快捷键 == null ? string.Empty : 控件快捷键;
+            }
 
-            控件.CanKeyInteract = 是否创建UI按钮;       // 有些控件的状态由<进入和离开槽位>事件来变更,有些则是提供可点击按钮
-            控件.KeyMap = 控件快捷键 == null ? string.Empty : 控件快捷键;
+            return 控件;
         }
 
         public enum 游戏内置物理运动启用条件类型

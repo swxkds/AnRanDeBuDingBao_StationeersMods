@@ -1197,6 +1197,12 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     __.Field("_baseString").SetValue("架设路径上存在障碍物, 无法架设");
                     __.Field("_overrideString").SetValue("架设路径上存在障碍物, 无法架设");
                 }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonLink);
+                    __.Field("_baseString").SetValue("架设输电线");
+                    __.Field("_overrideString").SetValue("架设输电线");
+                }
             }
 
             static void 向UiComponentRenderer中添加新UI元素(ILayoutElement New, UiComponentRenderer UI层级)
