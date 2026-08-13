@@ -5,22 +5,24 @@ using System.Linq;
 using System;
 using System.IO;
 
-public class 在Unity编辑器中创建缩略图_只读_输入窗口 : EditorWindow
+public class 在Unity编辑器中创建缩略图文件_输入窗口 : EditorWindow
 {
     private string 物体名称 = "_"; // 默认值
-    private const string 上次名称键 = "上次名称键_只读";
+    private const string 上次名称键 = "上次名称键_在Unity编辑器中创建缩略图文件";
 
     void OnEnable()
     {
+        // 窗口切换到打开状态事件
         物体名称 = EditorPrefs.GetString(上次名称键, "_");           // 窗口打开时读取上次保存的名称，若没有则使用默认值
     }
 
     void OnGUI()
     {
+        // 窗口每帧调用
         EditorGUILayout.LabelField("请输入物体名称: ", EditorStyles.boldLabel);
         物体名称 = EditorGUILayout.TextField("物体名称", 物体名称);
 
-        if (GUILayout.Button("创建缩略图", GUILayout.Height(60)))
+        if (GUILayout.Button("创建缩略图", GUILayout.Height(30)))
         {
             if (string.IsNullOrWhiteSpace(物体名称))
             {
@@ -30,7 +32,7 @@ public class 在Unity编辑器中创建缩略图_只读_输入窗口 : EditorWin
 
             EditorPrefs.SetString(上次名称键, 物体名称);        // 保存当前名称到 EditorPrefs
 
-            在Unity编辑器中创建缩略图_只读.创建缩略图(物体名称);
+            在Unity编辑器中创建缩略图文件.创建缩略图(物体名称);
             Close();
         }
 
@@ -41,12 +43,12 @@ public class 在Unity编辑器中创建缩略图_只读_输入窗口 : EditorWin
     }
 }
 
-public class 在Unity编辑器中创建缩略图_只读 : EditorWindow
+public class 在Unity编辑器中创建缩略图文件 : EditorWindow
 {
-    [MenuItem("Tools/在Unity编辑器中创建缩略图_只读")]
-    static void Init()
+    [MenuItem("Tools/在Unity编辑器中创建缩略图文件")]
+    static void 按钮点击事件()
     {
-        var window = GetWindow<在Unity编辑器中创建缩略图_只读_输入窗口>(true, "输入物体名称");
+        var window = GetWindow<在Unity编辑器中创建缩略图文件_输入窗口>(true, "输入物体名称");
         window.Show();
     }
 
@@ -123,7 +125,7 @@ public class 在Unity编辑器中创建缩略图_只读 : EditorWindow
         }
         else
         {
-            Debug.Log($"创建对应不同喷漆颜色的缩略图时, 创建失败, 传入的原始纹理字典存在错误");
+            Debug.Log($"创建对应不同喷漆颜色的缩略图时, 创建失败, 因为没有任何颜色的纹理可用");
         }
 
         AssetDatabase.SaveAssets();

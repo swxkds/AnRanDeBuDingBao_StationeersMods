@@ -1579,60 +1579,60 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
 
 
-    [HarmonyPatch(typeof(GameInfoWindow), nameof(GameInfoWindow.Draw))]
-    public class 修改游戏信息窗口字体
-    {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            汉化模块.Log.LogMessage($"成功修改游戏信息窗口字体以支持中文");
-            var IL指令序列 = new List<CodeInstruction>(instructions);
+    // [HarmonyPatch(typeof(GameInfoWindow), nameof(GameInfoWindow.Draw))]
+    // public class 修改游戏信息窗口字体
+    // {
+    //     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    //     {
+    //         汉化模块.Log.LogMessage($"成功修改游戏信息窗口字体以支持中文");
+    //         var IL指令序列 = new List<CodeInstruction>(instructions);
 
-            // 为了防止BUG,在每帧开头将字体图集指针指向中文字体
-            IL指令序列.InsertRange(0, 修改ImGui绘制字体指令.添加新字体指针并应用);
+    //         // 为了防止BUG,在每帧开头将字体图集指针指向中文字体
+    //         IL指令序列.InsertRange(0, 修改ImGui绘制字体指令.添加新字体指针并应用);
 
-            // 在每帧结束用pop将字体图集指针弹出,防止栈溢出
-            for (int i = IL指令序列.Count - 1; i >= 0; i--)
-            {
-                if (IL指令序列[i].opcode == OpCodes.Ret)
-                {
-                    IL指令序列.Insert(i, 修改ImGui绘制字体指令.退回旧字体指针并应用);
-                }
-            }
+    //         // 在每帧结束用pop将字体图集指针弹出,防止栈溢出
+    //         for (int i = IL指令序列.Count - 1; i >= 0; i--)
+    //         {
+    //             if (IL指令序列[i].opcode == OpCodes.Ret)
+    //             {
+    //                 IL指令序列.Insert(i, 修改ImGui绘制字体指令.退回旧字体指针并应用);
+    //             }
+    //         }
 
-            for (var i = 0; i < IL指令序列.Count; i++)
-            {
-                if (IL指令序列[i].opcode == OpCodes.Ldstr)
-                {
-                    if (IL指令序列[i].operand is string 内容)
-                    {
-                        switch (内容)
-                        {
-                            case "Game Info": IL指令序列[i].operand = "游戏信息"; break;
-                            case "Tabs": IL指令序列[i].operand = "标签"; break;
-                            case "Network Traffic": IL指令序列[i].operand = "网络流量"; break;
-                            case "data": IL指令序列[i].operand = "data"; break;
-                            case "NetworkData": IL指令序列[i].operand = "网络数据"; break;
-                            case "Traffic": IL指令序列[i].operand = "交通"; break;
-                            case "Incoming:": IL指令序列[i].operand = "来信:"; break;
-                            case "Incoming Queue:": IL指令序列[i].operand = "待处理队列:"; break;
-                            case "Outgoing:": IL指令序列[i].operand = "发出:"; break;
-                            case "Outgoing Queue:": IL指令序列[i].operand = "发出队列:"; break;
-                            case "State Immediate": IL指令序列[i].operand = "立即状态"; break;
-                            case "Size:": IL指令序列[i].operand = "尺寸:"; break;
-                            case "Fragments:": IL指令序列[i].operand = "片段:"; break;
-                            case "Max Size:": IL指令序列[i].operand = "最大尺寸:"; break;
-                            case "Max Fragments:": IL指令序列[i].operand = "最大片段:"; break;
-                            case "Fragment Size:": IL指令序列[i].operand = "片段大小:"; break;
-                            case "Max Fragment Size:": IL指令序列[i].operand = "最大片段大小:"; break;
-                            case "Clear Graph": IL指令序列[i].operand = "清空图表"; break;
-                        }
-                    }
-                }
-            }
+    //         for (var i = 0; i < IL指令序列.Count; i++)
+    //         {
+    //             if (IL指令序列[i].opcode == OpCodes.Ldstr)
+    //             {
+    //                 if (IL指令序列[i].operand is string 内容)
+    //                 {
+    //                     switch (内容)
+    //                     {
+    //                         case "Game Info": IL指令序列[i].operand = "游戏信息"; break;
+    //                         case "Tabs": IL指令序列[i].operand = "标签"; break;
+    //                         case "Network Traffic": IL指令序列[i].operand = "网络流量"; break;
+    //                         case "data": IL指令序列[i].operand = "data"; break;
+    //                         case "NetworkData": IL指令序列[i].operand = "网络数据"; break;
+    //                         case "Traffic": IL指令序列[i].operand = "交通"; break;
+    //                         case "Incoming:": IL指令序列[i].operand = "来信:"; break;
+    //                         case "Incoming Queue:": IL指令序列[i].operand = "待处理队列:"; break;
+    //                         case "Outgoing:": IL指令序列[i].operand = "发出:"; break;
+    //                         case "Outgoing Queue:": IL指令序列[i].operand = "发出队列:"; break;
+    //                         case "State Immediate": IL指令序列[i].operand = "立即状态"; break;
+    //                         case "Size:": IL指令序列[i].operand = "尺寸:"; break;
+    //                         case "Fragments:": IL指令序列[i].operand = "片段:"; break;
+    //                         case "Max Size:": IL指令序列[i].operand = "最大尺寸:"; break;
+    //                         case "Max Fragments:": IL指令序列[i].operand = "最大片段:"; break;
+    //                         case "Fragment Size:": IL指令序列[i].operand = "片段大小:"; break;
+    //                         case "Max Fragment Size:": IL指令序列[i].operand = "最大片段大小:"; break;
+    //                         case "Clear Graph": IL指令序列[i].operand = "清空图表"; break;
+    //                     }
+    //                 }
+    //             }
+    //         }
 
-            return IL指令序列;
-        }
-    }
+    //         return IL指令序列;
+    //     }
+    // }
 
 
 

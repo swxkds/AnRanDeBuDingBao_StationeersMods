@@ -4,11 +4,29 @@ using TerrainSystem;
 using Assets.Scripts;
 using System.Reflection;
 using System.IO;
+using Assets.Scripts.Util;
+using System;
+using System.Linq;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
     public static partial class 通用工具
     {
+
+        [Tooltip("使用<AssetRipper.GUI.Free.exe>打开游戏根目录的文件<rocketstation.exe>, AssetRipper工具会解包整个游戏程序, 然后选择导出目录并导出资源. 导出结果中可以看到<Assets/Texture2DArray/ColorPaletteArray.png>这张图片, 这就是游戏内置的喷漆系统材质(Singleton<GameManager>.Instance.TextureArrayColorMaterial)使用的UV纹理, 我们在建模时, 需要支持喷漆的子网格都从这个图片上采样\n一个Mesh有多少个子网格, Renderer.sharedMaterials这个材质数组就需要多少个材质, 两者按照索引一一对应(例: 子网格0就使用材质数组中第1个材质; 子网格1就使用材质数组中第2个材质")]
+        public class 游戏内置喷漆颜色
+        {
+            public static Material 游戏内置喷漆材质 => Singleton<GameManager>.Instance.TextureArrayColorMaterial;
+            public static Texture2DArray 游戏内置喷漆材质使用的UV纹理_注_不支持喷漆的子网格_也可以从这个UV纹理上采样 => (Texture2DArray)游戏内置喷漆材质.mainTexture;
+
+            public enum 色板
+            {
+                蓝色 = 0, 灰色, 绿色, 橙色, 红色, 黄色, 白色, 黑色, 棕色, 卡其色, 粉色, 紫色, 黑曜石色, 银色, 青铜色, 金色,
+            }
+            public static readonly 色板[] 所有喷漆颜色 = Enum.GetValues(typeof(色板)).Cast<色板>().ToArray();
+            public static void 打印游戏内置喷漆颜色() { 前置模块.Log.LogMessage(string.Join("\n", Singleton<GameManager>.Instance.CustomColors.Select(d => d.DisplayName + d.Color.ToString()))); }
+        }
+
         public static readonly int 着色器参数_扫描线开关 = Shader.PropertyToID("_ScanEnabled");
         public static readonly int 着色器参数_扫描线速度 = Shader.PropertyToID("_ScanSpeed");
         public static readonly int 着色器参数_扫描线旋转 = Shader.PropertyToID("_Direction");

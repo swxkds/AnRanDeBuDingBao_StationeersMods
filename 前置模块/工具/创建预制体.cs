@@ -13,18 +13,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 {
     public static partial class 通用工具
     {
-        [Tooltip("使用<AssetRipper.GUI.Free.exe>打开游戏根目录的文件<rocketstation.exe>, AssetRipper工具会解包整个游戏程序, 然后选择导出目录并导出资源. 导出结果中可以看到<Assets/Texture2DArray/ColorPaletteArray.png>这张图片, 这就是游戏内置的喷漆系统材质(Singleton<GameManager>.Instance.TextureArrayColorMaterial)使用的UV纹理, 我们在建模时, 需要支持喷漆的子网格都从这个图片上采样\n一个Mesh有多少个子网格, Renderer.sharedMaterials这个材质数组就需要多少个材质, 两者按照索引一一对应(例: 子网格0就使用材质数组中第1个材质; 子网格1就使用材质数组中第2个材质")]
-        public class 游戏内置喷漆颜色
-        {
-            public enum 色板
-            {
-                蓝色 = 0, 灰色, 绿色, 橙色, 红色, 黄色, 白色, 黑色, 棕色, 卡其色, 粉色, 紫色, 黑曜石色, 银色, 青铜色, 金色,
-            }
-            public static readonly 色板[] 所有喷漆颜色 = Enum.GetValues(typeof(色板)).Cast<色板>().ToArray();
-            public static void 打印游戏内置喷漆颜色() { 前置模块.Log.LogMessage(string.Join("\n", Singleton<GameManager>.Instance.CustomColors.Select(d => d.DisplayName + d.Color.ToString()))); }
-        }
-
-        public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质, string 物体名称, bool Arg_保留子网格么 = true)
+        public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质, string Arg_物体名称, bool Arg_保留子网格么 = true)
         {
             if (Arg_所有Mesh == null || Arg_所有Mesh.Length == 0 || Arg_所有subMesh材质 == null || Arg_所有subMesh材质.Length == 0)
             {
@@ -39,13 +28,13 @@ namespace meanran_xuexi_mods_xiaoyouhua
             }
 
             前置模块.Log.LogMessage("压缩子网格前:");
-            打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, 物体名称);
+            打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, Arg_物体名称);
             for (var i = 0; i < Arg_所有Mesh.Length; i++)
             {
                 Arg_所有Mesh[i] = 复制多边形网格(Arg_所有Mesh[i]);
             }
             前置模块.Log.LogMessage("压缩子网格后:");
-            打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, 物体名称);
+            打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, Arg_物体名称);
 
             if (Arg_所有Mesh.Any(d => d.subMeshCount != 1))
             {
@@ -53,9 +42,17 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 return (null, null);
             }
 
-            if (Arg_所有Mesh.Length != Arg_所有subMesh材质.Length)
+            if (Arg_保留子网格么)
             {
-                前置模块.Log.LogError("传入的Mesh和材质数组长度不一致, 无法合并多边形网格");
+                if (Arg_所有Mesh.Length != Arg_所有subMesh材质.Length)
+                {
+                    前置模块.Log.LogError("传入的Mesh和材质数组长度不一致, 无法合并多边形网格");
+                    return (null, null);
+                }
+            }
+            else if (Arg_所有subMesh材质.Length != 1)
+            {
+                前置模块.Log.LogError("传入的材质数组长度不为1, 无法合并多边形网格");
                 return (null, null);
             }
 
@@ -195,6 +192,14 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 前置模块.Log.LogMessage($"{数据.目标物体.DisplayName}成功添加修复材料和工时数据\n{本施工阶段的施工材料和工时数据.GetRepairsAsString()}");
             }
 
+            public static void 添加由模组扩展的施工材料(Thing thing)
+            {
+                if (!已发现施工材料缓存.ContainsKey(thing.PrefabHash))
+                {
+                    已发现施工材料缓存[thing.PrefabHash] = thing;
+                }
+            }
+
             public static T 查找施工材料<T>(int PrefabHash) where T : Thing
             {
                 if (已发现施工材料缓存.TryGetValue(PrefabHash, out var 匹配)) { return (T)匹配; }
@@ -203,7 +208,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 if (索引 >= 0)
                 {
                     匹配 = WorldManager.Instance.SourcePrefabs[索引];
-                    已发现施工材料缓存.Add(PrefabHash, 匹配);
+                    已发现施工材料缓存[PrefabHash] = 匹配;
                     return (T)匹配;
                 }
 
@@ -305,6 +310,29 @@ namespace meanran_xuexi_mods_xiaoyouhua
             }
         }
 
+        [Tooltip("一个建筑可以有多个子层级, 每个子层级可以有不同的渲染模型和接口, 在建筑的不同阶段激活对应的子层级(例: 框架阶段子层级只有模型, 其它接口/实体按键都是隐藏的; 在完工阶段, 接口和实体按键则激活, 参与交互)")]
+        public static void 添加接口(this SmallGrid 接口所属的建筑, Transform 接口所属的子层级, Vector3 接口相对于父级轴心点的位置, NetworkType 接口类型, ConnectionRole 接口通道)
+        {
+            var 接口层级 = new GameObject("一个子层级可以创建多个接口, 但是每个接口都需要独立的变换组件描述位置");
+            接口层级.transform.SetParent(接口所属的子层级, worldPositionStays: false);
+
+            var 球形碰撞体 = 接口层级.AddComponent<SphereCollider>();
+            球形碰撞体.radius = 0.05f;
+            球形碰撞体.transform.localPosition = 接口相对于父级轴心点的位置;
+
+            var 所有接口 = 接口所属的建筑.OpenEnds;
+
+            var 新接口 = new Connection(接口所属的建筑)
+            {
+                ConnectionType = 接口类型,
+                Transform = 球形碰撞体.transform,
+                Collider = 球形碰撞体,
+                ConnectionRole = 接口通道,
+            };
+
+            所有接口.Add(新接口);
+        }
+
         public static void 添加槽位(this Thing thing, Slot.Class 槽位对应的道具类型, InteractableType 槽位对应的控件类型, BoxCollider 实体槽位的碰撞体 = null, string 指定NameID = null)
         {
             if (thing.Slots == null) { thing.Slots = new(); }
@@ -322,8 +350,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             槽位.Type = 槽位对应的道具类型;
             槽位.SlotTypeIcon = Slot.GetSlotTypeSprite(槽位对应的道具类型);
-            const int 只能放入特定Thing_PrefabHash的道具 = 无效哈希;
-            槽位.SpecificTypePrefabHash = 只能放入特定Thing_PrefabHash的道具;
+            var 只能放入特定Thing_PrefabHash的道具 = 槽位.SpecificTypePrefabHashes;
+            槽位.SpecificTypePrefabHashes = 只能放入特定Thing_PrefabHash的道具;
 
             if (实体槽位的碰撞体)
             {
@@ -499,6 +527,29 @@ namespace meanran_xuexi_mods_xiaoyouhua
             if (蓝图.TryGetComponent<Wireframe>(out var 线框绘制器)) { 控制组件.Wireframe = 线框绘制器; }                      // 放置蓝图时, 通过此引用, 修改蓝图渲染配置的颜色; 销毁实体时, 通过此引用, 销毁掉蓝图和Wireframe
 
             return 控制组件;
+        }
+
+        private static GameObject m_休眠的预制体根节点 = null;
+        public static GameObject 休眠的预制体根节点
+        {
+            get
+            {
+                if (m_休眠的预制体根节点 == null)
+                {
+                    m_休眠的预制体根节点 = new GameObject("m_休眠的预制体根节点");
+                    变更激活状态(m_休眠的预制体根节点, false);
+                    UnityEngine.Object.DontDestroyOnLoad(m_休眠的预制体根节点);
+                }
+                return m_休眠的预制体根节点;
+            }
+        }
+
+        public static GameObject 创建新的空预制体()
+        {
+            var 父级 = 休眠的预制体根节点;
+            var New = new GameObject();
+            New.transform.SetParent(父级.transform, worldPositionStays: false);
+            return New;
         }
     }
 }

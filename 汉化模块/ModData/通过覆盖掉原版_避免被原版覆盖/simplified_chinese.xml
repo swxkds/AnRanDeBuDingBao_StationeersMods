@@ -1825,6 +1825,13 @@
       <Description>象征 {LINK:Stationeers;Stationeer} 生活的标志性装备（编者注:  {LINK:ODA;ODA} 调查显示, 被超压 {THING:StructureFurnace} 炸毁的基地残骸同样具有高辨识度）. 符合ODA安全标准, 八个插槽专用于存放工具和 {THING:ItemCableCoil} . 工具腰带设计符合最严格的ODA标准, 仅被设计为承载工具和 {THING:ItemCableCoil} , 不要将其与 {THING:ItemMiningBelt} 混淆</Description>
     </RecordThing>
     <RecordThing>
+      <Key>ItemCableToolBelt</Key>
+      <Value>电工工具腰带</Value>
+      <Description>一条有两个工具槽和六个电缆槽位的腰带，这六个电缆槽位只能放 {THING:ItemCableCoil}、{THING:ItemCableCoilHeavy} 和 {THING:ItemCableCoilSuperHeavy}.
+
+穿戴时，当 {THING:ItemCableGun} 枪仓内的线圈用完，腰带会自动给枪仓内压入匹配的线圈，并且能自动收纳拆除后掉落的电缆.</Description>
+    </RecordThing>
+    <RecordThing>
       <Key>ItemUraniumOre</Key>
       <Value>铀矿石</Value>
       <Description>1934年费米发现铀受中子轰击产生贝塔射线与新物质, 该过程被命名为"核裂变", 带来了廉价能源、冷战与无数伤亡. 虽在太阳系中较常见,  {LINK:Stationeers;Stationeers} 仍需对其保持警惕</Description>
@@ -10852,6 +10859,82 @@ OGRE可连接滑槽系统并通过逻辑网络控制. 因高效处理工艺, 其
       <Value>转轴式太阳能板(单口)(1x5)</Value>
       <Description />
     </RecordThing>
+    <RecordThing>
+      <Key>ItemKitPowerPylon</Key>
+      <Value>(套件)预制输电线路铁塔</Value>
+      <Description>
+用于建造架空输电线路的预制材料包.
+
+两套材料可以搭建一个 {THING:StructurePowerPylon}.
+一套材料可以放置一个 {THING:StructurePowerPylonTerminus}.
+
+输电线路本身需要使用 {THING:ItemCableCoilSuperHeavy} 单独拉设.</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructurePowerPylon</Key>
+      <Value>输电线路铁塔</Value>
+      <Description>不是所有地方都适合地下管廊和室内预埋管道, 架空输电线路提供了一种高性价比的输电方式.
+
+手持 {THING:ItemCableCoilSuperHeavy} 时, 点击一个电缆终端头(绝缘子)开始布线, 再点击另一个电缆终端头(绝缘子)结束布线, 两点之间不能有地形、墙壁或建筑阻挡连接. 一次布线最长可达40米, 根据布线距离消耗5到30个线圈不等.
+
+一个输电线路铁塔可放置两个电缆终端头(绝缘子), 每个电缆终端头(绝缘子)只能连接一条输电线路, 绝对禁止接头(可在地面搭建自建变电站, 通过变电站+十字电缆等具有接头的电缆增加新的输电线路). 使用 {THING:ItemWireCutters} 切断输电线路可回收电缆, 直接拆除电塔则会返还仍连接的所有线路的电缆.</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructurePowerPylonInput</Key>
+      <Value>电缆终端头(绝缘子)(输入)</Value>
+      <Description />
+    </RecordThing>
+    <RecordThing>
+      <Key>StructurePowerPylonOutput</Key>
+      <Value>电缆终端头(绝缘子)(输出)</Value>
+      <Description />
+    </RecordThing>
+    <RecordThing>
+      <Key>ItemCableGun</Key>
+      <Value>电缆枪</Value>
+      <Description>轻松创建长直电缆段.
+
+电缆枪可压入 {THING:ItemCableCoil}、{THING:ItemCableCoilHeavy} 和 {THING:ItemCableCoilSuperHeavy}. 
+电缆枪会尽可能使用更长的电缆变体.
+如果路径上存在已放置的电缆, 请先手动将其拆除, 因为电缆枪没有接线功能.
+
+一次布线的长度等于枪中剩余线缆的长度；存入 {THING:ItemCableToolBelt} 中的线缆只有在电缆枪空仓时才会自动压入一卷电缆进入电缆枪.</Description>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureCableStraightH3</Key>
+      <Value>重型电缆(直线3)</Value>
+      <Description />
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureCableStraightH3Burnt</Key>
+      <Value>烧毁的重型电缆(直线3)</Value>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureCableStraightH5</Key>
+      <Value>重型电缆(直线5)</Value>
+      <Description />
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureCableStraightH5Burnt</Key>
+      <Value>烧毁的重型电缆(直线5)</Value>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureCableStraightH10</Key>
+      <Value>重型电缆(直线10)</Value>
+      <Description />
+    </RecordThing>
+    <RecordThing>
+      <Key>StructureCableStraightH10Burnt</Key>
+      <Value>烧毁的重型电缆(直线10)</Value>
+    </RecordThing>
+    <RecordThing>
+      <Key>StructurePowerPylonTerminus</Key>
+      <Value>电缆终端头(绝缘子)</Value>
+      <Description>用于连接架空输电线路的材料.
+不要被它的模型欺骗了哦, 它本质是一段超重型电缆，因此连接它的设备会被当成是架空输电线路网络的一员.
+{THING:StructurePowerPylon} 上必须同时放置变体(输入)与变体(输出), 这样架空输电线路连接到变体(输入)时, 会自动接入变体(输出)
+它有一个转接口, 需要消耗一条 {THING:ItemCableCoilSuperHeavy} 创建, 用于接入普通电缆网络.</Description>
+    </RecordThing>
   </Things>
   <Slots>
     <Record>
@@ -10917,6 +11000,10 @@ OGRE可连接滑槽系统并通过逻辑网络控制. 因高效处理工艺, 其
     <Record>
       <Key>Battery</Key>
       <Value>电池</Value>
+    </Record>
+    <Record>
+      <Key>CableAmmo</Key>
+      <Value>电缆线圈</Value>
     </Record>
     <Record>
       <Key>Egg</Key>
@@ -23027,6 +23114,10 @@ Stationeers涵盖多重角色: 他们是宇航员、工程师兼探险家, 仅�
     <Record>
       <Key>SpawnDataVolatilesCanister</Key>
       <Value>燃气瓶</Value>
+    </Record>
+    <Record>
+      <Key>SpawnDataMethaneCanister</Key>
+      <Value>甲烷瓶</Value>
     </Record>
     <Record>
       <Key>SpawnDataHydroponicsSupplies</Key>

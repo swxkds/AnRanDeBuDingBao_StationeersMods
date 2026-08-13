@@ -4,9 +4,6 @@ using BepInEx;
 using UnityEngine;
 using Objects.Items;
 using Reagents;
-using Assets.Scripts.Util;
-using Assets.Scripts;
-using System.Linq;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
@@ -33,7 +30,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
             const 通用工具.游戏内置喷漆颜色.色板 默认颜色 = 通用工具.游戏内置喷漆颜色.色板.橙色;
 
             // MultiConstructor: 可以放进背包的装配包道具, 一个装配包可以放置多个建筑
-            var 装配包 = 通用工具.创建Thing预制体并进行通用初始化<MultiConstructor>(资源加载器.套件预制体.实体, 资源加载器.套件预制体.蓝图, NameID, 资源加载器.套件多边形网格与材质.已合并Mesh, 资源加载器.套件多边形网格与材质.所有subMesh材质, 资源加载器.套件纹理.对应不同喷漆颜色的缩略图, 默认颜色);
+            const string 物体名称 = "(套件)立体文字装饰";
+            var 装配包 = 通用工具.创建Thing预制体并进行通用初始化<MultiConstructor>(资源加载器.所有预制体[物体名称].实体, 资源加载器.所有预制体[物体名称].蓝图, NameID, 资源加载器.所有多边形网格与材质[物体名称].已合并Mesh, 资源加载器.所有多边形网格与材质[物体名称].所有subMesh材质, 资源加载器.所有纹理[物体名称].对应不同喷漆颜色的缩略图, 默认颜色);
             // 装配包.PaintableMaterial = null;  // 如果需要喷漆, 则不变, 不要喷漆, 则用null覆盖
 
             const Slot.Class 道具可放入的槽位_每个槽位有对应的道具类型 = Slot.Class.None;
@@ -68,61 +66,26 @@ namespace meanran_xuexi_mods_xiaoyouhua
             var 所有可装配的建筑 = 装配包.Constructables;
 
             int 撬棍的PrefabHash = Animator.StringToHash("ItemCrowbar");
+            通用工具.施工材料和工时数据.添加由模组扩展的施工材料(装配包);
 
-            for (var i = 0; i < 资源加载器.所有可装配预制体.Count; i++)
+            for (var i = 0; i < 资源加载器.所有预制体.Count; i++)
             {
-                (GameObject 实体预制体, GameObject 蓝图预制体) = 资源加载器.所有可装配预制体[i];
                 立体文字装饰 可装配 = null;
 
                 switch (i)
                 {
                     case 0:     // 立体文字装饰 平面0.5X0.5
                         {
-                            (Mesh 已合并Mesh, Material[] 所有subMesh材质) = 资源加载器.所有可装配多边形网格与材质["立体文字装饰"];
-                            (Texture2D 所有不支持喷漆的网格_UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理["立体文字装饰"];
-
-                            可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(实体预制体, 蓝图预制体, "SmallGridStructureLiTiWenZiZhuangShi" + i, 已合并Mesh, 所有subMesh材质, 对应不同喷漆颜色的缩略图, 默认颜色);
-
-                            var 数据与电力接口子级 = new GameObject();
-                            数据与电力接口子级.transform.SetParent(可装配.ThingTransform, false);
-                            var 球形碰撞体 = 数据与电力接口子级.AddComponent<SphereCollider>();
-                            球形碰撞体.radius = 0.1f;
-                            球形碰撞体.transform.localPosition = new(0, 0, -0.25f);
-
-                            var 可装配的所有接口 = 可装配.OpenEnds;
-                            var 新接口 = new Connection(可装配)
-                            {
-                                ConnectionType = NetworkType.PowerAndData,
-                                Transform = 球形碰撞体.transform,
-                                Collider = 球形碰撞体,
-                                ConnectionRole = ConnectionRole.None,
-                            };
-                            可装配的所有接口.Add(新接口);
-
+                            const string 物体名称1 = "立体文字装饰";
+                            可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(资源加载器.所有预制体[物体名称1].实体, 资源加载器.所有预制体[物体名称1].蓝图, "SmallGridStructureLiTiWenZiZhuangShi" + i, 资源加载器.所有多边形网格与材质[物体名称1].已合并Mesh, 资源加载器.所有多边形网格与材质[物体名称1].所有subMesh材质, 资源加载器.所有纹理[物体名称1].对应不同喷漆颜色的缩略图, 默认颜色);
+                            通用工具.添加接口(可装配, 可装配.ThingTransform, new(0, 0, -0.25f), NetworkType.PowerAndData, ConnectionRole.None);
                             break;
                         }
                     case 1:     // 居住     平面0.5X1
                         {
-                            (Mesh 已合并Mesh, Material[] 所有subMesh材质) = 资源加载器.所有可装配多边形网格与材质["居住"];
-                            (Texture2D 所有不支持喷漆的网格_UV纹理, Sprite[] 对应不同喷漆颜色的缩略图) = 资源加载器.所有可装配纹理["居住"];
-                            可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(实体预制体, 蓝图预制体, "SmallGridStructureLiTiWenZiZhuangShi" + i, 已合并Mesh, 所有subMesh材质, 对应不同喷漆颜色的缩略图, 默认颜色);
-
-                            var 数据与电力接口子级 = new GameObject();
-                            数据与电力接口子级.transform.SetParent(可装配.ThingTransform, false);
-                            var 球形碰撞体 = 数据与电力接口子级.AddComponent<SphereCollider>();
-                            球形碰撞体.radius = 0.1f;
-                            球形碰撞体.transform.localPosition = new(0, 0, -0.25f);
-
-                            var 可装配的所有接口 = 可装配.OpenEnds;
-                            var 新接口 = new Connection(可装配)
-                            {
-                                ConnectionType = NetworkType.PowerAndData,
-                                Transform = 球形碰撞体.transform,
-                                Collider = 球形碰撞体,
-                                ConnectionRole = ConnectionRole.None,
-                            };
-                            可装配的所有接口.Add(新接口);
-
+                            const string 物体名称1 = "居住";
+                            可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(资源加载器.所有预制体[物体名称1].实体, 资源加载器.所有预制体[物体名称1].蓝图, "SmallGridStructureLiTiWenZiZhuangShi" + i, 资源加载器.所有多边形网格与材质[物体名称1].已合并Mesh, 资源加载器.所有多边形网格与材质[物体名称1].所有subMesh材质, 资源加载器.所有纹理[物体名称1].对应不同喷漆颜色的缩略图, 默认颜色);
+                            通用工具.添加接口(可装配, 可装配.ThingTransform, new(0, 0, -0.25f), NetworkType.PowerAndData, ConnectionRole.None);
                             break;
                         }
                 }
@@ -170,8 +133,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 var 该施工阶段的渲染配置 = 可装配.ThingTransform.GetComponent<MeshRenderer>();
                 施工阶段.Visualizer = 该施工阶段的渲染配置;
 
-                var 该施工阶段对应的子级根节点 = 施工阶段.LinkedGameObjects;
-                该施工阶段对应的子级根节点.Add(可装配.ThingTransform.gameObject);
+                var 该施工阶段对应的子层级 = 施工阶段.LinkedGameObjects;
+                该施工阶段对应的子层级.Add(可装配.ThingTransform.gameObject);
 
                 var 如何装拆 = new 通用工具.施工材料和工时数据.装配与拆除所需的施工材料和工时数据((装配包.PrefabHash, 1, 0, 0, 0.5f), (撬棍的PrefabHash, 1, 0.5f), 施工阶段);
                 通用工具.施工材料和工时数据.为目标物体的施工阶段组件添加施工材料和工时数据(如何装拆);
