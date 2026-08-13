@@ -10861,7 +10861,7 @@ OGRE可连接滑槽系统并通过逻辑网络控制. 因高效处理工艺, 其
     </RecordThing>
     <RecordThing>
       <Key>ItemKitPowerPylon</Key>
-      <Value>(套件)预制输电线路铁塔</Value>
+      <Value>(套件)输电线路铁塔</Value>
       <Description>
 用于建造架空输电线路的预制材料包.
 
@@ -10875,18 +10875,20 @@ OGRE可连接滑槽系统并通过逻辑网络控制. 因高效处理工艺, 其
       <Value>输电线路铁塔</Value>
       <Description>不是所有地方都适合地下管廊和室内预埋管道, 架空输电线路提供了一种高性价比的输电方式.
 
-手持 {THING:ItemCableCoilSuperHeavy} 时, 点击一个电缆终端头(绝缘子)开始布线, 再点击另一个电缆终端头(绝缘子)结束布线, 两点之间不能有地形、墙壁或建筑阻挡连接. 一次布线最长可达40米, 根据布线距离消耗5到30个线圈不等.
+每个铁塔上有两个绝缘子. 
 
-一个输电线路铁塔可放置两个电缆终端头(绝缘子), 每个电缆终端头(绝缘子)只能连接一条输电线路, 绝对禁止接头(可在地面搭建自建变电站, 通过变电站+十字电缆等具有接头的电缆增加新的输电线路). 使用 {THING:ItemWireCutters} 切断输电线路可回收电缆, 直接拆除电塔则会返还仍连接的所有线路的电缆.</Description>
+手持 {THING:ItemCableCoilSuperHeavy} 时, 点击一个铁塔上的绝缘子或者点击一个{THING:StructurePowerPylonTerminus}开始布线, 再点击另一个铁塔上的绝缘子或者另一个{THING:StructurePowerPylonTerminus}结束布线, 布线两点之间不能有地形、墙壁或建筑阻挡连接. 一次布线最长可达40米, 根据布线距离消耗5到30个线圈不等.
+
+使用 {THING:ItemWireCutters} 切断输电线路可回收电缆, 直接拆除电塔则会返还仍连接的所有线路的电缆.</Description>
     </RecordThing>
     <RecordThing>
       <Key>StructurePowerPylonInput</Key>
-      <Value>电缆终端头(绝缘子)(输入)</Value>
+      <Value>输电线路铁塔(输入)</Value>
       <Description />
     </RecordThing>
     <RecordThing>
       <Key>StructurePowerPylonOutput</Key>
-      <Value>电缆终端头(绝缘子)(输出)</Value>
+      <Value>输电线路铁塔(输出)</Value>
       <Description />
     </RecordThing>
     <RecordThing>
@@ -10929,11 +10931,13 @@ OGRE可连接滑槽系统并通过逻辑网络控制. 因高效处理工艺, 其
     </RecordThing>
     <RecordThing>
       <Key>StructurePowerPylonTerminus</Key>
-      <Value>电缆终端头(绝缘子)</Value>
-      <Description>用于连接架空输电线路的材料.
-不要被它的模型欺骗了哦, 它本质是一段超重型电缆，因此连接它的设备会被当成是架空输电线路网络的一员.
-{THING:StructurePowerPylon} 上必须同时放置变体(输入)与变体(输出), 这样架空输电线路连接到变体(输入)时, 会自动接入变体(输出)
-它有一个转接口, 需要消耗一条 {THING:ItemCableCoilSuperHeavy} 创建, 用于接入普通电缆网络.</Description>
+      <Value>架空输电线转接口</Value>
+      <Description>提供在 架空输电线 与 普通电缆 之间进行接线时的转接口.
+
+架空输电线连接: 使用 {THING:ItemCableCoilSuperHeavy} 对着转接口点击进行架空输电线拉设.
+普通电缆连接: 跟普通电力设备一样连接
+
+转接口不会隔断数据网络</Description>
     </RecordThing>
   </Things>
   <Slots>

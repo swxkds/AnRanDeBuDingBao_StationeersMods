@@ -1137,6 +1137,66 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     __.Field("_baseString").SetValue("<color=green>水分</color>已停止降低");
                     __.Field("_overrideString").SetValue("<color=green>水分</color>已停止降低");
                 }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonStartLink);
+                    __.Field("_baseString").SetValue("从这里开始架设输电线路");
+                    __.Field("_overrideString").SetValue("从这里开始架设输电线路");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonCantConnect);
+                    __.Field("_baseString").SetValue("这里不允许架设输电线路");
+                    __.Field("_overrideString").SetValue("这里不允许架设输电线路");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonCompleteLink);
+                    __.Field("_baseString").SetValue("在这里结束架设, 预计消耗 {0} 个电缆");
+                    __.Field("_overrideString").SetValue("在这里结束架设, 预计消耗 {0} 个电缆");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonTerminusNeedsPylon);
+                    __.Field("_baseString").SetValue("转接口只允许连接到输电线路铁塔上");
+                    __.Field("_overrideString").SetValue("转接口只允许连接到输电线路铁塔上");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.ConnectionLimitReached);
+                    __.Field("_baseString").SetValue("这里已经存在输电线路, 无法架设");
+                    __.Field("_overrideString").SetValue("这里已经存在输电线路, 无法架设");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonUnlink);
+                    __.Field("_baseString").SetValue("拆除所有连接到这里的输电线");
+                    __.Field("_overrideString").SetValue("拆除所有连接到这里的输电线");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonNeedCablesToLink);
+                    __.Field("_baseString").SetValue("缺少电缆, 无法架设, 预计需要 {0} 个电缆");
+                    __.Field("_overrideString").SetValue("缺少电缆, 无法架设, 预计需要 {0} 个电缆");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonNoConnectionsToUnlink);
+                    __.Field("_baseString").SetValue("这里没有输电线, 无法拆除");
+                    __.Field("_overrideString").SetValue("这里没有输电线, 无法拆除");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonStartNodeTooFar);
+                    __.Field("_baseString").SetValue("无法在这里结束架设, 输电线太长了");
+                    __.Field("_overrideString").SetValue("无法在这里结束架设, 输电线太长了");
+                }
+
+                {
+                    var __ = Traverse.Create(GameStrings.PylonPathObstructed);
+                    __.Field("_baseString").SetValue("架设路径上存在障碍物, 无法架设");
+                    __.Field("_overrideString").SetValue("架设路径上存在障碍物, 无法架设");
+                }
             }
 
             static void 向UiComponentRenderer中添加新UI元素(ILayoutElement New, UiComponentRenderer UI层级)
