@@ -237,7 +237,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             if (doAction)
             {
-                var 冷紫光 = GameManager.GetColorSwatch((int)通用工具.游戏内置喷漆色板.游戏内置喷漆色板12种颜色.紫色Purple);
+                var 冷紫光 = GameManager.GetColorSwatch((int)通用工具.游戏内置喷漆颜色.色板.紫色);
                 if (冷紫光 == null) { return true; }
                 OnServer.SetCustomColor(信号弹, 冷紫光.Index);
             }

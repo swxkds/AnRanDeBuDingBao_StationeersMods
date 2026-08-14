@@ -68,24 +68,28 @@ namespace meanran_xuexi_mods_xiaoyouhua
             int 撬棍的PrefabHash = Animator.StringToHash("ItemCrowbar");
             通用工具.施工材料和工时数据.添加由模组扩展的施工材料(装配包);
 
-            for (var i = 0; i < 资源加载器.所有预制体.Count; i++)
+            for (var i = 1; i < 资源加载器.所有预制体.Count; i++)
             {
                 立体文字装饰 可装配 = null;
 
                 switch (i)
                 {
-                    case 0:     // 立体文字装饰 平面0.5X0.5
+                    case 1:     // 立体文字装饰 平面0.5X0.5
                         {
                             const string 物体名称1 = "立体文字装饰";
                             可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(资源加载器.所有预制体[物体名称1].实体, 资源加载器.所有预制体[物体名称1].蓝图, "SmallGridStructureLiTiWenZiZhuangShi" + i, 资源加载器.所有多边形网格与材质[物体名称1].已合并Mesh, 资源加载器.所有多边形网格与材质[物体名称1].所有subMesh材质, 资源加载器.所有纹理[物体名称1].对应不同喷漆颜色的缩略图, 默认颜色);
                             通用工具.添加接口(可装配, 可装配.ThingTransform, new(0, 0, -0.25f), NetworkType.PowerAndData, ConnectionRole.None);
+                            可装配.添加控件(InteractableType.Powered, 是否创建UI按钮: false, 实体控件的碰撞体: null);
+                            可装配.添加控件(InteractableType.OnOff, 是否创建UI按钮: false, 实体控件的碰撞体: 可装配.ThingTransform.GetComponent<BoxCollider>());
                             break;
                         }
-                    case 1:     // 居住     平面0.5X1
+                    case 2:     // 居住     平面0.5X1
                         {
                             const string 物体名称1 = "居住";
                             可装配 = 通用工具.创建Thing预制体并进行通用初始化<立体文字装饰>(资源加载器.所有预制体[物体名称1].实体, 资源加载器.所有预制体[物体名称1].蓝图, "SmallGridStructureLiTiWenZiZhuangShi" + i, 资源加载器.所有多边形网格与材质[物体名称1].已合并Mesh, 资源加载器.所有多边形网格与材质[物体名称1].所有subMesh材质, 资源加载器.所有纹理[物体名称1].对应不同喷漆颜色的缩略图, 默认颜色);
                             通用工具.添加接口(可装配, 可装配.ThingTransform, new(0, 0, -0.25f), NetworkType.PowerAndData, ConnectionRole.None);
+                            可装配.添加控件(InteractableType.Powered, 是否创建UI按钮: false, 实体控件的碰撞体: null);
+                            可装配.添加控件(InteractableType.OnOff, 是否创建UI按钮: false, 实体控件的碰撞体: 可装配.ThingTransform.GetComponent<BoxCollider>());
                             break;
                         }
                 }

@@ -53,7 +53,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 (AssetBundle 资源视图fbx, Texture2D 所有不支持喷漆的网格_UV纹理, Sprite[] 缩略图数组) = 通用工具.加载本地的AssetBundle文件_fbx和UV纹理和所有缩略图(dllDirectory, 物体名称);
                 所有纹理.Add(物体名称, (所有不支持喷漆的网格_UV纹理, 缩略图数组));
                 var 所有Mesh = 资源视图fbx.LoadAllAssets<Mesh>();
-                所有多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [喷漆材质], 物体名称, Arg_保留子网格么: false));
+                所有多边形网格与材质.Add(物体名称, 通用工具.合并多边形网格(所有Mesh, [喷漆材质, 喷漆材质], 物体名称, Arg_保留子网格么: true));
                 通用工具.注销AssetBundle(资源视图fbx);
 
                 所有预制体.Add(物体名称, (通用工具.创建新的空预制体(), 通用工具.创建新的空预制体()));
