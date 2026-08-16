@@ -5,14 +5,171 @@ using System;
 using UnityEngine;
 using Assets.Scripts.Util;
 using Assets.Scripts.Objects;
-using System.IO;
 using Assets.Scripts.UI;
 using Reagents;
+using System.Reflection;
+using Assets.Scripts.Objects.Structures;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
     public static partial class 通用工具
     {
+        public static BuildState 创建施工阶段并进行通用初始化(Structure Arg_thing, MeshRenderer Arg_该施工阶段的渲染配置, (int 主手持有的该物品的PrefabHash, int 主手消耗数量, int 副手持有的该物品的PrefabHash, int 副手消耗数量, float 完成操作所需的进度条读条时长) Arg_装配, (int 主手持有的该物品的PrefabHash, int 主手消耗数量, float 完成操作所需的进度条读条时长) Arg_拆除, ToolUseType Arg_目标物体的项目建设性质 = ToolUseType.Construction)
+        {
+            var 施工阶段 = new BuildState
+            {
+                Visualizer = Arg_该施工阶段的渲染配置
+            };
+
+            // 直接绘制使用MeshRenderer渲染, 间接绘制会禁用MeshRenderer, 然后使用initialDrawData里的网格与材质并调用间接绘制API绘制
+            Arg_thing.structureRenderMode = StructureRenderMode.Standard;
+            HarmonyLib.Traverse.Create(施工阶段).Field("initialDrawData").SetValue(new Rendering.DrawData() { mesh = null, materials = null, shadowMode = UnityEngine.Rendering.ShadowCastingMode.Off, });
+            施工阶段.RenderMode = BuildStateRenderMode.OnMineAndPreviousStates;
+
+            var 如何装拆 = new 施工材料和工时数据.装配与拆除所需的施工材料和工时数据(Arg_装配, Arg_拆除, 施工阶段, Arg_目标物体的项目建设性质);
+            施工材料和工时数据.为目标物体的施工阶段组件添加施工材料和工时数据(如何装拆);
+
+            return 施工阶段;
+        }
+
+        public static readonly int 壁灯哈希 = Animator.StringToHash("StructureWallLight");
+        public const BindingFlags 私有字段匹配条件 = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+        public static (Light 禁用阴影的地形图层专用灯光配置, Light 灯光配置, LensFlare 眩光配置) 复制原版游戏壁灯的灯光层级_此处仅仅是增加光源_灯泡网格的自发光需要单独配置<T>(T 挂墙小网格建筑, Vector3 光源位置_相对于父级轴心点, Vector3 眩光光源位置_相对于父级轴心点) where T : WallLight
+        {
+            Light 禁用阴影的地形图层专用灯光配置 = null;
+            Light 灯光配置 = null;
+            LensFlare 眩光配置 = null;
+
+            // 光源
+            var 类型指针 = typeof(WallLight);
+            var 灯光 = 类型指针.GetField("light", 私有字段匹配条件);
+            var 眩光 = 类型指针.GetField("lodFlare", 私有字段匹配条件);
+            var 禁用阴影的地形图层专用灯光 = 类型指针.GetField("terrainLight", 私有字段匹配条件);
+
+            // 会自动扫描所有灯光配置并添加到<可装配.Lights>, 在喷漆时改变灯光颜色
+            var 原版_壁灯 = 施工材料和工时数据.查找施工材料<WallLight>(壁灯哈希);
+            if (原版_壁灯)
+            {
+                var 原版_禁用阴影的地形图层专用灯光子层级 = 原版_壁灯.ThingTransform.Find("TerrainLight");
+                if (原版_禁用阴影的地形图层专用灯光子层级)
+                {
+                    var 禁用阴影的地形图层专用灯光子层级 = UnityEngine.Object.Instantiate(原版_禁用阴影的地形图层专用灯光子层级, 挂墙小网格建筑.ThingTransform, worldPositionStays: false);
+                    禁用阴影的地形图层专用灯光子层级.name = "禁用阴影的地形图层专用灯光子层级";
+                    禁用阴影的地形图层专用灯光子层级.transform.localPosition = 光源位置_相对于父级轴心点;
+
+                    禁用阴影的地形图层专用灯光配置 = 禁用阴影的地形图层专用灯光子层级.GetComponent<Light>();
+                    if (禁用阴影的地形图层专用灯光配置)
+                    {
+                        禁用阴影的地形图层专用灯光.SetValue(挂墙小网格建筑, 禁用阴影的地形图层专用灯光配置);
+                        禁用阴影的地形图层专用灯光配置.intensity = 0.2f;
+                    }
+                }
+
+                var 原版_灯光子层级 = 原版_壁灯.ThingTransform.Find("Light");
+                if (原版_灯光子层级)
+                {
+                    var 灯光子层级 = UnityEngine.Object.Instantiate(原版_灯光子层级, 挂墙小网格建筑.ThingTransform, worldPositionStays: false);
+                    灯光子层级.name = "灯光子层级";
+                    灯光子层级.transform.localPosition = 光源位置_相对于父级轴心点;
+
+                    灯光配置 = 灯光子层级.GetComponent<Light>();
+                    if (灯光配置)
+                    {
+                        灯光.SetValue(挂墙小网格建筑, 灯光配置);
+                        灯光配置.intensity = 0.2f;
+                    }
+
+                    var 眩光子层级 = 灯光子层级.Find("lodFlare");
+                    if (眩光子层级)
+                    {
+                        眩光子层级.name = "眩光子层级";
+                        眩光子层级.transform.localPosition = 眩光光源位置_相对于父级轴心点;
+
+                        眩光配置 = 眩光子层级.GetComponent<LensFlare>();
+                        if (眩光配置)
+                        {
+                            眩光.SetValue(挂墙小网格建筑, 眩光配置);
+                            眩光配置.brightness = 0.3f;
+                        }
+                    }
+                }
+            }
+
+            return (禁用阴影的地形图层专用灯光配置, 灯光配置, 眩光配置);
+        }
+
+        public static (Light 禁用阴影的地形图层专用灯光配置, Light 灯光配置, LensFlare 眩光配置) 添加灯光<T>(T 挂墙小网格建筑, Mesh 自发光的灯泡, Vector3 光源位置_相对于父级轴心点, Vector3 眩光光源位置_相对于父级轴心点, Vector3 电源接口位置_相对于父级轴心点, float 耗电量) where T : WallLight
+        {
+            {
+                // 电源接口
+                挂墙小网格建筑.UsedPower = 耗电量;
+                挂墙小网格建筑.添加控件(InteractableType.Powered, 是否创建UI按钮: false);
+                var StructureConsoleLED1x2Back就是这样写的 = new Vector3(0, 0, -90);
+                挂墙小网格建筑.添加接口(电源接口位置_相对于父级轴心点, StructureConsoleLED1x2Back就是这样写的, NetworkType.PowerAndData, ConnectionRole.None);
+            }
+
+            {
+                // 电源开关
+                var 电源开关子层级 = new GameObject("电源开关子层级");
+                电源开关子层级.transform.SetParent(挂墙小网格建筑.ThingTransform, worldPositionStays: false);
+
+                var 碰撞配置 = 电源开关子层级.AddComponent<BoxCollider>();
+                碰撞配置.center = 自发光的灯泡.bounds.center;
+                碰撞配置.size = 自发光的灯泡.bounds.size;
+
+                挂墙小网格建筑.添加控件(InteractableType.OnOff, 是否创建UI按钮: false, 实体控件的碰撞体: 碰撞配置);
+            }
+
+            {
+                // 自发光灯泡模型
+                var 灯泡子层级 = new GameObject("灯泡子层级");
+                灯泡子层级.transform.SetParent(挂墙小网格建筑.ThingTransform, worldPositionStays: false);
+
+                灯泡子层级.AddComponent<MeshFilter>().sharedMesh = 自发光的灯泡;
+
+                if (!GameManager.IsBatchMode)
+                {
+                    灯泡子层级.AddComponent<MeshRenderer>().sharedMaterial = 游戏内置喷漆颜色.游戏内置喷漆材质;
+                }
+            }
+
+            // 增加光源
+            return 复制原版游戏壁灯的灯光层级_此处仅仅是增加光源_灯泡网格的自发光需要单独配置(挂墙小网格建筑, 光源位置_相对于父级轴心点, 眩光光源位置_相对于父级轴心点); ;
+        }
+
+        public static void 初始化_挂墙小网格建筑_碰撞图层与旋转方式<T>(T 挂墙小网格建筑) where T : SmallGrid, ISmartRotatable
+        {
+            // 射线命中时的高亮选择框的显示尺寸是刚好一个小网格大小, 还是所有网格模型的包围盒大小, 仅仅是渲染效果, 实际对齐还是对齐到小网格的
+            挂墙小网格建筑.SelectionDisplay = SelectionHighlightMethod.Bounds;
+
+            // 框架、自动车床、门....检测碰撞时需要与所有覆盖的大、小网格比较, 判断是否可放置    
+            // 墙体只需要对齐到大网格, 并根据位置计算出自己位于大网格的哪个方向(东南西北上下), 比较大网格指定方向是否可放置即可, 因此很多小网格建筑都可以穿墙放置 
+            挂墙小网格建筑.StructureCollisionType = CollisionType.BlockCustom;
+
+            // Grid:框架、自动车床、门....  Face:墙体(放置时对齐到2米尺寸网格的东、南、西、北、上、下六个面)  FaceMount:必须放置在墙体和框架上的物体
+            挂墙小网格建筑.PlacementType = PlacementSnap.FaceMount;
+
+            // 智能旋转预存了多种旋转模板, 描述下一个旋转轴和下一个旋转方向, 用于优化掉不必要的旋转   例: 十字电缆就不需要滚转旋转
+            挂墙小网格建筑.SetConnectionType(SmartRotate.ConnectionType.FlatExhaustive);
+
+            // 俯仰旋转、滚转旋转、偏航旋转  例: XY的意思是支持两种旋转方式, 其中X代表俯仰旋转(上下旋转), Y代表偏航旋转(左右旋转)   例:Z的意思是滚转旋转
+            挂墙小网格建筑.RotationAxis = RotationAxis.Z;
+
+            // 允许旋转的地方, 分别是墙体上、天花板上、地板上、天花板和地板上、墙体和天花板和地板上
+            挂墙小网格建筑.AllowedRotations = AllowedRotations.All;
+
+            // 小网格尺寸0.5, 所有建筑在放置时都是对齐到小网格坐标的, 因此建筑的碰撞尺寸必须是小网格尺寸的整数倍
+            // 大网格尺寸2, 对齐到小网格时的布局分布为 0.25(半个小网格)/0.5/0.5/0.5/0.25(半个小网格), 即大网格中心有9个小网格, 四个边缘各有3个(半个小网格)
+            挂墙小网格建筑.GridSize = SmallGrid.SmallGridSize;
+
+            // 两个大网格之间的边缘处各有0.25格, 组合起来才够一个小网格, 因此假如大网格坐标为0, 小网格坐标就要为-0.25, 这样建筑放置时, 从负0.25处开始判断碰撞, 从0.25处结束碰撞, 不会与大网格中间的9个小网格冲突, 正好利用上了边缘
+            // 直线电缆的碰撞尺寸为一个小网格, 但是直线电缆的渲染尺寸中宽度只有0.1, 因此放置在两个大网格之间的边缘处视觉效果良好, 如果边缘处放置了墙体, 同时又放置了渲染尺寸接近碰撞尺寸的物体, 就会出现穿模
+            挂墙小网格建筑.GridOffset = SmallGrid.SmallGridOffset;
+
+            // 管道、电线、设备、机械臂轨道(滑槽好像属于轨道), 即除了装饰面板外, 放置时都进行碰撞判断
+            挂墙小网格建筑.SmallCollisionType = SmallGridBlock.PipesCablesAndDevices | SmallGridBlock.Rails;
+        }
+
         public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质, string Arg_物体名称, bool Arg_保留子网格么 = true)
         {
             if (Arg_所有Mesh == null || Arg_所有Mesh.Length == 0 || Arg_所有subMesh材质 == null || Arg_所有subMesh材质.Length == 0)
@@ -218,7 +375,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             public enum 施工阶段组件工具提示
             {
                 结构正常状态, 结构正常状态_所有施工阶段数组, 结构正常状态_施工阶段索引,
-                结构损毁状态, 结构损毁状态_所有施工阶段数组, 结构损毁状态_施工阶段索引,
+                结构损毁状态, 结构损毁状态_所有施工阶段数组_为了复用使用了数组_实际上损毁状态只需要一个施工阶段, 结构损毁状态_施工阶段索引,
                 结构正常状态_建筑的生命值不是满值_修复建筑施工阶段
             }
 
@@ -311,14 +468,18 @@ namespace meanran_xuexi_mods_xiaoyouhua
         }
 
         [Tooltip("一个建筑可以有多个子层级, 每个子层级可以有不同的渲染模型和接口, 在建筑的不同阶段激活对应的子层级(例: 框架阶段子层级只有模型, 其它接口/实体按键都是隐藏的; 在完工阶段, 接口和实体按键则激活, 参与交互)")]
-        public static Connection 添加接口(this SmallGrid 接口所属的建筑, Transform 接口所属的子层级, Vector3 接口相对于父级轴心点的位置, NetworkType 接口类型, ConnectionRole 接口通道)
+        public static Connection 添加接口(this SmallGrid 接口所属的建筑, Vector3 接口相对于建筑网格轴心点的位置, Vector3 接口本身占据一个小网格_接口的连接点也占据一个小网格_所以需要一个方向向量来描述连接点具体是哪个方向上的邻居小网格_可以在上下左右前后这六个方向向量中选择一个写上, NetworkType 接口类型, ConnectionRole 接口通道)
         {
-            var 接口层级 = new GameObject("一个子层级可以创建多个接口, 但是每个接口都需要独立的变换组件描述位置");
-            接口层级.transform.SetParent(接口所属的子层级, worldPositionStays: false);
+            var 接口子层级 = new GameObject($"接口类型: {接口类型}  接口通道: {接口通道}  每个接口都需要独立的变换组件描述位置");
+            接口子层级.transform.SetParent(接口所属的建筑.ThingTransform, worldPositionStays: false);
 
-            var 球形碰撞体 = 接口层级.AddComponent<SphereCollider>();
+            var 球形碰撞体 = 接口子层级.AddComponent<SphereCollider>();
+
             球形碰撞体.radius = 0.05f;
-            球形碰撞体.transform.localPosition = 接口相对于父级轴心点的位置;
+            球形碰撞体.transform.localPosition = 接口相对于建筑网格轴心点的位置;
+
+            const bool 禁用Unity引擎内置物理碰撞功能_避免出现空气墙 = true;
+            球形碰撞体.isTrigger = 禁用Unity引擎内置物理碰撞功能_避免出现空气墙;
 
             var 所有接口 = 接口所属的建筑.OpenEnds;
 
@@ -329,6 +490,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 Collider = 球形碰撞体,
                 ConnectionRole = 接口通道,
             };
+
+            //新接口.Transform.localEulerAngles = 接口本身占据一个小网格_接口的连接点也占据一个小网格_所以需要一个方向向量来描述连接点具体是哪个方向上的邻居小网格_可以在上下左右前后这六个方向向量中选择一个写上;
 
             所有接口.Add(新接口);
 
@@ -414,15 +577,15 @@ namespace meanran_xuexi_mods_xiaoyouhua
             {
                 控件.Collider = 实体控件的碰撞体;
                 控件.FakeCollider = null;
-                控件.Bounds = 实体控件的碰撞体.bounds;
-                控件.OriginalBounds = 实体控件的碰撞体.bounds;
+                控件.OriginalBounds = new Bounds(实体控件的碰撞体.center, 实体控件的碰撞体.size);
+                控件.Bounds = 控件.OriginalBounds;  // 这两个包围盒互为缓存, 在不同方法中会覆盖掉另一方 例: Thing.SetupInteractables
             }
             else
             {
                 控件.Collider = null;
                 控件.FakeCollider = null;
-                控件.Bounds = default;
                 控件.OriginalBounds = default;
+                控件.Bounds = 控件.OriginalBounds;
             }
 
             if (thing.BaseAnimator)
@@ -495,6 +658,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             var 实体 = Arg_由AssetBundle加载的空预制体资源_实体;
 
             var 控制组件 = 实体.AddComponent<T>();
+            控制组件.ThingTransform = 实体.transform;
 
             控制组件.PrefabName = 控制组件.name = 实体.name = Arg_NameID;  // 这几个name必须一致, 因为游戏程序有时候使用Thing.PrefabName, 有时候使用UnityEngine.Object.name
             控制组件.PrefabHash = Animator.StringToHash(Arg_NameID);
@@ -503,11 +667,6 @@ namespace meanran_xuexi_mods_xiaoyouhua
             var 多边形网格配置 = 实体.AddComponent<MeshFilter>();
             多边形网格配置.sharedMesh = Arg_ThingMesh;
 
-            var 碰撞体配置 = 实体.AddComponent<BoxCollider>();
-            碰撞体配置.center = Arg_ThingMesh.bounds.center;
-            碰撞体配置.size = Arg_ThingMesh.bounds.size;
-
-            控制组件.ThingTransform = 实体.transform;
             尝试为实体添加运动组件(控制组件);
 
             // Thing.PaintableMaterial必须是12种内置喷漆材质的一种才会启用喷漆功能, 在游戏中进行喷漆时, 将UV纹理数组和缩略图数组切换到对应喷漆索引
@@ -525,15 +684,25 @@ namespace meanran_xuexi_mods_xiaoyouhua
         }
         private static void 尝试为实体添加运动组件<T>(T Arg_控制组件) where T : Thing
         {
-            if (Arg_控制组件 == null) { return; }
-            if (Arg_控制组件 is not DynamicThing 道具) { return; }
+            if (Arg_控制组件 && Arg_控制组件 is DynamicThing 道具)
+            {
+                var 多边形网格必须存在才能参与实体交互 = 道具.ThingTransform.GetComponent<MeshFilter>();
+                if (多边形网格必须存在才能参与实体交互)
+                {
+                    var Arg_ThingMesh = 多边形网格必须存在才能参与实体交互.sharedMesh;
 
-            // [RequireComponent(typeof(Rigidbody))] public class DynamicThing, 道具类有该特性, 会自动添加刚体组件
-            var 物理运动配置 = 道具.ThingTransform.GetOrAddComponent<Rigidbody>();
-            物理运动配置.ResetInertiaTensor();
-            道具.RigidBody = 物理运动配置;
+                    var 碰撞配置 = 道具.ThingTransform.GetOrAddComponent<BoxCollider>();
+                    碰撞配置.center = Arg_ThingMesh.bounds.center;
+                    碰撞配置.size = Arg_ThingMesh.bounds.size;
+
+                    // [RequireComponent(typeof(Rigidbody))] public class DynamicThing, 道具类有该特性, 会自动添加刚体组件
+                    var 运动配置 = 道具.ThingTransform.GetOrAddComponent<Rigidbody>();
+                    运动配置.ResetInertiaTensor();
+                    道具.RigidBody = 运动配置;
+                }
+            }
         }
-        public static T 创建Thing预制体并进行通用初始化<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, GameObject Arg_由AssetBundle加载的空预制体资源_蓝图, string Arg_NameID, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质, Sprite[] Arg_缩略图, 游戏内置喷漆颜色.色板 Arg_默认颜色) where T : Thing
+        public static T 创建Thing预制体并进行通用初始化<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, GameObject Arg_由AssetBundle加载的空预制体资源_蓝图, string Arg_NameID, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质, Sprite[] Arg_缩略图, 游戏内置喷漆颜色.色板 Arg_默认颜色) where T : DynamicThing
         {
             var 实体 = Arg_由AssetBundle加载的空预制体资源_实体;
             var 控制组件 = 为实体添加基本组件<T>(实体, Arg_NameID, Arg_ThingMesh, Arg_所有subMesh材质, Arg_缩略图, Arg_默认颜色);
@@ -542,6 +711,21 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             var 蓝图 = Arg_由AssetBundle加载的空预制体资源_蓝图;
             为蓝图添加高亮全息投影组件(蓝图, Arg_NameID, Arg_ThingMesh);
+            控制组件.Blueprint = 蓝图;
+            if (蓝图.TryGetComponent<Wireframe>(out var 线框绘制器)) { 控制组件.Wireframe = 线框绘制器; }                      // 放置蓝图时, 通过此引用, 修改蓝图渲染配置的颜色; 销毁实体时, 通过此引用, 销毁掉蓝图和Wireframe
+
+            return 控制组件;
+        }
+
+        public static T 创建Thing预制体并进行通用初始化<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, GameObject Arg_由AssetBundle加载的空预制体资源_蓝图, string Arg_NameID, Mesh Arg_模块化模型的部件1网格, Material Arg_模块化模型的部件1材质, Mesh Arg_模块化模型的所有部件网格_已合并Mesh, Sprite[] Arg_缩略图, 游戏内置喷漆颜色.色板 Arg_默认颜色) where T : Structure
+        {
+            var 实体 = Arg_由AssetBundle加载的空预制体资源_实体;
+            var 控制组件 = 为实体添加基本组件<T>(实体, Arg_NameID, Arg_模块化模型的部件1网格, [Arg_模块化模型的部件1材质], Arg_缩略图, Arg_默认颜色);
+
+            if (GameManager.IsBatchMode) { return 控制组件; }    // 若是无图形化游戏模式(纯服务器), 则跳过图形API的调用
+
+            var 蓝图 = Arg_由AssetBundle加载的空预制体资源_蓝图;
+            为蓝图添加高亮全息投影组件(蓝图, Arg_NameID, Arg_模块化模型的所有部件网格_已合并Mesh);
             控制组件.Blueprint = 蓝图;
             if (蓝图.TryGetComponent<Wireframe>(out var 线框绘制器)) { 控制组件.Wireframe = 线框绘制器; }                      // 放置蓝图时, 通过此引用, 修改蓝图渲染配置的颜色; 销毁实体时, 通过此引用, 销毁掉蓝图和Wireframe
 
