@@ -104,8 +104,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 // 电源接口
                 挂墙小网格建筑.UsedPower = 耗电量;
                 挂墙小网格建筑.添加控件(InteractableType.Powered, 是否创建UI按钮: false);
-                var StructureConsoleLED1x2Back就是这样写的 = new Vector3(0, 0, -90);
-                挂墙小网格建筑.添加接口(电源接口位置_相对于父级轴心点, StructureConsoleLED1x2Back就是这样写的, NetworkType.PowerAndData, ConnectionRole.None);
+                挂墙小网格建筑.添加接口(电源接口位置_相对于父级轴心点, NetworkType.PowerAndData, ConnectionRole.None);
             }
 
             {
@@ -468,7 +467,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         }
 
         [Tooltip("一个建筑可以有多个子层级, 每个子层级可以有不同的渲染模型和接口, 在建筑的不同阶段激活对应的子层级(例: 框架阶段子层级只有模型, 其它接口/实体按键都是隐藏的; 在完工阶段, 接口和实体按键则激活, 参与交互)")]
-        public static Connection 添加接口(this SmallGrid 接口所属的建筑, Vector3 接口相对于建筑网格轴心点的位置, Vector3 接口本身占据一个小网格_接口的连接点也占据一个小网格_所以需要一个方向向量来描述连接点具体是哪个方向上的邻居小网格_可以在上下左右前后这六个方向向量中选择一个写上, NetworkType 接口类型, ConnectionRole 接口通道)
+        public static Connection 添加接口(this SmallGrid 接口所属的建筑, Vector3 接口位置_相对于父级轴心点, NetworkType 接口类型, ConnectionRole 接口通道)
         {
             var 接口子层级 = new GameObject($"接口类型: {接口类型}  接口通道: {接口通道}  每个接口都需要独立的变换组件描述位置");
             接口子层级.transform.SetParent(接口所属的建筑.ThingTransform, worldPositionStays: false);
@@ -476,7 +475,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             var 球形碰撞体 = 接口子层级.AddComponent<SphereCollider>();
 
             球形碰撞体.radius = 0.05f;
-            球形碰撞体.transform.localPosition = 接口相对于建筑网格轴心点的位置;
+            球形碰撞体.transform.localPosition = 接口位置_相对于父级轴心点;
 
             const bool 禁用Unity引擎内置物理碰撞功能_避免出现空气墙 = true;
             球形碰撞体.isTrigger = 禁用Unity引擎内置物理碰撞功能_避免出现空气墙;
@@ -490,8 +489,6 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 Collider = 球形碰撞体,
                 ConnectionRole = 接口通道,
             };
-
-            //新接口.Transform.localEulerAngles = 接口本身占据一个小网格_接口的连接点也占据一个小网格_所以需要一个方向向量来描述连接点具体是哪个方向上的邻居小网格_可以在上下左右前后这六个方向向量中选择一个写上;
 
             所有接口.Add(新接口);
 
