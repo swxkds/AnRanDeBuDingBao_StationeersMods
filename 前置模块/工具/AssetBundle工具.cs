@@ -180,18 +180,22 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 }
 
                 var 缩略图数组 = new Sprite[游戏内置喷漆颜色.所有喷漆颜色.Count()];
-                for (var i = 0; i < 缩略图数组.Length && i < 查找结果.Length; i++)
+                for (var i = 0; i < 缩略图数组.Length; i++)
                 {
                     var 索引 = Array.FindIndex(查找结果, d => d.name == $"{游戏内置喷漆颜色.所有喷漆颜色[i]}缩略图");
                     if (索引 >= 0)
                     {
                         缩略图数组[i] = 查找结果[索引];
                     }
-                    else
+                }
+
+                if (Arg_是否填充不存在颜色)
+                {
+                    for (var i = 0; i < 缩略图数组.Length; i++)
                     {
-                        if (Arg_是否填充不存在颜色)
+                        if (缩略图数组[i] == null && 缩略图数组[0] != null)
                         {
-                            缩略图数组[i] = 查找结果[0];
+                            缩略图数组[i] = 缩略图数组[0];
                             前置模块.Log.LogError($"解析该资源目录路径时, 缺少{$"{游戏内置喷漆颜色.所有喷漆颜色[i]}缩略图"}: {Arg_父目录}");
                         }
                     }
