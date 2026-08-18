@@ -674,7 +674,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             线框绘制器.BlueprintRenderer = 渲染配置;               // Wireframe是独立渲染的, 每次渲染前需要从蓝图渲染配置的材质中读取颜色来配置线框绘制颜色
         }
 
-        private static T 为实体添加基本组件<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, string Arg_NameID, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质, Sprite[] Arg_缩略图数组, 游戏内置喷漆颜色.色板 Arg_默认颜色) where T : Thing
+        private static T 为实体添加基本组件<T>(GameObject Arg_由AssetBundle加载的空预制体资源_实体, string Arg_NameID, Mesh Arg_ThingMesh, Material[] Arg_所有subMesh材质, Sprite[] Arg_缩略图, 游戏内置喷漆颜色.色板 Arg_默认颜色) where T : Thing
         {
             var 实体 = Arg_由AssetBundle加载的空预制体资源_实体;
 
@@ -692,22 +692,10 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             // Thing.PaintableMaterial必须是内置喷漆材质的一种才会启用喷漆功能, 在游戏中进行喷漆时, 将缩略图数组切换到对应喷漆索引
             var 默认颜色ID = (int)Arg_默认颜色;
-            if (Arg_缩略图数组 != null)
-            {
-                if (Arg_缩略图数组.Length >= 游戏内置喷漆颜色.所有喷漆颜色.Length)
-                {
-                    控制组件.Thumbnail = Arg_缩略图数组[默认颜色ID];
-                    控制组件.Thumbnails = Arg_缩略图数组;
-                    控制组件.PaintableMaterial = Singleton<GameManager>.Instance.CustomColors[默认颜色ID].Normal;       // UV采样时使用内置喷漆材质的纹理图片
-                }
-                else
-                {
-                    // 建筑物专用, 建筑物只需要一张缩略图在F1百科中显示, 并且使用内置材质启用喷漆功能
-                    控制组件.Thumbnail = Arg_缩略图数组.FirstOrDefault();
-                    控制组件.Thumbnails = null;
-                    控制组件.PaintableMaterial = Singleton<GameManager>.Instance.CustomColors.First().Normal;   // UV采样时使用内置喷漆材质的纹理图片
-                }
-            }
+
+            控制组件.Thumbnail = Arg_缩略图?[默认颜色ID];
+            控制组件.Thumbnails = Arg_缩略图;
+            控制组件.PaintableMaterial = Singleton<GameManager>.Instance.CustomColors[默认颜色ID].Normal;       // UV采样时使用内置喷漆材质的纹理图片
 
             if (GameManager.IsBatchMode) { return 控制组件; }    // 若是无图形化游戏模式(纯服务器), 则跳过图形API的调用
 
