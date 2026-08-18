@@ -37,7 +37,7 @@ public class 在Unity编辑器中提取网格资源
                 var 新网格 = Object.Instantiate(网格);
                 新网格.name = 网格.name;
 
-                var path = AssetDatabase.GenerateUniqueAssetPath(System.IO.Path.Combine(目录, 新网格.name + ".asset"));
+                var path = AssetDatabase.GenerateUniqueAssetPath(System.IO.Path.Combine(目录, 新网格.name + "网格.asset"));
                 AssetDatabase.CreateAsset(新网格, path);
                 Debug.Log("Mesh已成功提取并保存到: " + path);
             }

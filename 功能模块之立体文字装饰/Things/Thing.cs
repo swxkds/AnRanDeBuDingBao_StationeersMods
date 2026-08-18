@@ -9,8 +9,11 @@ namespace meanran_xuexi_mods_xiaoyouhua
         {
             未知, UV纹理, 自发光,
         }
-        protected string 无光层级的名称 => "SmallGridStructureLiTiWenZiZhuangShi";
-        protected string 自发光层级的名称 => "灯泡子层级";
+
+        public const string 外壳层级前缀 = "SmallGridStructureLiTiWenZiZhuangShi";
+        public string 不发光的外壳层级的名称 => 外壳层级前缀;
+        public const string 灯泡层级前缀 = "灯泡子层级";
+        public string 发光的灯泡层级的名称 => 灯泡层级前缀;
         protected bool 材质索引表初始化了么 = false;
         protected 喷漆系统材质发光配置[] 材质索引表 = null;
 
@@ -56,11 +59,11 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                         if (!层级.CompareTag("NotPaintable"))
                         {
-                            if (层级.name.StartsWith(无光层级的名称))
+                            if (层级.name.StartsWith(不发光的外壳层级的名称))
                             {
                                 材质索引表[i] = 喷漆系统材质发光配置.UV纹理;
                             }
-                            else if (层级.name.StartsWith(自发光层级的名称))
+                            else if (层级.name.StartsWith(发光的灯泡层级的名称))
                             {
                                 材质索引表[i] = 喷漆系统材质发光配置.自发光;
                             }

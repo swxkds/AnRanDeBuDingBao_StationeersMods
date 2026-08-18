@@ -151,7 +151,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             string dllDirectory = Path.GetDirectoryName(dllPath); // 获取DLL所在目录
 
             var 资源视图 = AssetBundle.LoadFromFile(Path.Combine(dllDirectory, "着色器/custom_anrandebudingbao_hologram_AssetBundle"));
-            打印AssetBundle中所有的资源索引路径_资源索引路径传参给LoadAsset方法会返回该资源的引用(资源视图);
+            打印已加载资源路径_资源路径传参给LoadAsset方法会返回该资源的引用(资源视图);
             var NewShader = 资源视图.LoadAsset<Shader>("assets/custom_anrandebudingbao_hologram.shader");
             var New = 资源视图.LoadAsset<Material>("assets/custom_anrandebudingbao_hologram.mat");
 

@@ -98,7 +98,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             return (禁用阴影的地形图层专用灯光配置, 灯光配置, 眩光配置);
         }
 
-        public static (Light 禁用阴影的地形图层专用灯光配置, Light 灯光配置, LensFlare 眩光配置) 添加灯光<T>(T 挂墙小网格建筑, Mesh 自发光的灯泡, Vector3 光源位置_相对于父级轴心点, Vector3 眩光光源位置_相对于父级轴心点, Vector3 电源接口位置_相对于父级轴心点, float 耗电量) where T : WallLight
+        public static (Light 禁用阴影的地形图层专用灯光配置, Light 灯光配置, LensFlare 眩光配置) 添加灯光<T>(T 挂墙小网格建筑, Mesh 自发光的灯泡, string 自发光的灯泡层级的名称, Vector3 光源位置_相对于父级轴心点, Vector3 眩光光源位置_相对于父级轴心点, Vector3 电源接口位置_相对于父级轴心点, float 耗电量) where T : WallLight
         {
             {
                 // 电源接口
@@ -121,7 +121,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             {
                 // 自发光灯泡模型
-                var 灯泡子层级 = new GameObject("灯泡子层级");
+                var 灯泡子层级 = new GameObject(自发光的灯泡层级的名称);
                 灯泡子层级.transform.SetParent(挂墙小网格建筑.ThingTransform, worldPositionStays: false);
 
                 灯泡子层级.AddComponent<MeshFilter>().sharedMesh = 自发光的灯泡;
@@ -136,7 +136,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             return 复制原版游戏壁灯的灯光层级_此处仅仅是增加光源_灯泡网格的自发光需要单独配置(挂墙小网格建筑, 光源位置_相对于父级轴心点, 眩光光源位置_相对于父级轴心点); ;
         }
 
-        public static void 初始化_挂墙小网格建筑_碰撞图层与旋转方式<T>(T 挂墙小网格建筑) where T : SmallGrid, ISmartRotatable
+        public static void 为挂墙小网格建筑的碰撞图层与旋转方式进行通用初始化<T>(T 挂墙小网格建筑) where T : SmallGrid, ISmartRotatable
         {
             // 射线命中时的高亮选择框的显示尺寸是刚好一个小网格大小, 还是所有网格模型的包围盒大小, 仅仅是渲染效果, 实际对齐还是对齐到小网格的
             挂墙小网格建筑.SelectionDisplay = SelectionHighlightMethod.Bounds;
@@ -169,73 +169,80 @@ namespace meanran_xuexi_mods_xiaoyouhua
             挂墙小网格建筑.SmallCollisionType = SmallGridBlock.PipesCablesAndDevices | SmallGridBlock.Rails;
         }
 
+        [Tooltip("合并多个网格  注:一个模型有多个网格时, 将所有网格合并为一个, 如果该模型所有网格使用同一个材质, 就额外将所有三角形表合并为一个(不保留子网格)")]
         public static (Mesh 已合并Mesh, Material[] 所有subMesh材质) 合并多边形网格(Mesh[] Arg_所有Mesh, Material[] Arg_所有subMesh材质, string Arg_物体名称, bool Arg_保留子网格么 = true)
         {
             if (Arg_所有Mesh == null || Arg_所有Mesh.Length == 0 || Arg_所有subMesh材质 == null || Arg_所有subMesh材质.Length == 0)
             {
-                前置模块.Log.LogError("传入的Mesh或材质数组为空, 无法合并多边形网格");
+                前置模块.Log.LogError("传入的Mesh[]或材质[]数组为空, 无法合并多边形网格");
                 return (null, null);
             }
 
             if (Arg_所有Mesh.Any(d => d.uv.Length <= 0))
             {
-                前置模块.Log.LogError("传入的Mesh中有空的UV布局, 无法正确映射到材质中的UV纹理, 无法合并多边形网格");
+                前置模块.Log.LogError("传入的Mesh[]中存在网格缺少UV布局, 无法映射到材质中的UV纹理, 无法合并多边形网格");
                 return (null, null);
             }
 
-            前置模块.Log.LogMessage("压缩子网格前:");
-            打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, Arg_物体名称);
             for (var i = 0; i < Arg_所有Mesh.Length; i++)
             {
-                Arg_所有Mesh[i] = 复制多边形网格(Arg_所有Mesh[i]);
-            }
-            前置模块.Log.LogMessage("压缩子网格后:");
-            打印fbx模型文件中各个网格中的子网格计数(Arg_所有Mesh, Arg_物体名称);
-
-            if (Arg_所有Mesh.Any(d => d.subMeshCount != 1))
-            {
-                前置模块.Log.LogError("传入的Mesh的subMeshCount不为1, 无法合并多边形网格");
-                return (null, null);
+                if (Arg_所有Mesh[i].subMeshCount <= 0)
+                {
+                    前置模块.Log.LogError("传入的Mesh[]中存在subMeshCount=0的空网格(三角形面=0), 无法合并多边形网格");
+                    return (null, null);
+                }
+                else if (Arg_所有Mesh[i].subMeshCount != 1)
+                {
+                    前置模块.Log.LogMessage("该网格在建模软件中导出时, 未清理材质信息, 导致网格中存在多个三角形表, 正在合并三角形表");
+                    打印子网格计数(Arg_所有Mesh[i], Arg_物体名称);
+                    Arg_所有Mesh[i] = 合并多边形网格(Arg_所有Mesh[i]);
+                    前置模块.Log.LogMessage("合并三角形表完成");
+                    打印子网格计数(Arg_所有Mesh[i], Arg_物体名称);
+                }
             }
 
             if (Arg_保留子网格么)
             {
                 if (Arg_所有Mesh.Length != Arg_所有subMesh材质.Length)
                 {
-                    前置模块.Log.LogError("传入的Mesh和材质数组长度不一致, 无法合并多边形网格");
+                    前置模块.Log.LogError("传入的Mesh[]和材质[]的元素数不一致, 无法合并多边形网格");
                     return (null, null);
                 }
             }
             else if (Arg_所有subMesh材质.Length != 1)
             {
-                前置模块.Log.LogError("传入的材质数组长度不为1, 无法合并多边形网格");
+                前置模块.Log.LogError("传入的材质[]元素数不为1, 无法合并多边形网格");
                 return (null, null);
             }
 
-            var Result = 合并多边形网格(Arg_所有Mesh, Arg_保留子网格么);
+            var Result = 合并多边形网格(Arg_所有Mesh, Arg_物体名称, Arg_保留子网格么);
             return (Result, Arg_所有subMesh材质);
         }
 
-        public static Mesh 合并多边形网格(Mesh[] Arg_所有Mesh, bool Arg_保留子网格么 = false)
+        [Tooltip("合并多个网格  注:一个模型由多个网格组成, Unity引擎的渲染组件只支持一个网格和多个材质, 因此需要将多个网格合并为一个网格和多个三角形表, 这样每种材质都对应着各自的所有三角形, 材质数量和三角形表数量要一致")]
+        public static Mesh 合并多边形网格(Mesh[] Arg_所有Mesh, string Arg_物体名称, bool Arg_保留子网格么 = true)
         {
             if (Arg_所有Mesh == null || Arg_所有Mesh.Length == 0)
             {
-                前置模块.Log.LogError("传入的Mesh为空, 无法合并多边形网格");
+                前置模块.Log.LogError("传入的Mesh[]为空, 无法合并多边形网格");
                 return null;
             }
 
             if (Arg_所有Mesh.Any(d => d.subMeshCount != 1))
             {
-                前置模块.Log.LogError("传入的Mesh的subMeshCount不为1, 无法合并多边形网格");
+                前置模块.Log.LogError("传入的Mesh[]存在subMeshCount不为1的网格, 无法合并多边形网格");
+                return null;
+            }
+
+            if (Arg_所有Mesh.Any(d => d.uv.Length <= 0))
+            {
+                前置模块.Log.LogError("传入的Mesh[]中存在网格缺少UV布局, 无法映射到材质中的UV纹理, 无法合并多边形网格");
                 return null;
             }
 
             var 待合并 = new List<CombineInstance>(Arg_所有Mesh.Length);
-            for (var i = 0; i < Arg_所有Mesh.Length; ++i)
+            for (var i = 0; i < Arg_所有Mesh.Length; i++)
             {
-                // subMeshIndex: 建模时, 可以人为的将三角形索引数组划分片段, 每个片段有着自己的数组地址偏移和数据长度。通过subMeshIndex可以获取该片段的数组地址偏移和数据长度, 同时通过sharedMaterials[subMeshIndex]找到该片段的材质
-                //               建模软件导出的片段划分信息, Unity引擎不一定能正确识别, 因此 Arg_所有Mesh 中的所有元素都只有一个subMesh(即数组地址偏移=0,数据长度=三角形索引数组长度), 通过在此函数中合并多边形网格, 将多个Mesh变成一个Mesh中的多个subMesh
-                // transform: 多边形网格对象使用世界坐标系1:1比例    例: 使用Blender建模, 有导出前执行命令 "物体/应用/位置" "物体/应用/旋转" "物体/应用/缩放" , 让变换矩阵中的位置和旋转变成(0,0,0)、缩放变成(1,1,1), 此时法向、顶点坐标.....就变成世界坐标系1:1比例下的数据
                 待合并.Add(new CombineInstance
                 {
                     mesh = Arg_所有Mesh[i],
@@ -244,27 +251,33 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 });
             }
 
-            var Result = new Mesh() { name = 待合并.First().mesh.name + "已合并" };
+            var Result = new Mesh() { name = Arg_物体名称 + "已合并" };
             Result.CombineMeshes(待合并.ToArray(), mergeSubMeshes: !Arg_保留子网格么, useMatrices: true);
             Result.RecalculateNormals();
             Result.RecalculateBounds();
             return Result;
         }
 
-        public static Mesh 复制多边形网格(Mesh Arg_Mesh, bool Arg_保留子网格么 = false)
+        [Tooltip("合并同一个网格内的所有子网格  注:一个模型由多个网格组成, 每个网格分配一个材质即可, 因此每个网格只需要一个子网格  注: 子网格就是将网格中的N个三角形划分到单独的一个三角形表中, 然后绘制时就可以连续取三角形, 材质数量和三角形表数量要一致")]
+        public static Mesh 合并多边形网格(Mesh Arg_Mesh)
         {
+            const bool 保留子网格么 = false;
+
             if (Arg_Mesh == null)
             {
-                前置模块.Log.LogError("传入的Mesh为空, 无法复制多边形网格");
+                前置模块.Log.LogError("传入的Mesh为空, 无法合并子网格");
+                return null;
+            }
+
+            if (Arg_Mesh.uv.Length <= 0)
+            {
+                前置模块.Log.LogError("传入的Mesh缺少UV布局, 无法映射到材质中的UV纹理, 无法合并多边形网格");
                 return null;
             }
 
             var 待合并 = new List<CombineInstance>(Arg_Mesh.subMeshCount);
-            for (var 子网格编号 = 0; 子网格编号 < Arg_Mesh.subMeshCount; ++子网格编号)
+            for (var 子网格编号 = 0; 子网格编号 < Arg_Mesh.subMeshCount; 子网格编号++)
             {
-                // subMeshIndex: 建模时, 可以人为的将三角形索引数组划分片段, 每个片段有着自己的数组地址偏移和数据长度。通过subMeshIndex可以获取该片段的数组地址偏移和数据长度, 同时通过sharedMaterials[subMeshIndex]找到该片段的材质
-                //               建模软件导出的片段划分信息, Unity引擎不一定能正确识别, 因此 Arg_所有Mesh 中的所有元素都只有一个subMesh(即数组地址偏移=0,数据长度=三角形索引数组长度), 通过在此函数中合并多边形网格, 将多个Mesh变成一个Mesh中的多个subMesh
-                // transform: 多边形网格对象使用世界坐标系1:1比例    例: 使用Blender建模, 有导出前执行命令 "物体/应用/位置" "物体/应用/旋转" "物体/应用/缩放" , 让变换矩阵中的位置和旋转变成(0,0,0)、缩放变成(1,1,1), 此时法向、顶点坐标.....就变成世界坐标系1:1比例下的数据
                 待合并.Add(new CombineInstance
                 {
                     mesh = Arg_Mesh,
@@ -273,23 +286,34 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 });
             }
 
-            var Result = new Mesh() { name = Arg_Mesh.name + "已复制" };
-            Result.CombineMeshes(待合并.ToArray(), mergeSubMeshes: !Arg_保留子网格么, useMatrices: true);
+            var Result = new Mesh() { name = Arg_Mesh.name + "已合并" };
+            Result.CombineMeshes(待合并.ToArray(), mergeSubMeshes: !保留子网格么, useMatrices: true);
             Result.RecalculateNormals();
             Result.RecalculateBounds();
             return Result;
         }
 
-        public static void 打印fbx模型文件中各个网格中的子网格计数(Mesh[] Arg_所有Mesh, string 物体名称)
+        public static void 打印子网格计数(Mesh[] Arg_所有Mesh, string 物体名称)
         {
             if (Arg_所有Mesh == null)
             {
-                前置模块.Log.LogError("传入的Mesh[]为空, 无法打印fbx模型文件中各个网格中的子网格计数");
+                前置模块.Log.LogError("传入的Mesh[]为空, 无法打印子网格计数");
                 return;
             }
 
             int 索引 = 0;
-            前置模块.Log.LogMessage($"{物体名称}fbx中有以下网格:\n{string.Join("\n", Arg_所有Mesh.Select(d => $"网格名称: {d.name}  网格索引: {索引++}  子网格计数: {d.subMeshCount}"))}");
+            前置模块.Log.LogMessage($"模型名称: {物体名称}\n{string.Join("\n", Arg_所有Mesh.Select(d => $"网格名称: {d.name}  网格索引: {索引++}  子网格计数: {d.subMeshCount}"))}");
+        }
+
+        public static void 打印子网格计数(Mesh Arg_Mesh, string 物体名称)
+        {
+            if (Arg_Mesh == null)
+            {
+                前置模块.Log.LogError("传入的Mesh为空, 无法打印子网格计数");
+                return;
+            }
+
+            前置模块.Log.LogMessage($"模型名称: {物体名称}  网格名称: {Arg_Mesh.name}  子网格计数: {Arg_Mesh.subMeshCount}");
         }
 
         [Tooltip("注: 目标物体.ReagentMixture: 对于自动车床/自动烤箱/微波炉/熔炉.......等等具有内部混合容器的设备, 此处保存了所有投入物体的成分组成之和")]

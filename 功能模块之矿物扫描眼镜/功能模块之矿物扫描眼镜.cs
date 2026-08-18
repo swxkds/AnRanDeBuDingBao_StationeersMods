@@ -5,6 +5,7 @@ using UnityEngine;
 using Assets.Scripts;
 using Objects.Items;
 using Reagents;
+using Assets.Scripts.Util;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
@@ -27,13 +28,17 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
         public static Thing 创建矿物扫描眼镜()
         {
-            var 资源加载器 = 功能模块之矿物扫描眼镜_资源加载器.单例;
-            var 网格与材质 = 资源加载器.多边形网格与材质;
+            var 资源视图 = 功能模块之矿物扫描眼镜_资源加载器.单例.资源视图;
 
             const string NameID = "KuangWuSaoMiaoYanJing";
             const 通用工具.游戏内置喷漆颜色.色板 默认颜色 = 通用工具.游戏内置喷漆颜色.色板.蓝色;
+            const string 缩略图资源目录 = "Assets/矿物扫描眼镜/所有喷漆颜色缩略图/";
 
-            var 控制组件 = 通用工具.创建Thing预制体并进行通用初始化<矿物扫描眼镜>(资源加载器.预制体.实体, 资源加载器.预制体.蓝图, NameID, 网格与材质.已合并Mesh, 网格与材质.所有subMesh材质, 资源加载器.纹理.对应不同喷漆颜色的缩略图, 默认颜色);
+            var 控制组件 = 通用工具.创建Thing预制体并进行通用初始化<矿物扫描眼镜>
+            (通用工具.创建新的空预制体(), 通用工具.创建新的空预制体(), NameID,
+            通用工具.合并多边形网格([资源视图.查找资源<Mesh>("Assets/矿物扫描眼镜/镜框网格.asset"), 资源视图.查找资源<Mesh>("Assets/矿物扫描眼镜/镜片网格.asset")], "矿物扫描眼镜", Arg_保留子网格么: true),
+            [通用工具.游戏内置喷漆颜色.游戏内置喷漆材质, new Material(Shader.Find("Custom/Stationeers Transparent")) { color = Color.white.SetAlpha(0.04f) }],
+            资源视图.查找所有喷漆颜色缩略图资源(缩略图资源目录), 默认颜色);
 
             const Slot.Class 道具可放入的槽位_每个槽位有对应的道具类型 = Slot.Class.Glasses;
             const SlotWearAction 穿戴到玩家装备栏时_眼镜会遮挡玩家脸部 = SlotWearAction.HidePlayer;
