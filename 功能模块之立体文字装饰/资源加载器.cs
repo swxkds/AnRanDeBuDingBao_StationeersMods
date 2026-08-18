@@ -16,6 +16,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             const string 物体名称 = "立体文字装饰";
             资源视图 = 通用工具.加载AssetBundle(dllDirectory, [Path.Combine("模型与纹理", 物体名称)]);
+            资源视图.打印已加载资源路径();
         }
     }
 }

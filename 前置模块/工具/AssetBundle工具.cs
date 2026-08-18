@@ -171,7 +171,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 return 查找结果.ToArray();
             }
 
-            public Sprite[] 查找所有喷漆颜色缩略图资源(string Arg_父目录)
+            public Sprite[] 查找所有喷漆颜色缩略图资源(string Arg_父目录, bool Arg_是否填充不存在颜色 = false)
             {
                 var 查找结果 = 查找指定目录中资源<Sprite>(Arg_父目录);
                 if (查找结果 == null || 查找结果.Count() <= 0)
@@ -189,8 +189,11 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     }
                     else
                     {
-                        缩略图数组[i] = 查找结果[0];
-                        前置模块.Log.LogError($"解析该资源目录路径时, 缺少{$"{游戏内置喷漆颜色.所有喷漆颜色[i]}缩略图"}: {Arg_父目录}");
+                        if (Arg_是否填充不存在颜色)
+                        {
+                            缩略图数组[i] = 查找结果[0];
+                            前置模块.Log.LogError($"解析该资源目录路径时, 缺少{$"{游戏内置喷漆颜色.所有喷漆颜色[i]}缩略图"}: {Arg_父目录}");
+                        }
                     }
                 }
 
