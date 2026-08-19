@@ -20989,7 +20989,7 @@ Stationeers涵盖多重角色: 他们是宇航员、工程师兼探险家, 仅�
     </Record>
     <Record>
       <Key>StationpediaSolarHeating</Key>
-      <Value>太阳能供热:</Value>
+      <Value>日光直射加热:</Value>
     </Record>
     <Record>
       <Key>StationpediaMovementSpeedModifier</Key>

@@ -136,6 +136,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                 所有可装配的建筑.Add(挂墙小网格建筑);
                 通用工具.为挂墙小网格建筑的碰撞图层与旋转方式进行通用初始化(挂墙小网格建筑);
+                挂墙小网格建筑.SmallCollisionType = SmallGridBlock.EverythingExceptCables;
 
                 {
                     // 结构正常状态_所有施工阶段
