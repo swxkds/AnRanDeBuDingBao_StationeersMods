@@ -138,24 +138,23 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
         public static void 为挂墙小网格建筑的碰撞图层与旋转方式进行通用初始化<T>(T 挂墙小网格建筑) where T : SmallGrid, ISmartRotatable
         {
-            // 射线命中时的高亮选择框的显示尺寸是刚好一个小网格大小, 还是所有网格模型的包围盒大小, 仅仅是渲染效果, 实际对齐还是对齐到小网格的
-            挂墙小网格建筑.SelectionDisplay = SelectionHighlightMethod.Bounds;
-
-            // 框架、自动车床、门....检测碰撞时需要与所有覆盖的大、小网格比较, 判断是否可放置    
-            // 墙体只需要对齐到大网格, 并根据位置计算出自己位于大网格的哪个方向(东南西北上下), 比较大网格指定方向是否可放置即可, 因此很多小网格建筑都可以穿墙放置 
+            // 放置时判断是否被大网格建筑遮挡
+            // 只要大网格的(东/南/西/北/上/下/中)这七个大网格定位点中, 任意一个定位点被另一个BlockGrid(独占式部件)占据, 就不能放置
+            // 只要大网格的(东/南/西/北/上/下/中)这七个大网格定位点中, 其中一个定位点同时被BlockFace(墙体部件)和this部件占据, 就不能放置
+            // BlockCustom表示不参与大网格放置判断
             挂墙小网格建筑.StructureCollisionType = CollisionType.BlockCustom;
 
-            // Grid:框架、自动车床、门....  Face:墙体(放置时对齐到2米尺寸网格的东、南、西、北、上、下六个面)  FaceMount:必须放置在墙体和框架上的物体
+            // 放置时判断是否被小网格建筑遮挡, 管道、电线、设备、机械臂轨道(滑槽好像属于轨道), 即除了覆盖装饰物外, 放置时都进行碰撞判断
+            // 小网格是按图层保存小网格建筑的, 也就是放置时是先对齐到小网格, 然后在对齐到图层, 两个都不满足, 就不能放置
+            挂墙小网格建筑.SmallCollisionType = SmallGridBlock.PipesCablesAndDevices | SmallGridBlock.Rails;
+
+            // Grid: 其他所有物体
+            // Face: 墙体和门
+            // FaceMount: 挂墙建筑
             挂墙小网格建筑.PlacementType = PlacementSnap.FaceMount;
 
-            // 智能旋转预存了多种旋转模板, 描述下一个旋转轴和下一个旋转方向, 用于优化掉不必要的旋转   例: 十字电缆就不需要滚转旋转
-            挂墙小网格建筑.SetConnectionType(SmartRotate.ConnectionType.FlatExhaustive);
-
-            // 俯仰旋转、滚转旋转、偏航旋转  例: XY的意思是支持两种旋转方式, 其中X代表俯仰旋转(上下旋转), Y代表偏航旋转(左右旋转)   例:Z的意思是滚转旋转
-            挂墙小网格建筑.RotationAxis = RotationAxis.Z;
-
-            // 允许旋转的地方, 分别是墙体上、天花板上、地板上、天花板和地板上、墙体和天花板和地板上
-            挂墙小网格建筑.AllowedRotations = AllowedRotations.All;
+            // 射线命中模型时的高亮选择框是显示被占据的网格区域, 还是显示模型实际的包围盒区域, 仅仅是渲染效果
+            挂墙小网格建筑.SelectionDisplay = SelectionHighlightMethod.Bounds;
 
             // 小网格尺寸0.5, 所有建筑在放置时都是对齐到小网格坐标的, 因此建筑的碰撞尺寸必须是小网格尺寸的整数倍
             // 大网格尺寸2, 对齐到小网格时的布局分布为 0.25(半个小网格)/0.5/0.5/0.5/0.25(半个小网格), 即大网格中心有9个小网格, 四个边缘各有3个(半个小网格)
@@ -165,8 +164,14 @@ namespace meanran_xuexi_mods_xiaoyouhua
             // 直线电缆的碰撞尺寸为一个小网格, 但是直线电缆的渲染尺寸中宽度只有0.1, 因此放置在两个大网格之间的边缘处视觉效果良好, 如果边缘处放置了墙体, 同时又放置了渲染尺寸接近碰撞尺寸的物体, 就会出现穿模
             挂墙小网格建筑.GridOffset = SmallGrid.SmallGridOffset;
 
-            // 管道、电线、设备、机械臂轨道(滑槽好像属于轨道), 即除了装饰面板外, 放置时都进行碰撞判断
-            挂墙小网格建筑.SmallCollisionType = SmallGridBlock.PipesCablesAndDevices | SmallGridBlock.Rails;
+            // 智能旋转预存了多种旋转模板, 描述下一个旋转轴和下一个旋转方向, 用于优化掉不必要的旋转   例: 十字电缆就不需要滚转旋转
+            挂墙小网格建筑.SetConnectionType(SmartRotate.ConnectionType.FlatExhaustive);
+
+            // 俯仰旋转、滚转旋转、偏航旋转  例: XY的意思是支持两种旋转方式, 其中X代表俯仰旋转(上下旋转), Y代表偏航旋转(左右旋转)   例:Z的意思是滚转旋转
+            挂墙小网格建筑.RotationAxis = RotationAxis.Z;
+
+            // 允许旋转的地方, 分别是墙体上、天花板上、地板上、天花板和地板上、墙体和天花板和地板上
+            挂墙小网格建筑.AllowedRotations = AllowedRotations.All;
         }
 
         [Tooltip("合并多个网格  注:一个模型有多个网格时, 将所有网格合并为一个, 如果该模型所有网格使用同一个材质, 就额外将所有三角形表合并为一个(不保留子网格)")]
