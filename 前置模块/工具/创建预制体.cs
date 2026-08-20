@@ -98,17 +98,17 @@ namespace meanran_xuexi_mods_xiaoyouhua
             return (禁用阴影的地形图层专用灯光配置, 灯光配置, 眩光配置);
         }
 
-        public static (Light 禁用阴影的地形图层专用灯光配置, Light 灯光配置, LensFlare 眩光配置) 添加灯光<T>(T 挂墙小网格建筑, Mesh 自发光的灯泡, string 自发光的灯泡层级的名称, Vector3 光源位置_相对于父级轴心点, Vector3 眩光光源位置_相对于父级轴心点, Vector3 电源接口位置_相对于父级轴心点, float 耗电量) where T : WallLight
+        public static (Light 禁用阴影的地形图层专用灯光配置, Light 灯光配置, LensFlare 眩光配置) 添加灯光<T>(T 挂墙小网格建筑, Mesh 自发光的灯泡, string 自发光的灯泡层级的名称, Vector3 光源位置_相对于父级轴心点, Vector3 眩光光源位置_相对于父级轴心点, Vector3 电源接口位置_相对于父级轴心点, Vector3 电源接口朝向_左手坐标系的Z轴朝向就是接口朝向, float 耗电量) where T : WallLight
         {
             {
-                // 电源接口
+                // 电源接口, 当接口发生连接后, 每一帧电力网络都会遍历所有上线设备, 并累加耗电量, 当耗电量<=电网供电时, 就将这个控件状态写入true
                 挂墙小网格建筑.UsedPower = 耗电量;
                 挂墙小网格建筑.添加控件(InteractableType.Powered, 是否创建UI按钮: false);
-                挂墙小网格建筑.添加接口(电源接口位置_相对于父级轴心点, NetworkType.PowerAndData, ConnectionRole.None);
+                挂墙小网格建筑.添加接口(电源接口位置_相对于父级轴心点, 电源接口朝向_左手坐标系的Z轴朝向就是接口朝向, NetworkType.PowerAndData, ConnectionRole.None);
             }
 
             {
-                // 电源开关
+                // 电源开关, 这个控件必须绑定一个碰撞体, 这样摄像机射线获取到绑定的碰撞体时, 通用控件字典获取到控件, 然后调用控件事件(举例: 电源开关打开并且电源有供电, 则从渲染组件缓存中取出所有应用了喷漆材质的渲染组件, 然后更换发光材质)
                 var 电源开关子层级 = new GameObject("电源开关子层级");
                 电源开关子层级.transform.SetParent(挂墙小网格建筑.ThingTransform, worldPositionStays: false);
 
@@ -496,15 +496,18 @@ namespace meanran_xuexi_mods_xiaoyouhua
         }
 
         [Tooltip("一个建筑可以有多个子层级, 每个子层级可以有不同的渲染模型和接口, 在建筑的不同阶段激活对应的子层级(例: 框架阶段子层级只有模型, 其它接口/实体按键都是隐藏的; 在完工阶段, 接口和实体按键则激活, 参与交互)")]
-        public static Connection 添加接口(this SmallGrid 接口所属的建筑, Vector3 接口位置_相对于父级轴心点, NetworkType 接口类型, ConnectionRole 接口通道)
+        public static Connection 添加接口(this SmallGrid 接口所属的建筑, Vector3 接口位置_相对于父级轴心点, Vector3 接口朝向_左手坐标系的Z轴朝向就是接口朝向, NetworkType 接口类型, ConnectionRole 接口通道)
         {
             var 接口子层级 = new GameObject($"接口类型: {接口类型}  接口通道: {接口通道}  每个接口都需要独立的变换组件描述位置");
             接口子层级.transform.SetParent(接口所属的建筑.ThingTransform, worldPositionStays: false);
 
+            // 接口交互原理: 摄像机射线获取到任意碰撞体(包括建筑本体的碰撞体)后, 通过碰撞体获取到建筑的引用, 然后遍历建筑和放置蓝图的所有接口
+            // 连接条件: ((建筑接口,放置蓝图接口) => 建筑接口.接口位置 == 放置蓝图接口.接口位置 + 接口朝向 && 放置蓝图接口.接口位置 == 建筑接口.接口位置 + 接口朝向)
             var 球形碰撞体 = 接口子层级.AddComponent<SphereCollider>();
 
             球形碰撞体.radius = 0.05f;
             球形碰撞体.transform.localPosition = 接口位置_相对于父级轴心点;
+            球形碰撞体.transform.localEulerAngles = 接口朝向_左手坐标系的Z轴朝向就是接口朝向;
 
             const bool 禁用Unity引擎内置物理碰撞功能_避免出现空气墙 = true;
             球形碰撞体.isTrigger = 禁用Unity引擎内置物理碰撞功能_避免出现空气墙;

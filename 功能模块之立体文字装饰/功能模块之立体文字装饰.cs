@@ -5,7 +5,6 @@ using UnityEngine;
 using Objects.Items;
 using Reagents;
 using Assets.Scripts.Objects.Structures;
-using System.Linq;
 using Assets.Scripts.Objects.Pipes;
 using Assets.Scripts;
 
@@ -103,9 +102,12 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                             var 虽然用不到_但是依然要增加碰撞体将网格都包裹住_避免射线检测时交互区域太小直接穿透了 = 挂墙小网格建筑.ThingTransform.GetOrAddComponent<BoxCollider>();
                             虽然用不到_但是依然要增加碰撞体将网格都包裹住_避免射线检测时交互区域太小直接穿透了.center = 外壳网格.bounds.center;
-                            虽然用不到_但是依然要增加碰撞体将网格都包裹住_避免射线检测时交互区域太小直接穿透了.size = 外壳网格.bounds.size;
+                            虽然用不到_但是依然要增加碰撞体将网格都包裹住_避免射线检测时交互区域太小直接穿透了.size = 外壳网格.bounds.size - new Vector3(0.1f, 0.1f, 0.1f);
 
-                            通用工具.添加灯光(挂墙小网格建筑, 灯泡网格, 立体文字装饰.灯泡层级前缀, 光源位置_相对于父级轴心点: new Vector3(0, 0, 0.443f), 眩光光源位置_相对于父级轴心点: new Vector3(0, 0, -0.16f), 电源接口位置_相对于父级轴心点: new(0, 0, -0.27f), 耗电量: 1);
+                            通用工具.添加灯光(挂墙小网格建筑, 灯泡网格, 立体文字装饰.灯泡层级前缀, 光源位置_相对于父级轴心点: new Vector3(0, 0, 0.45f), 眩光光源位置_相对于父级轴心点: new Vector3(0, 0, -0.47f), 电源接口位置_相对于父级轴心点: new(0, 0, -0.27f), 电源接口朝向_左手坐标系的Z轴朝向就是接口朝向: Vector3.zero, 耗电量: 1);
+                            挂墙小网格建筑.添加接口(接口位置_相对于父级轴心点: new(0.27f, 0, 0), 接口朝向_左手坐标系的Z轴朝向就是接口朝向: new(0, -90, 0), NetworkType.PowerAndData, ConnectionRole.None);
+                            挂墙小网格建筑.添加接口(接口位置_相对于父级轴心点: new(-0.27f, 0, 0), 接口朝向_左手坐标系的Z轴朝向就是接口朝向: new(0, 90, 0), NetworkType.PowerAndData, ConnectionRole.None);
+                            挂墙小网格建筑.添加接口(接口位置_相对于父级轴心点: new(0, -0.27f, 0), 接口朝向_左手坐标系的Z轴朝向就是接口朝向: new(-90, 0, 0), NetworkType.PowerAndData, ConnectionRole.None);
                             break;
                         }
                     case 1:     // 居住     平面0.5X1
@@ -127,7 +129,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             虽然用不到_但是依然要增加碰撞体将网格都包裹住_避免射线检测时交互区域太小直接穿透了.center = 外壳网格.bounds.center;
                             虽然用不到_但是依然要增加碰撞体将网格都包裹住_避免射线检测时交互区域太小直接穿透了.size = 外壳网格.bounds.size;
 
-                            通用工具.添加灯光(挂墙小网格建筑, 灯泡网格, 立体文字装饰.灯泡层级前缀, 光源位置_相对于父级轴心点: new Vector3(0, 0, 0.443f), 眩光光源位置_相对于父级轴心点: new Vector3(0, 0, -0.16f), 电源接口位置_相对于父级轴心点: new(0, 0, -0.27f), 耗电量: 1);
+                            通用工具.添加灯光(挂墙小网格建筑, 灯泡网格, 立体文字装饰.灯泡层级前缀, 光源位置_相对于父级轴心点: new Vector3(0, 0, 0.45f), 眩光光源位置_相对于父级轴心点: new Vector3(0, 0, -0.47f), 电源接口位置_相对于父级轴心点: new(0, 0, -0.27f), 电源接口朝向_左手坐标系的Z轴朝向就是接口朝向: Vector3.zero, 耗电量: 1);
                             break;
                         }
                 }
@@ -136,7 +138,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                 所有可装配的建筑.Add(挂墙小网格建筑);
                 通用工具.为挂墙小网格建筑的碰撞图层与旋转方式进行通用初始化(挂墙小网格建筑);
-                挂墙小网格建筑.SmallCollisionType = SmallGridBlock.EverythingExceptCables;
+                挂墙小网格建筑.SmallCollisionType &= ~SmallGridBlock.Cables;
 
                 {
                     // 结构正常状态_所有施工阶段
