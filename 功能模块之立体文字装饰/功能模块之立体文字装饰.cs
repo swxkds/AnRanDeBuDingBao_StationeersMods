@@ -30,7 +30,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             var 资源视图 = 功能模块之立体文字装饰_资源加载器.单例.资源视图;
 
             const string NameID = "ItemKitLiTiWenZiZhuangShi";
-            const 通用工具.游戏内置喷漆颜色.色板 默认颜色 = 通用工具.游戏内置喷漆颜色.色板.橙色;
+            const 通用工具.游戏内置喷漆颜色.色板 默认颜色 = 通用工具.游戏内置喷漆颜色.色板.绿色;
             const string 缩略图资源目录 = "Assets/(套件)立体文字装饰/所有喷漆颜色缩略图/";
             var 缩略图 = 资源视图.查找所有喷漆颜色缩略图资源(缩略图资源目录, Arg_是否填充不存在颜色: false);
 
