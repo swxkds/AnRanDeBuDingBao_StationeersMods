@@ -6,23 +6,12 @@ using System.Linq;
 using Assets.Scripts;
 using Assets.Scripts.GridSystem;
 using System.Runtime.CompilerServices;
+using Assets.Scripts.Objects.Pipes;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
     public class 批量拆除和装配 : 批量种植和收获
     {
-        public enum 批量选择网格状态
-        {
-            没有框选, 开始框选, 结束框选,
-        }
-        public enum 批量选择建筑类型
-        {
-            未知, 墙体, 框架,
-        }
-        private 批量选择网格状态 框选状态 = 批量选择网格状态.没有框选;
-        private (Grid3 网格坐标, long 建筑Id, 批量选择建筑类型 建筑类型) 框选起点;
-        private (Grid3 网格坐标, long 建筑Id, 批量选择建筑类型 建筑类型) 框选终点;
-
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         public override void Update()
         {
@@ -212,31 +201,15 @@ namespace meanran_xuexi_mods_xiaoyouhua
                                         switch (建筑)
                                         {
                                             case Assets.Scripts.Objects.Wall:
-                                                {
-                                                    if (所有已选择.Count == 0)
-                                                    {
-                                                        框选状态 = 批量选择网格状态.开始框选;
-                                                        var Id = 建筑.ReferenceId;
-                                                        框选起点 = (建筑.GridPosition, Id, 批量选择建筑类型.墙体);
-                                                        增加缓存物体(Id, 建筑);
-                                                    }
-                                                    break;
-                                                }
+                                                选择框选起点(建筑, 批量选择建筑类型.墙体, 批量选择网格类型.墙体和框架);
+                                                break;
                                             case Objects.Structures.Frame:
-                                                {
-                                                    if (所有已选择.Count == 0)
-                                                    {
-                                                        框选状态 = 批量选择网格状态.开始框选;
-                                                        var Id = 建筑.ReferenceId;
-                                                        框选起点 = (建筑.GridPosition, Id, 批量选择建筑类型.框架);
-                                                        增加缓存物体(Id, 建筑);
-                                                    }
-                                                }
+                                                选择框选起点(建筑, 批量选择建筑类型.框架, 批量选择网格类型.墙体和框架);
                                                 break;
                                         }
                                     }
-                                    break;
                                 }
+                                break;
                             case 批量选择网格状态.开始框选:
                                 {
                                     var 建筑 = 通用工具.获取视线处建筑类物体();
@@ -245,112 +218,23 @@ namespace meanran_xuexi_mods_xiaoyouhua
                                         switch (建筑)
                                         {
                                             case Assets.Scripts.Objects.Wall:
-                                                {
-                                                    if (所有已选择.Count == 1 && 所有已选择.Values.First().GridPosition == 框选起点.网格坐标)
-                                                    {
-                                                        // 取消当前框选起点
-                                                        var Id = 建筑.ReferenceId;
-                                                        if (所有已选择.ContainsKey(Id))
-                                                        {
-                                                            框选状态 = 批量选择网格状态.没有框选;
-                                                            减少缓存物体(Id, 建筑);
-                                                        }
-                                                        else
-                                                        {
-                                                            框选状态 = 批量选择网格状态.结束框选;
-                                                            框选终点 = (建筑.GridPosition, Id, 批量选择建筑类型.墙体);
-
-                                                            if (框选起点.建筑类型 == 框选终点.建筑类型)
-                                                            {
-                                                                增加缓存物体(Id, 建筑);
-                                                            }
-                                                        }
-                                                    }
-                                                    break;
-                                                }
+                                                选择框选终点(建筑, 批量选择建筑类型.墙体, 批量选择网格类型.墙体和框架);
+                                                break;
                                             case Objects.Structures.Frame:
-                                                {
-                                                    if (所有已选择.Count == 1 && 所有已选择.Values.First().GridPosition == 框选起点.网格坐标)
-                                                    {
-                                                        // 取消当前框选起点
-                                                        var Id = 建筑.ReferenceId;
-                                                        if (所有已选择.ContainsKey(Id))
-                                                        {
-                                                            框选状态 = 批量选择网格状态.没有框选;
-                                                            减少缓存物体(Id, 建筑);
-                                                        }
-                                                        else
-                                                        {
-                                                            框选状态 = 批量选择网格状态.结束框选;
-                                                            框选终点 = (建筑.GridPosition, Id, 批量选择建筑类型.框架);
-
-                                                            if (框选起点.建筑类型 == 框选终点.建筑类型)
-                                                            {
-                                                                增加缓存物体(Id, 建筑);
-                                                            }
-                                                        }
-                                                    }
-                                                    break;
-                                                }
+                                                选择框选终点(建筑, 批量选择建筑类型.框架, 批量选择网格类型.墙体和框架);
+                                                break;
                                         }
                                     }
-                                    break;
                                 }
+                                break;
                             case 批量选择网格状态.结束框选:
                                 {
-                                    var 起点 = 框选起点.网格坐标;
-                                    var 终点 = 框选终点.网格坐标;
-                                    var 框选目标类型 = 框选起点.建筑类型;
-
-                                    var min = new Grid3(Mathf.Min(起点.x, 终点.x), Mathf.Min(起点.y, 终点.y), Mathf.Min(起点.z, 终点.z));
-                                    var max = new Grid3(Mathf.Max(起点.x, 终点.x), Mathf.Max(起点.y, 终点.y), Mathf.Max(起点.z, 终点.z));
-                                    var 网格尺寸 = Grid3.Directions.First().z;
-
-                                    int 已处理网格计数 = 0;
-
-                                    for (var i = min.x; i <= max.x; i += 网格尺寸)
-                                    {
-                                        for (var j = min.y; j <= max.y; j += 网格尺寸)
-                                        {
-                                            for (var k = min.z; k <= max.z; k += 网格尺寸)
-                                            {
-                                                ++已处理网格计数;
-
-                                                var 网格单元 = GridController.World.GetCell(new Grid3(i, j, k));      // Cell: 网格单元, 和框架一样的大小, 网格单元持有内部所有的可放置设备(墙、框架、门.....)
-                                                if (网格单元 == null) { continue; }
-
-                                                for (var 当前方位 = StructureElement.South; 当前方位 >= StructureElement.Center; 当前方位--)
-                                                {
-                                                    // 东、南、西、北、中、上、下
-                                                    var 当前放置结构 = 网格单元.Lookup[当前方位];
-                                                    if (当前放置结构 == null) { continue; }
-
-                                                    var Id = 当前放置结构.ReferenceId;
-                                                    if (!所有已选择.ContainsKey(Id))
-                                                    {
-                                                        switch (框选目标类型)
-                                                        {
-                                                            case 批量选择建筑类型.墙体:
-                                                                if (当前放置结构 is Assets.Scripts.Objects.Wall) { 增加缓存物体(Id, 当前放置结构); }
-                                                                break;
-                                                            case 批量选择建筑类型.框架:
-                                                                if (当前放置结构 is Objects.Structures.Frame) { 增加缓存物体(Id, 当前放置结构); }
-                                                                break;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    框选状态 = 批量选择网格状态.没有框选;
-                                    当前状态 = 批量操作任务状态.选择;
-                                    功能模块之快捷轮盘菜单.Log.LogMessage($"已扫描了 {已处理网格计数} 个网格单元");
-                                    break;
+                                    处理框选结果();
                                 }
+                                break;
                         }
-                        break;
                     }
+                    break;
                 case 批量操作任务状态.清空高亮:
                     {
                         Clear();

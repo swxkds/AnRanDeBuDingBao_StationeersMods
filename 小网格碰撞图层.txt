@@ -1,0 +1,18 @@
+public class SmallCell
+{
+    public Grid3 SmallGrid;         // 小网格单元的整数坐标   注: 物体的浮点数坐标对齐到网格尺寸后, 再乘以10并舍入就是整数坐标 
+
+    public Chute Chute;             // 滑槽
+
+    public Pipe Pipe;               // 管道   注:水培托盘由于继承自管道, 也属于Pipe图层
+
+    public Device Device;           // 配置了数字电路的物联网设备, 水培托盘(数字)由于继承自物联网设备, 也属于Device图层  注: 水培托盘(数字)通过液体管道输入接口和管道联通
+
+    public Cable Cable;             // 电缆
+
+    public SmallGrid Other;         // 纯机械设备
+
+    public ISmallGridOwner Owner;   // 子区域划分  例: 火箭设备只能安装在火箭内部, 因此放置时需要先判断该小网格是否是火箭, 其次再判断该小网格是否已存在设备
+
+    public IRoboticArmRail Rail;    // 机器人手臂轨道
+}

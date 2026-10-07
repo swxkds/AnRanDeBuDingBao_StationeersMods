@@ -10,17 +10,35 @@ using Assets.Scripts;
 using Cysharp.Threading.Tasks;
 using Assets.Scripts.GridSystem;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
-    public enum 批量操作任务状态
-    {
-        睡眠, 开关高亮, 选择, 清空高亮,
-        种植, 收获, 收获所有,
-        拆除, 装配, 选择支路, 框选
-    }
     public class 批量种植和收获
     {
+        public enum 批量操作任务状态
+        {
+            睡眠, 开关高亮, 选择, 清空高亮,
+            种植, 收获, 收获所有,
+            拆除, 装配, 选择支路, 框选
+        }
+        public enum 批量选择网格状态
+        {
+            没有框选, 开始框选, 结束框选,
+        }
+        public enum 批量选择建筑类型
+        {
+            墙体, 框架,
+            水培托盘,
+        }
+        public enum 批量选择网格类型
+        {
+            墙体和框架,
+            功能建筑,
+        }
+        protected 批量选择网格状态 框选状态 = 批量选择网格状态.没有框选;
+        protected (Grid3 网格坐标, long 建筑Id, 批量选择建筑类型 建筑类型, 批量选择网格类型 网格类型) 框选起点;
+        protected (Grid3 网格坐标, long 建筑Id, 批量选择建筑类型 建筑类型, 批量选择网格类型 网格类型) 框选终点;
         public 批量操作任务状态 当前状态 { get; protected set; }
         public 批量操作任务状态 目标状态 = 批量操作任务状态.睡眠;
         public Dictionary<long, Thing> 所有已选择 { get; protected set; }
@@ -84,6 +102,26 @@ namespace meanran_xuexi_mods_xiaoyouhua
             所有已选择缓存.Add(New);
         }
 
+        protected void 增加缓存物体(Structure 建筑, 批量选择建筑类型 框选目标类型)
+        {
+            var Id = 建筑.ReferenceId;
+            if (!所有已选择.ContainsKey(Id))
+            {
+                switch (框选目标类型)
+                {
+                    case 批量选择建筑类型.墙体:
+                        if (建筑 is Assets.Scripts.Objects.Wall) { 增加缓存物体(Id, 建筑); }
+                        break;
+                    case 批量选择建筑类型.框架:
+                        if (建筑 is Objects.Structures.Frame) { 增加缓存物体(Id, 建筑); }
+                        break;
+                    case 批量选择建筑类型.水培托盘:
+                        if (建筑 is IHarvestable) { 增加缓存物体(Id, 建筑); }
+                        break;
+                }
+            }
+        }
+
         protected void 减少缓存物体(long Id, Thing Old)
         {
             所有已选择.Remove(Id);
@@ -117,6 +155,150 @@ namespace meanran_xuexi_mods_xiaoyouhua
             if (是否需要更新缓存) { 更新缓存(); }
         }
 
+        protected void 选择框选起点(Structure 建筑, 批量选择建筑类型 框选类型, 批量选择网格类型 网格类型)
+        {
+            if (所有已选择.Count == 0)
+            {
+                switch (网格类型)
+                {
+                    case 批量选择网格类型.墙体和框架:
+                        {
+                            var Id = 建筑.ReferenceId;
+                            框选状态 = 批量选择网格状态.开始框选;
+                            var 起点 = 建筑.GridPosition;
+                            框选起点 = (起点, Id, 框选类型, 网格类型);
+                            增加缓存物体(Id, 建筑);
+                        }
+                        break;
+                    case 批量选择网格类型.功能建筑:
+                        {
+                            var Id = 建筑.ReferenceId;
+                            框选状态 = 批量选择网格状态.开始框选;
+                            var 模型所占用的所有小网格点 = (Grid3[])建筑.GridBounds.GetLocalSmallGrid(建筑.RegisteredPosition, 建筑.RegisteredRotation);
+                            var min = 模型所占用的所有小网格点.First();
+                            foreach (var 小网格点 in 模型所占用的所有小网格点) { min = new Grid3(Mathf.Min(min.x, 小网格点.x), Mathf.Min(min.y, 小网格点.y), Mathf.Min(min.z, 小网格点.z)); }
+                            var 起点 = min;
+                            框选起点 = (起点, Id, 框选类型, 网格类型);
+                            增加缓存物体(Id, 建筑);
+                        }
+                        break;
+                }
+            }
+        }
+        protected void 选择框选终点(Structure 建筑, 批量选择建筑类型 框选类型, 批量选择网格类型 网格类型)
+        {
+            // 已选择的起点建筑必须是通过框选选择的
+            if (所有已选择.Count == 1 && 框选状态 == 批量选择网格状态.开始框选)
+            {
+                var Id = 建筑.ReferenceId;
+                if (所有已选择.ContainsKey(Id))
+                {
+                    // 取消当前框选起点
+                    框选状态 = 批量选择网格状态.没有框选;
+                    减少缓存物体(Id, 建筑);
+                }
+                else
+                {
+                    switch (网格类型)
+                    {
+                        case 批量选择网格类型.墙体和框架:
+                            {
+                                框选状态 = 批量选择网格状态.结束框选;
+                                var 终点 = 建筑.GridPosition;
+                                框选终点 = (终点, Id, 框选类型, 网格类型);
+                                if (框选起点.建筑类型 == 框选终点.建筑类型) { 增加缓存物体(Id, 建筑); }    // 该建筑是框选类型, 则加入缓存, 否则仅作为坐标的提供者
+                            }
+                            break;
+                        case 批量选择网格类型.功能建筑:
+                            {
+                                框选状态 = 批量选择网格状态.结束框选;
+                                var 模型所占用的所有小网格点 = (Grid3[])建筑.GridBounds.GetLocalSmallGrid(建筑.RegisteredPosition, 建筑.RegisteredRotation);
+                                var max = 模型所占用的所有小网格点.First();
+                                foreach (var 小网格点 in 模型所占用的所有小网格点) { max = new Grid3(Mathf.Max(max.x, 小网格点.x), Mathf.Max(max.y, 小网格点.y), Mathf.Max(max.z, 小网格点.z)); }
+                                var 终点 = max;
+                                框选终点 = (终点, Id, 框选类型, 网格类型);
+                                if (框选起点.建筑类型 == 框选终点.建筑类型) { 增加缓存物体(Id, 建筑); }    // 该建筑是框选类型, 则加入缓存, 否则仅作为坐标的提供者
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        protected void 处理框选结果()
+        {
+            var 起点 = 框选起点.网格坐标;
+            var 终点 = 框选终点.网格坐标;
+            var 框选目标类型 = 框选起点.建筑类型;
+
+            var min = new Grid3(Mathf.Min(起点.x, 终点.x), Mathf.Min(起点.y, 终点.y), Mathf.Min(起点.z, 终点.z));
+            var max = new Grid3(Mathf.Max(起点.x, 终点.x), Mathf.Max(起点.y, 终点.y), Mathf.Max(起点.z, 终点.z));
+
+            int 网格尺寸 = 0;
+            int 已处理网格计数 = 0;
+
+            switch (框选起点.网格类型)
+            {
+                case 批量选择网格类型.墙体和框架:
+                    网格尺寸 = Grid3.Directions.First().z;
+                    break;
+                case 批量选择网格类型.功能建筑:
+                    网格尺寸 = Mathf.RoundToInt(SmallGrid.SmallGridSize * 10f);
+                    break;
+            }
+
+            if (网格尺寸 > 0)
+            {
+                for (var i = min.x; i <= max.x; i += 网格尺寸)
+                {
+                    for (var j = min.y; j <= max.y; j += 网格尺寸)
+                    {
+                        for (var k = min.z; k <= max.z; k += 网格尺寸)
+                        {
+                            ++已处理网格计数;
+
+                            switch (框选起点.网格类型)
+                            {
+                                case 批量选择网格类型.墙体和框架:
+                                    {
+                                        var 网格单元 = GridController.World.GetCell(new Grid3(i, j, k));      // Cell: 网格单元, 和框架一样的大小, 网格单元持有内部所有的可放置设备(墙、框架、门.....)
+                                        if (网格单元 == null) { continue; }
+                                        for (var 当前方位 = StructureElement.South; 当前方位 >= StructureElement.Center; 当前方位--)
+                                        {
+                                            // 东、南、西、北、中、上、下
+                                            var 当前放置结构 = 网格单元.Lookup[当前方位];
+                                            if (当前放置结构 == null) { continue; }
+                                            增加缓存物体(当前放置结构, 框选目标类型);
+                                        }
+                                    }
+                                    break;
+                                case 批量选择网格类型.功能建筑:
+                                    {
+                                        var 网格单元 = GridController.World.GetSmallCell(new Grid3(i, j, k));      // SmallCell: 小网格单元, 四分之一框架的大小
+                                        if (网格单元 == null) { continue; }
+                                        if (网格单元.Pipe != null && 网格单元.Pipe is IHarvestable)
+                                        {
+                                            var 当前放置结构 = 网格单元.Pipe;
+                                            增加缓存物体(当前放置结构, 框选目标类型);
+                                        }
+                                        else if (网格单元.Device != null && 网格单元.Device is IHarvestable)
+                                        {
+                                            var 当前放置结构 = 网格单元.Device;
+                                            增加缓存物体(当前放置结构, 框选目标类型);
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            框选状态 = 批量选择网格状态.没有框选;
+            当前状态 = 批量操作任务状态.选择;
+            功能模块之快捷轮盘菜单.Log.LogMessage($"已扫描了 {已处理网格计数} 个网格单元");
+        }
+
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         public virtual void Update()
         {
@@ -143,7 +325,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                         var 建筑 = 通用工具.获取视线处建筑类物体();
 
-                        if (建筑 && KeyManager.GetMouseUp("Primary") && 建筑 is IHarvestable)
+                        if (建筑 && KeyManager.GetMouseUp("Primary"))
                         {
                             var Id = 建筑.ReferenceId;
                             if (所有已选择.ContainsKey(Id))
@@ -152,10 +334,35 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             }
                             else
                             {
-                                增加缓存物体(Id, 建筑);
+                                switch (建筑)
+                                {
+                                    case IHarvestable:
+                                        增加缓存物体(Id, 建筑);
+                                        break;
+                                }
                             }
                         }
 
+                        break;
+                    }
+                case 批量操作任务状态.框选:
+                    {
+                        if (KeyManager.GetMouseUp("Secondary")) { 框选状态 = 批量选择网格状态.没有框选; 当前状态 = 批量操作任务状态.睡眠; break; }
+
+                        switch (框选状态)
+                        {
+                            case 批量选择网格状态.没有框选:
+                                var 建筑 = 通用工具.获取视线处建筑类物体();
+                                if (建筑 && KeyManager.GetMouseUp("Primary") && 建筑 is IHarvestable) { 选择框选起点(建筑, 批量选择建筑类型.水培托盘, 批量选择网格类型.功能建筑); }
+                                break;
+                            case 批量选择网格状态.开始框选:
+                                建筑 = 通用工具.获取视线处建筑类物体();
+                                if (建筑 && KeyManager.GetMouseUp("Primary") && 建筑 is IHarvestable) { 选择框选终点(建筑, 批量选择建筑类型.水培托盘, 批量选择网格类型.功能建筑); }
+                                break;
+                            case 批量选择网格状态.结束框选:
+                                处理框选结果();
+                                break;
+                        }
                         break;
                     }
                 case 批量操作任务状态.种植:

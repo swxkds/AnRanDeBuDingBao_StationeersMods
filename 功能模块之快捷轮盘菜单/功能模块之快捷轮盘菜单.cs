@@ -16,6 +16,7 @@ using System;
 using System.Reflection;
 using Assets.Scripts.Util;
 using static meanran_xuexi_mods_xiaoyouhua.通用工具;
+using static meanran_xuexi_mods_xiaoyouhua.批量种植和收获;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
@@ -514,6 +515,18 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     {
                         if (单例.批量种收.当前状态 != 批量操作任务状态.睡眠) { return; }
                         单例.批量种收.目标状态 = 批量操作任务状态.选择;
+                        单例.批量种收.执行批量操作().Forget();
+                    });
+                    按钮.左侧缩略图.color = Color.green.SetAlpha(0.01f);
+                    通用工具.变更激活状态(按钮.gameObject, true);
+                }
+                {
+                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 种收命令布局区域);
+                    按钮.构造初始化("框选", "单击此按钮后, 关闭轮盘菜单窗口, 进入框选状态\n鼠标左键单击建筑添加或者取消高亮选择(只可选择水培托盘), 按鼠标右键退出框选状态和单选状态\n框选条件: 在当前已选择数等于0时, 添加一个建筑作为框选起点并作为框选目标类型\n再次单击该建筑, 可取消框选起点\n有了框选起点后, 添加第二个建筑作为框选终点\n然后会自动扫描网格将所有找到的框选目标类型加入高亮, 并切换到选择状态(用于加选和减选)",
+                    static () =>
+                    {
+                        if (单例.批量种收.当前状态 != 批量操作任务状态.睡眠) { return; }
+                        单例.批量种收.目标状态 = 批量操作任务状态.框选;
                         单例.批量种收.执行批量操作().Forget();
                     });
                     按钮.左侧缩略图.color = Color.green.SetAlpha(0.01f);
