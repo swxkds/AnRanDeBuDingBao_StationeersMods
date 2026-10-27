@@ -21,12 +21,12 @@ namespace meanran_xuexi_mods_xiaoyouhua
         public static readonly FieldInfo FieldInfo_constructionCursors = typeof(InventoryManager).GetField("_constructionCursors", BindingFlags.NonPublic | BindingFlags.Static);
         public static readonly FieldInfo FieldInfo_dynamicThingCursors = typeof(InventoryManager).GetField("_dynamicThingCursors", BindingFlags.NonPublic | BindingFlags.Static);
 
-        public Dictionary<long, 批量绘制_API兼容层> 所有批量绘制_索引视图 { get; private set; } // 每个新物体都需要创建持有自己的建模网格和材质的<批量绘制_API兼容层>
+        public Dictionary<int, 批量绘制_API兼容层> 所有批量绘制_索引视图 { get; private set; } // 每个新物体都需要创建持有自己的建模网格和材质的<批量绘制_API兼容层>
         public List<批量绘制_API兼容层> 所有批量绘制_遍历视图 { get; private set; }
         public int Field_图层优先级 = 0;
         public Stack<(ComputeBuffer 所有矩阵, ComputeBuffer 网格采样参数)> 间接绘制参数池 { get; private set; }
         public bool 正在创建间接绘制参数 { get; private set; }
-        public Func<long, 单图层_多物体_批量绘制, 批量绘制_API兼容层> 创建新渲染器事件 { get; protected set; }
+        public Func<int, 单图层_多物体_批量绘制, 批量绘制_API兼容层> 创建新渲染器事件 { get; protected set; }
         public virtual bool 是否需要间接绘制参数池 { get { return false; } }
 
         public 单图层_多物体_批量绘制(int Arg_图层优先级)
@@ -59,7 +59,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         {
             创建新渲染器事件 = static (Arg_ID, Arg_this) =>
             {
-                var thing = Thing.Find(Arg_ID);
+                var thing = Prefab.Find(Arg_ID);
                 if (thing == null) { return null; }
 
                 Mesh 匹配网格 = null;
@@ -140,7 +140,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             // 前置模块.Log.LogMessage($"绘制包围盒 => 中心点: {Field_视口裁剪.center}  尺寸: {Field_视口裁剪.size}");
         }
 
-        public 批量绘制_API兼容层 获取渲染器(long Arg_ID)
+        public 批量绘制_API兼容层 获取渲染器(int Arg_ID)
         {
             if (所有批量绘制_索引视图.TryGetValue(Arg_ID, out var Old))
             {
@@ -189,7 +189,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         {
             创建新渲染器事件 = static (Arg_ID, Arg_this) =>
             {
-                var thing = Thing.Find(Arg_ID);
+                var thing = Prefab.Find(Arg_ID);
                 if (thing == null) { return null; }
 
                 Mesh 匹配网格 = null;
@@ -334,7 +334,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             if (!Field_所有物体.Contains(建筑.ReferenceId))
                             {
                                 Field_所有物体.Add(建筑.ReferenceId);
-                                var 渲染器 = 获取渲染器(建筑.ReferenceId);
+                                var 渲染器 = 获取渲染器(建筑.PrefabHash);
 
                                 if (渲染器 == null) { continue; }
                                 if (渲染器.所有矩阵计数 > 批量绘制_API兼容层_DrawMeshInstancedIndirect.批量绘制最大支持) { continue; }
@@ -443,7 +443,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                                 {
                                     Field_所有网格.Add(资源网格);
 
-                                    var 渲染器 = 获取渲染器((long)资源网格.Type);
+                                    var 渲染器 = 获取渲染器((int)资源网格.Type);
 
                                     if (渲染器 == null) { continue; }
                                     if (渲染器.所有矩阵计数 > 批量绘制_API兼容层_DrawMeshInstancedIndirect.批量绘制最大支持) { continue; }
@@ -495,7 +495,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         {
             创建新渲染器事件 = static (Arg_ID, Arg_this) =>
             {
-                var thing = Thing.Find(Arg_ID);
+                var thing = Prefab.Find(Arg_ID);
                 if (thing == null) { return null; }
 
                 Mesh 匹配网格 = null;
@@ -546,7 +546,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
             foreach (var thing in 所有渲染物体)
             {
-                var 渲染器 = 获取渲染器(thing.ReferenceId);
+                var 渲染器 = 获取渲染器(thing.PrefabHash);
 
                 if (渲染器 == null) { continue; }
                 if (渲染器.所有矩阵计数 > 批量绘制_API兼容层_DrawMeshInstancedIndirect.批量绘制最大支持) { continue; }
@@ -582,6 +582,89 @@ namespace meanran_xuexi_mods_xiaoyouhua
     }
 
 
+    public class 单图层_多物体_批量绘制_模拟渲染特化版本 : 单图层_多物体_批量绘制
+    {
+        private Func<List<(Matrix4x4, Thing)>> 获取渲染物体 = null;
+        public override bool 是否需要间接绘制参数池 { get { return true; } }
+        public 单图层_多物体_批量绘制_模拟渲染特化版本(int Arg_图层优先级, Func<List<(Matrix4x4, Thing)>> Arg_获取渲染物体) : base(Arg_图层优先级) { 获取渲染物体 = Arg_获取渲染物体; }
+
+        public override void Initialize()
+        {
+            创建新渲染器事件 = static (Arg_ID, Arg_this) =>
+            {
+                var thing = Prefab.Find(Arg_ID);
+                if (thing == null) { return null; }
+
+                Mesh 匹配网格 = null;
+                Material 匹配材质 = null;
+
+                switch (thing)
+                {
+                    case Structure:
+                        {
+                            var 所有建筑蓝图 = (Dictionary<string, Structure>)FieldInfo_constructionCursors.GetValue(null);
+                            if (所有建筑蓝图.TryGetValue(thing.name, out var __))
+                            {
+                                var A = __.Wireframe;
+                                匹配网格 = A.BlueprintMeshFilter.sharedMesh;
+                            }
+                            break;
+                        }
+                    case DynamicThing:
+                        {
+                            // 玩家继承Entity类, Entity类继承DynamicThing类
+                            var 所有道具蓝图 = (Dictionary<string, GameObject>)FieldInfo_dynamicThingCursors.GetValue(null);
+                            if (所有道具蓝图.TryGetValue(thing.name, out var __))
+                            {
+                                var A = __.GetComponent<Wireframe>();
+                                匹配网格 = A.BlueprintMeshFilter.sharedMesh;
+                            }
+                            break;
+                        }
+                }
+
+                if (匹配网格 == null) { 匹配网格 = thing.Renderers.Last().SharedMesh; }
+                if (匹配材质 == null) { 匹配材质 = 通用工具.材质_安然_高亮全息投影_扫描线; }
+
+                if (匹配网格 == null || 匹配材质 == null) { return null; }
+
+                return new 批量绘制_API兼容层_DrawMeshInstancedIndirect((Arg_this, Arg_this.间接绘制参数池.Pop()), 匹配网格, 匹配材质, 0);
+            };
+        }
+        public override void 扫描并添加矩阵()
+        {
+            // 警告: Unity引擎是单线程的, 因此协程实例也是按顺序依次调用的, 有可能多个协程连续添加任务, 然后才运行到<更新双缓冲区>函数将多个
+            // 任务函数对象一次性全部上传到线程中执行, 此时会出现多个线程的同一个函数对象同时执行<扫描并添加矩阵>, 导致资源抢占
+            // 因此先清除上次的扫描结果, 这样多个函数对象都写入时, 最后一个写入的会覆盖掉前面的
+            Clear();
+
+            var 所有渲染物体 = 获取渲染物体?.Invoke();
+            if (所有渲染物体 == null) { return; }
+
+            foreach (var thing in 所有渲染物体)
+            {
+                var 渲染器 = 获取渲染器(thing.Item2.PrefabHash);
+
+                if (渲染器 == null) { continue; }
+                if (渲染器.所有矩阵计数 > 批量绘制_API兼容层_DrawMeshInstancedIndirect.批量绘制最大支持) { continue; }
+                var 世界包围盒 = new Bounds(thing.Item1.GetPosition() + thing.Item1.rotation * thing.Item2.GetLocalBounds.center, thing.Item2.GetLocalBounds.size);
+
+                if (渲染器.所有矩阵计数 == 0)
+                {
+                    渲染器.视口裁剪 = 世界包围盒;
+                }
+                else
+                {
+                    var 复制体 = 渲染器.视口裁剪;
+                    复制体.Encapsulate(世界包围盒);
+                    渲染器.视口裁剪 = 复制体;
+                }
+
+                渲染器.添加矩阵(thing.Item1);
+            }
+        }
+    }
+
 
 
 
@@ -590,17 +673,17 @@ namespace meanran_xuexi_mods_xiaoyouhua
     {
         public enum 图层类型
         {
-            未知, 房间, 可开采资源, 通用渲染,
+            未知, 房间, 可开采资源, 通用渲染, 模拟渲染
         }
         private readonly Plane[] Field_几何面 = new Plane[6];
         private const int Field_网格尺寸 = 108;
         private Dictionary<图层类型, 单图层_多物体_批量绘制> Field_所有批量绘制_索引视图 = null;
         public List<单图层_多物体_批量绘制> Field_所有批量绘制_遍历视图 = null;
         private 线程任务_API兼容层 Field_后台线程控制块 = null;
-        List<(图层类型 图层, int 图层优先级, Func<List<Thing>> 获取渲染物体)> Field_所有图层;
+        List<(图层类型 图层, int 图层优先级, object 获取渲染物体)> Field_所有图层;
         public bool Field_IsWriting;          // 不要修改这个值, 有可能造成数据抢占
         public bool CanThread() => Field_IsWriting;   // 是否正在独占式写入,若有待处理任务,则阻塞新的任务添加到待处理任务队列
-        public 多图层_多物体_批量绘制(线程任务_API兼容层 Arg_后台线程控制块, List<(图层类型 图层, int 图层优先级, Func<List<Thing>> 获取渲染物体)> Arg_所有图层)
+        public 多图层_多物体_批量绘制(线程任务_API兼容层 Arg_后台线程控制块, List<(图层类型 图层, int 图层优先级, object 获取渲染物体)> Arg_所有图层)
         {
             Field_所有批量绘制_索引视图 = new();
             Field_所有批量绘制_遍历视图 = new();
@@ -617,7 +700,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 {
                     Array.Clear(Field_几何面, 0, Field_几何面.Length);
 
-                    foreach ((图层类型 图层, int 图层优先级, Func<List<Thing>> 获取渲染物体) in Field_所有图层)
+                    foreach ((图层类型 图层, int 图层优先级, object 获取渲染物体) in Field_所有图层)
                     {
                         switch (图层)
                         {
@@ -642,7 +725,16 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             case 图层类型.通用渲染:
                                 {
                                     if (Field_所有批量绘制_索引视图.ContainsKey(图层)) { continue; }
-                                    var New = new 单图层_多物体_批量绘制_通用渲染特化版本(Arg_图层优先级: 图层优先级, 获取渲染物体);
+                                    var New = new 单图层_多物体_批量绘制_通用渲染特化版本(Arg_图层优先级: 图层优先级, (Func<List<Thing>>)获取渲染物体);
+                                    New.Initialize();
+                                    Field_所有批量绘制_索引视图[图层] = New;
+                                    Field_所有批量绘制_遍历视图.Add(New);
+                                    break;
+                                }
+                            case 图层类型.模拟渲染:
+                                {
+                                    if (Field_所有批量绘制_索引视图.ContainsKey(图层)) { continue; }
+                                    var New = new 单图层_多物体_批量绘制_模拟渲染特化版本(Arg_图层优先级: 图层优先级, (Func<List<(Matrix4x4, Thing)>>)获取渲染物体);
                                     New.Initialize();
                                     Field_所有批量绘制_索引视图[图层] = New;
                                     Field_所有批量绘制_遍历视图.Add(New);
@@ -697,7 +789,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         public void 添加任务到本地待处理队列()
         {
             // 添加一个任务到<待处理任务队列>中, 当后台线程执行完成变成空闲状态后, 将<待处理任务队列>中的所有任务一次性全部提交到后台线程执行
-            foreach ((图层类型 图层, int __1, Func<List<Thing>> __2) in Field_所有图层)
+            foreach ((图层类型 图层, int __1, object __2) in Field_所有图层)
             {
                 switch (图层)
                 {
@@ -727,6 +819,15 @@ namespace meanran_xuexi_mods_xiaoyouhua
                             if (单图层渲染器 is 单图层_多物体_批量绘制_通用渲染特化版本 通用渲染)
                             {
                                 Field_后台线程控制块.添加任务到本地待处理队列(new 扫描任务(通用渲染));
+                            }
+                            break;
+                        }
+                    case 图层类型.模拟渲染:
+                        {
+                            var 单图层渲染器 = Field_所有批量绘制_索引视图[图层];
+                            if (单图层渲染器 is 单图层_多物体_批量绘制_模拟渲染特化版本 模拟渲染)
+                            {
+                                Field_后台线程控制块.添加任务到本地待处理队列(new 扫描任务(模拟渲染));
                             }
                             break;
                         }

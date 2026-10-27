@@ -19,12 +19,12 @@ namespace meanran_xuexi_mods_xiaoyouhua
         private 线程任务_API兼容层 Field_后台线程控制块 = null;
         private 多图层_多物体_批量绘制 Field_双缓冲A = null;
         private 多图层_多物体_批量绘制 Field_双缓冲B = null;
-        private List<(多图层_多物体_批量绘制.图层类型 图层, int 图层优先级, Func<List<Thing>> 获取渲染物体)> Field_所有图层;
+        private List<(多图层_多物体_批量绘制.图层类型 图层, int 图层优先级, object 获取渲染物体)> Field_所有图层;
         private Func<bool> Field_访问快捷键 = null;
         private bool 正在提交么;
         public 多图层_多物体_批量绘制 只读 { get { lock (锁) { return A在后台更新么 ? Field_双缓冲B : Field_双缓冲A; } } }  // 一.只读和只写不可以同时访问 二.在<A在后台更新么>进行变更时,阻塞线程,以免资源竞争
         public 多图层_多物体_批量绘制 只写 { get { lock (锁) { return A在后台更新么 ? Field_双缓冲A : Field_双缓冲B; } } }  // 一.只读和只写不可以同时访问 二.在<A在后台更新么>进行变更时,阻塞线程,以免资源竞争
-        public 通用间接绘制(List<(多图层_多物体_批量绘制.图层类型 图层, int 图层优先级, Func<List<Thing>> 获取渲染物体)> Arg_所有图层, Func<bool> Arg_访问快捷键)
+        public 通用间接绘制(List<(多图层_多物体_批量绘制.图层类型 图层, int 图层优先级, object 获取渲染物体)> Arg_所有图层, Func<bool> Arg_访问快捷键)
         {
             Field_后台线程控制块 = new();
             Field_后台线程控制块.Field_控制块.Initialize(5);      // 创建5个子容器

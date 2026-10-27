@@ -58,8 +58,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
             }
         }
 
-        private static List<(List<(多图层_多物体_批量绘制.图层类型 图层, int 图层优先级, Func<List<Thing>> 获取渲染物体)> 图层参数, Func<bool> 访问快捷键)> 所有通用间接绘制构造参数 = new();
-        public static void 添加通用间接绘制构造参数(List<(多图层_多物体_批量绘制.图层类型 图层, int 图层优先级, Func<List<Thing>> 获取渲染物体)> 图层参数, Func<bool> 访问快捷键)
+        private static List<(List<(多图层_多物体_批量绘制.图层类型 图层, int 图层优先级, object 获取渲染物体)> 图层参数, Func<bool> 访问快捷键)> 所有通用间接绘制构造参数 = new();
+        public static void 添加通用间接绘制构造参数(List<(多图层_多物体_批量绘制.图层类型 图层, int 图层优先级, object 获取渲染物体)> 图层参数, Func<bool> 访问快捷键)
         {
             lock (锁)
             {
