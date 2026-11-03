@@ -118,13 +118,25 @@ mklink /D "...\Steam\steamapps\common\Stationeers\BepInEx\plugins\Link" "...\Ste
 }
 
 
+批量放置蓝图(通过 是否存在实体占用 判断建筑是否被放置了并删除对应的高亮选择)
+{
+  选择按钮
+  单击此按钮后, 关闭轮盘菜单窗口, 进入选择状态(此时可选单击鼠标右键弹出原版高亮蓝图作为位置参考), 鼠标左键单击虚空位置添加或者取消高亮选择
+  长按鼠标右键退出状态
+
+  装配按钮
+  双手持有装配工具与材料时, 从所有已放置蓝图中找到可放置建筑, 在读条结束后执行放置
+  按鼠标右键中断读条后退出状态
+}
+
+
 
 源码链接: https://github.com/swxkds/AnRanDeBuDingBao_StationeersMods
 
 本模组为方便自己游戏使用而做,不喜勿用勿扰
 可自由修改、转发, 祝游戏愉快！
     </Description>
-    <WorkshopHandle>3614394349</WorkshopHandle>
-	<DependsOn WorkshopHandle="3571616762" />
-	<OrderAfter WorkshopHandle="3571616762" />   
+  <WorkshopHandle>3614394349</WorkshopHandle>
+  <DependsOn WorkshopHandle="3571616762" />
+  <OrderAfter WorkshopHandle="3571616762" />
 </ModMetadata>

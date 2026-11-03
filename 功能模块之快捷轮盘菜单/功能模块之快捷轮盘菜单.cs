@@ -766,6 +766,19 @@ namespace meanran_xuexi_mods_xiaoyouhua
 
                 {
                     var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 阵列放置命令布局区域);
+                    按钮.构造初始化("装配", "双手持有装配工具和装配材料时, 从所有已选择建筑中找到可装配(升级)建筑\n在读条结束后执行装配, 读条期间按鼠标右键取消操作\n同一个建筑的不同建造阶段都有对应的装配条件, 需要多次切换装配工具与材料",
+                    static () =>
+                    {
+                        if (单例.批量阵列放置.当前状态 != 批量操作任务状态.睡眠) { return; }
+                        单例.批量阵列放置.目标状态 = 批量操作任务状态.装配;
+                        单例.批量阵列放置.执行批量操作().Forget();
+                    });
+                    按钮.左侧缩略图.color = Color.green.SetAlpha(0.01f);
+                    通用工具.变更激活状态(按钮.gameObject, true);
+                }
+
+                {
+                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 阵列放置命令布局区域);
                     按钮.构造初始化("清空高亮", "清空所有已选择建筑",
                     static () =>
                     {

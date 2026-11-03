@@ -51,6 +51,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                                 {
                                     case Assets.Scripts.Objects.Wall:
                                     case Objects.Structures.Frame:
+                                    case SmallGrid:
                                         增加缓存物体(Id, 建筑);
                                         break;
                                 }
@@ -206,6 +207,10 @@ namespace meanran_xuexi_mods_xiaoyouhua
                                             case Objects.Structures.Frame:
                                                 选择框选起点(建筑, 批量选择建筑类型.框架, 批量选择网格类型.墙体和框架);
                                                 break;
+                                            case IHarvestable:
+                                                选择框选起点(建筑, 批量选择建筑类型.水培托盘, 批量选择网格类型.功能建筑);
+                                                break;
+
                                         }
                                     }
                                 }
@@ -222,6 +227,9 @@ namespace meanran_xuexi_mods_xiaoyouhua
                                                 break;
                                             case Objects.Structures.Frame:
                                                 选择框选终点(建筑, 批量选择建筑类型.框架, 批量选择网格类型.墙体和框架);
+                                                break;
+                                            case IHarvestable:
+                                                选择框选终点(建筑, 批量选择建筑类型.水培托盘, 批量选择网格类型.功能建筑);
                                                 break;
                                         }
                                     }
