@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace meanran_xuexi_mods_xiaoyouhua
 {
-    public class 批量阵列放置 : 批量拆除和装配
+    public class 批量放置 : 批量拆除和装配
     {
         // 锚点不一定是模型的中心点
         public new Dictionary<(Grid3 网格坐标, StructureElement 方向), (Matrix4x4 锚点所在变换矩阵, Structure 放置结构, int 放置结构索引)> 所有已选择 { get; protected set; }
@@ -23,7 +23,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         private float 关闭高亮间隔计时 = 0;
         private bool 开始长按右键 = false;
 
-        public static new T 构造函数<T>() where T : 批量阵列放置, new()
+        public static new T 构造函数<T>() where T : 批量放置, new()
         {
             var _this = new T { 当前状态 = 批量操作任务状态.睡眠 };
             _this.所有已选择 ??= new();
@@ -450,7 +450,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
             {
                 case 批量操作任务状态.睡眠:
                     {
-                        快捷键配置.快捷轮盘菜单_批量阵列放置_高亮开关 = false;
+                        快捷键配置.快捷轮盘菜单_批量放置_高亮开关 = false;
                         功能模块之快捷轮盘菜单.Log.LogMessage("批量阵列放置：已选择锚点关闭渲染");
                         break;
                     }
@@ -459,7 +459,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                         开始长按右键 = false;
                         关闭高亮间隔计时 = 0;
                         清理已失效();
-                        快捷键配置.快捷轮盘菜单_批量阵列放置_高亮开关 = true;
+                        快捷键配置.快捷轮盘菜单_批量放置_高亮开关 = true;
                         功能模块之快捷轮盘菜单.Log.LogMessage("批量阵列放置：已选择锚点开启渲染");
                         break;
                     }

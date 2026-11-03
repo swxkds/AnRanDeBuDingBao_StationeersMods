@@ -81,9 +81,9 @@ namespace meanran_xuexi_mods_xiaoyouhua
             {
                 var StaticLambda = static () =>
                 {
-                    if (快捷轮盘菜单.单例 && 快捷轮盘菜单.单例.批量阵列放置 != null)
+                    if (快捷轮盘菜单.单例 && 快捷轮盘菜单.单例.批量放置 != null)
                     {
-                        return 快捷轮盘菜单.单例.批量阵列放置.所有已选择缓存;
+                        return 快捷轮盘菜单.单例.批量放置.所有已选择缓存;
                     }
                     else
                     {
@@ -91,7 +91,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
                     }
                 };
 
-                前置模块.添加通用间接绘制构造参数(new() { (多图层_多物体_批量绘制.图层类型.模拟渲染, 2, StaticLambda) }, static () => 快捷键配置.快捷轮盘菜单_批量阵列放置_高亮开关);
+                前置模块.添加通用间接绘制构造参数(new() { (多图层_多物体_批量绘制.图层类型.模拟渲染, 2, StaticLambda) }, static () => 快捷键配置.快捷轮盘菜单_批量放置_高亮开关);
             }
         }
     }
@@ -352,7 +352,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         // 高亮显示布尔值开关
         public static bool 快捷轮盘菜单_批量种植和收获_高亮开关 { get; set; }
         public static bool 快捷轮盘菜单_批量拆除和装配_高亮开关 { get; set; }
-        public static bool 快捷轮盘菜单_批量阵列放置_高亮开关 { get; set; }
+        public static bool 快捷轮盘菜单_批量放置_高亮开关 { get; set; }
 
     }
 
@@ -373,7 +373,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
     {
         public 批量种植和收获 批量种收 { get; private set; }
         public 批量拆除和装配 批量拆装 { get; private set; }
-        public 批量阵列放置 批量阵列放置 { get; private set; }
+        public 批量放置 批量放置 { get; private set; }
 
         private void 初始化(RectTransform VLRect)
         {
@@ -714,13 +714,13 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 }
             }
 
-            if (批量阵列放置 == null) { 批量阵列放置 = 批量阵列放置.构造函数<批量阵列放置>(); }
+            if (批量放置 == null) { 批量放置 = 批量放置.构造函数<批量放置>(); }
 
             {
-                var 阵列放置 = new GameObject("批量阵列放置");
-                阵列放置.transform.SetParent(VLRect, false);
+                var 批量放置 = new GameObject("批量放置");
+                批量放置.transform.SetParent(VLRect, false);
 
-                var HL = 阵列放置.AddComponent<HorizontalLayoutGroup>();
+                var HL = 批量放置.AddComponent<HorizontalLayoutGroup>();
                 HL.childAlignment = TextAnchor.MiddleCenter;
                 HL.childControlWidth = false;               // 根据子级的LayoutElement风格组件的配置写入子级的sizeDelta
                 HL.childControlHeight = false;
@@ -730,61 +730,61 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 HL.childScaleHeight = false;
                 HL.spacing = 8;
 
-                var 阵列放置命令布局区域 = HL.GetOrAddComponent<RectTransform>();
-                阵列放置命令布局区域.pivot = new Vector2(0.5f, 0.5f);
-                阵列放置命令布局区域.anchoredPosition = Vector2.zero;
+                var 批量放置命令布局区域 = HL.GetOrAddComponent<RectTransform>();
+                批量放置命令布局区域.pivot = new Vector2(0.5f, 0.5f);
+                批量放置命令布局区域.anchoredPosition = Vector2.zero;
 
-                var 吸附到内容 = 阵列放置.AddComponent<ContentSizeFitter>();
+                var 吸附到内容 = 批量放置.AddComponent<ContentSizeFitter>();
                 吸附到内容.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
                 吸附到内容.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
                 var 拷贝母体 = 快捷工具按钮<批量操作悬停提示>.获取拷贝母体(RootCanvas);
                 {
-                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 阵列放置命令布局区域);
+                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 批量放置命令布局区域);
                     按钮.构造初始化("开关高亮", "单击此按钮后, 关闭轮盘菜单窗口, 并开启高亮显示\n按鼠标右键关闭高亮显示",
                     static () =>
                     {
-                        if (单例.批量阵列放置.当前状态 != 批量操作任务状态.睡眠) { return; }
-                        单例.批量阵列放置.目标状态 = 批量操作任务状态.开关高亮;
-                        单例.批量阵列放置.执行批量操作().Forget();
+                        if (单例.批量放置.当前状态 != 批量操作任务状态.睡眠) { return; }
+                        单例.批量放置.目标状态 = 批量操作任务状态.开关高亮;
+                        单例.批量放置.执行批量操作().Forget();
                     });
                     按钮.左侧缩略图.color = Color.green.SetAlpha(0.01f);
                     通用工具.变更激活状态(按钮.gameObject, true);
                 }
                 {
-                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 阵列放置命令布局区域);
+                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 批量放置命令布局区域);
                     按钮.构造初始化("选择", "单击此按钮后, 关闭轮盘菜单窗口, 进入选择状态\n鼠标左键单击建筑添加或者取消高亮选择(虚空选择), 按鼠标右键退出选择状态",
                     static () =>
                     {
-                        if (单例.批量阵列放置.当前状态 != 批量操作任务状态.睡眠) { return; }
-                        单例.批量阵列放置.目标状态 = 批量操作任务状态.选择;
-                        单例.批量阵列放置.执行批量操作().Forget();
+                        if (单例.批量放置.当前状态 != 批量操作任务状态.睡眠) { return; }
+                        单例.批量放置.目标状态 = 批量操作任务状态.选择;
+                        单例.批量放置.执行批量操作().Forget();
                     });
                     按钮.左侧缩略图.color = Color.green.SetAlpha(0.01f);
                     通用工具.变更激活状态(按钮.gameObject, true);
                 }
 
                 {
-                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 阵列放置命令布局区域);
-                    按钮.构造初始化("装配", "双手持有装配工具和装配材料时, 从所有已选择建筑中找到可装配(升级)建筑\n在读条结束后执行装配, 读条期间按鼠标右键取消操作\n同一个建筑的不同建造阶段都有对应的装配条件, 需要多次切换装配工具与材料",
+                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 批量放置命令布局区域);
+                    按钮.构造初始化("放置", "双手持有装配工具和装配材料时, 从所有已放置蓝图中找到可放置建筑\n在读条结束后执行放置, 读条期间按鼠标右键取消操作",
                     static () =>
                     {
-                        if (单例.批量阵列放置.当前状态 != 批量操作任务状态.睡眠) { return; }
-                        单例.批量阵列放置.目标状态 = 批量操作任务状态.装配;
-                        单例.批量阵列放置.执行批量操作().Forget();
+                        if (单例.批量放置.当前状态 != 批量操作任务状态.睡眠) { return; }
+                        单例.批量放置.目标状态 = 批量操作任务状态.装配;
+                        单例.批量放置.执行批量操作().Forget();
                     });
                     按钮.左侧缩略图.color = Color.green.SetAlpha(0.01f);
                     通用工具.变更激活状态(按钮.gameObject, true);
                 }
 
                 {
-                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 阵列放置命令布局区域);
+                    var 按钮 = UnityEngine.Object.Instantiate(拷贝母体, 批量放置命令布局区域);
                     按钮.构造初始化("清空高亮", "清空所有已选择建筑",
                     static () =>
                     {
-                        if (单例.批量阵列放置.当前状态 != 批量操作任务状态.睡眠) { return; }
-                        单例.批量阵列放置.目标状态 = 批量操作任务状态.清空高亮;
-                        单例.批量阵列放置.执行批量操作().Forget();
+                        if (单例.批量放置.当前状态 != 批量操作任务状态.睡眠) { return; }
+                        单例.批量放置.目标状态 = 批量操作任务状态.清空高亮;
+                        单例.批量放置.执行批量操作().Forget();
                     });
                     按钮.左侧缩略图.color = Color.green.SetAlpha(0.01f);
                     通用工具.变更激活状态(按钮.gameObject, true);
