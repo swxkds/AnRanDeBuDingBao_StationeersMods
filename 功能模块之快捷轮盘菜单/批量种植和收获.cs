@@ -44,7 +44,7 @@ namespace meanran_xuexi_mods_xiaoyouhua
         public Dictionary<long, Thing> 所有已选择 { get; protected set; }
         public List<Thing> 所有已选择缓存 { get; protected set; }
         private List<long> 已失效表;
-        private Queue<Action> 事件队列;
+        protected Queue<Action> 事件队列;
         public void 添加事件(Action 事件) { 事件队列.Enqueue(事件); }
         public void 执行事件() { while (事件队列.Count > 0) { 事件队列.Dequeue().Invoke(); } }
         public int 获取事件数量() { return 事件队列.Count; }
