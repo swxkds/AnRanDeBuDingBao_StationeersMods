@@ -13,7 +13,7 @@ Shader "Custom/AnRanDeBuDingBao/Hologram"
         _ScanSpeed ("扫描线步进速度", Range(-2, 2)) = -1
         _Direction ("扫描线旋转角度", Vector) =  (0.45, 0.45, 0, 0)
         _ScanTiling ("扫描线密度", Range(0.01, 100)) = 30
-        _ScanWidth ("扫描线宽度比例", Range(0.4, 0.7)) = 0.5
+        _ScanWidth ("扫描线宽度比例", Range(0.1, 0.7)) = 0.5
     }
 
     SubShader
