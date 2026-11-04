@@ -161,6 +161,8 @@ namespace meanran_xuexi_mods_xiaoyouhua
             New.enableInstancing = true;
             New.renderQueue = 5000;
 
+            New.SetFloat(Shader.PropertyToID("_Alpha"), 0.3f);  // _Alpha 整体透明度
+
             return New;
         }
     }
