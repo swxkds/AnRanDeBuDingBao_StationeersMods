@@ -150,25 +150,35 @@ namespace meanran_xuexi_mods_xiaoyouhua
             // 根据摄像机朝向计算出视线前方网格的向量, 第一个参数是步进/吸附精度(如果当前建造物是网格尺寸>0.5f的大网格, 用0.3f；否则是小网格, 用0.6f。
             var 摄像机前方网格 = InputHelpers.GetCameraForwardGrid((放置结构.GridSize > 0.5f) ? 0.3f : 0.6f, 放置结构.GetCursorOffset, out var 视线向量);
             var 微调 = (放置结构 is Objects.Pipes.IChute) ? (视线向量 * 0.1f) : Vector3.zero;
-            var 锚点坐标 = 放置结构.GetWorldGrid(摄像机前方网格 + 微调);
+            var 吸附到该锚点 = 放置结构.GetWorldGrid(摄像机前方网格 + 微调);
 
+            // GridPosition: 大网格中心整数坐标         WorldGrid: 小网格中心整数坐标, 必须放置后才会生效, 蓝图始终显示零值
+            // 一个大网格由多个小网格组成, 每个小网格提供一个吸附锚点, 放置时会吸附到任一个锚点上, 大网格中心与大网格内部中间的那个小网格中心是重合的
             switch (放置结构)
             {
                 case Assets.Scripts.Objects.Wall:
-                    var 墙体坐标 = 锚点坐标 - 放置结构.ThingTransform.forward * 放置结构.GridSize / 2f;
-                    放置结构.ThingTransformPosition = 墙体坐标;
-                    当前 = (放置结构.GridPosition, 墙体方向(墙体坐标.ToGridPosition(), 放置结构.GridPosition), 墙体坐标, BuildIndex);
+                    var 大网格中心坐标 = 吸附到该锚点;
+                    var 围墙半径 = 放置结构.GridSize / 2f;
+                    var 围墙相对某方向的偏移量 = 放置结构.ThingTransform.forward * 围墙半径;
+                    var 墙体吸附在该大网格边缘锚点上 = 大网格中心坐标 - 围墙相对某方向的偏移量;
+                    放置结构.ThingTransformPosition = 墙体吸附在该大网格边缘锚点上;
+                    当前 = (放置结构.GridPosition, 墙体方向(墙体吸附在该大网格边缘锚点上.ToGridPosition(), 放置结构.GridPosition), 墙体吸附在该大网格边缘锚点上, BuildIndex);
                     return true;
                 case Objects.Structures.Frame:
+                    大网格中心坐标 = 吸附到该锚点;
+                    放置结构.ThingTransformPosition = 大网格中心坐标;
+                    当前 = (放置结构.GridPosition, StructureElement.Center, 大网格中心坐标, BuildIndex);
+                    return true;
                 case SmallGrid:
-                    放置结构.ThingTransformPosition = 锚点坐标;
-                    当前 = (放置结构.GridPosition, StructureElement.Center, 锚点坐标, BuildIndex);
+                    var 小网格中心坐标 = 吸附到该锚点;
+                    放置结构.ThingTransformPosition = 小网格中心坐标;
+                    当前 = (小网格中心坐标.ToGridPosition(), StructureElement.Center, 小网格中心坐标, BuildIndex);
                     return true;
             }
 
             当前 = (Grid3.zero, StructureElement.Center, Vector3.zero, BuildIndex); return false;
 
-            static StructureElement 墙体方向(Grid3 锚点坐标, Grid3 大网格中心坐标)
+            static StructureElement 墙体方向(Grid3 墙体吸附在该锚点上, Grid3 大网格中心整数坐标)
             {
                 // {
                 //     var 夹角 = Vector3.Dot(源_前向, Vector3.forward);
@@ -206,23 +216,23 @@ namespace meanran_xuexi_mods_xiaoyouhua
                 //     }
                 // }
 
-                var 方向 = 大网格中心坐标 + Grid3.Face.North;
-                if (锚点坐标 == 方向) { return StructureElement.North; }
+                var 大网格边缘锚点坐标 = 大网格中心整数坐标 + Grid3.Face.North;
+                if (墙体吸附在该锚点上 == 大网格边缘锚点坐标) { return StructureElement.North; }
 
-                方向 = 大网格中心坐标 + Grid3.Face.East;
-                if (锚点坐标 == 方向) { return StructureElement.East; }
+                大网格边缘锚点坐标 = 大网格中心整数坐标 + Grid3.Face.East;
+                if (墙体吸附在该锚点上 == 大网格边缘锚点坐标) { return StructureElement.East; }
 
-                方向 = 大网格中心坐标 + Grid3.Face.South;
-                if (锚点坐标 == 方向) { return StructureElement.South; }
+                大网格边缘锚点坐标 = 大网格中心整数坐标 + Grid3.Face.South;
+                if (墙体吸附在该锚点上 == 大网格边缘锚点坐标) { return StructureElement.South; }
 
-                方向 = 大网格中心坐标 + Grid3.Face.West;
-                if (锚点坐标 == 方向) { return StructureElement.West; }
+                大网格边缘锚点坐标 = 大网格中心整数坐标 + Grid3.Face.West;
+                if (墙体吸附在该锚点上 == 大网格边缘锚点坐标) { return StructureElement.West; }
 
-                方向 = 大网格中心坐标 + Grid3.Face.Up;
-                if (锚点坐标 == 方向) { return StructureElement.Up; }
+                大网格边缘锚点坐标 = 大网格中心整数坐标 + Grid3.Face.Up;
+                if (墙体吸附在该锚点上 == 大网格边缘锚点坐标) { return StructureElement.Up; }
 
-                方向 = 大网格中心坐标 + Grid3.Face.Down;
-                if (锚点坐标 == 方向) { return StructureElement.Down; }
+                大网格边缘锚点坐标 = 大网格中心整数坐标 + Grid3.Face.Down;
+                if (墙体吸附在该锚点上 == 大网格边缘锚点坐标) { return StructureElement.Down; }
 
                 return StructureElement.Center;
             }
